@@ -100,9 +100,17 @@
     @media (max-width: 500px) {
       .view-nav { display: none; }
       .view--card { display: none !important; }
-      .view--phone { display: flex !important; }
       .view--phone {
+        display: flex !important;
+        min-height: 100vh;
+        min-height: 100dvh;
         perspective: none;
+        overflow: hidden;
+      }
+      body {
+        overflow: hidden;
+        position: fixed;
+        inset: 0;
       }
       .phone {
         width: 100vw !important;
