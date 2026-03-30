@@ -105,8 +105,9 @@
     const gamma = e.gamma || 0; // -90 to 90 (left/right tilt)
 
     // Normalize to 0-1 range centered around neutral hold (~40° beta)
-    mouseX = Math.max(0, Math.min(1, 0.5 + gamma / 60));
-    mouseY = Math.max(0, Math.min(1, 0.5 - (beta - 40) / 60));
+    // Divide by 30 instead of 60 for more sensitivity on mobile
+    mouseX = Math.max(0, Math.min(1, 0.5 + gamma / 30));
+    mouseY = Math.max(0, Math.min(1, 0.5 - (beta - 40) / 30));
 
     cpTX = (0.5 - mouseY) * MAX_PHONE_ROTATION * 2;
     cpTY = (mouseX - 0.5) * MAX_PHONE_ROTATION * 2;
@@ -131,8 +132,11 @@
     card.style.setProperty('--pointer-from-left', mouseX.toFixed(4));
     card.style.setProperty('--pointer-from-top', mouseY.toFixed(4));
     const dist = Math.sqrt(Math.pow(mouseX - 0.5, 2) + Math.pow(mouseY - 0.5, 2));
-    card.style.setProperty('--shine-opacity', Math.min(1, dist * 2.5 + 0.2));
-    card.style.setProperty('--glare-opacity', Math.min(0.8, dist * 0.5));
+    const shineBase = isMobile ? 0.5 : 0.2;
+    const shineMult = isMobile ? 3 : 2.5;
+    const glareMult = isMobile ? 1.2 : 0.5;
+    card.style.setProperty('--shine-opacity', Math.min(1, dist * shineMult + shineBase));
+    card.style.setProperty('--glare-opacity', Math.min(0.8, dist * glareMult));
   }
 
   function animate() {
