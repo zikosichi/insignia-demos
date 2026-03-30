@@ -153,8 +153,8 @@
       }
 
       // Card shifts position with tilt (parallax float)
-      const translateX = cpY * 0.8;  // horizontal shift follows Y rotation
-      const translateY = cpX * -0.6; // vertical shift follows X rotation
+      const translateX = cpY * 0.4;
+      const translateY = cpX * 0.3;
       updateCard(cardPhone, 0, 0, false);
       cardPhone.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`;
 
