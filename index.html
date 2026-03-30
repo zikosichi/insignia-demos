@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VCFC Card — Premium 3D Effect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="scene">
+    <div class="card-container">
+      <div class="card" id="card">
+
+        <!-- Gold border -->
+        <div class="card__border"></div>
+
+        <!-- Card body with pattern -->
+        <div class="card__body">
+          <div class="card__pattern"></div>
+        </div>
+
+
+        <!-- Layer 4: Shine / light reflection -->
+        <div class="card__shine"></div>
+
+        <!-- Layer 5: Edge shine (element borders catch light) -->
+        <div class="card__edge-shine"></div>
+
+        <!-- Layer 6: Specular glare -->
+        <div class="card__glare"></div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Control Panel -->
+  <div class="panel" id="panel">
+    <div class="panel__toggle" id="panelToggle">Controls</div>
+    <div class="panel__body">
+
+      <div class="panel__section">
+        <h3>3D Rotation</h3>
+        <label>Max Rotation <span id="v-rotation">20</span>°
+          <input type="range" min="0" max="45" value="20" id="c-rotation">
+        </label>
+        <label>Smoothing <span id="v-smooth">0.12</span>
+          <input type="range" min="0.02" max="0.5" step="0.01" value="0.12" id="c-smooth">
+        </label>
+        <label>Perspective <span id="v-perspective">800</span>px
+          <input type="range" min="200" max="2000" value="800" id="c-perspective">
+        </label>
+      </div>
+
+      <div class="panel__section">
+        <h3>Shine (Foil)</h3>
+        <label>Brightness <span id="v-shine-bright">0.55</span>
+          <input type="range" min="0.1" max="1.5" step="0.05" value="0.55" id="c-shine-bright">
+        </label>
+        <label>Contrast <span id="v-shine-contrast">2.5</span>
+          <input type="range" min="0.5" max="5" step="0.1" value="2.5" id="c-shine-contrast">
+        </label>
+        <label>Saturate <span id="v-shine-saturate">0.3</span>
+          <input type="range" min="0" max="3" step="0.1" value="0.3" id="c-shine-saturate">
+        </label>
+        <label>Opacity multiplier <span id="v-shine-opacity">2.5</span>
+          <input type="range" min="0" max="5" step="0.1" value="2.5" id="c-shine-opacity">
+        </label>
+        <label>Base opacity <span id="v-shine-base">0.2</span>
+          <input type="range" min="0" max="1" step="0.05" value="0.2" id="c-shine-base">
+        </label>
+      </div>
+
+      <div class="panel__section">
+        <h3>Shine Layers</h3>
+        <label>Spotlight size (Layer 1) <span id="v-spotlight-size">120</span>%
+          <input type="range" min="80" max="300" value="120" id="c-spotlight-size">
+        </label>
+        <label>Sweep size (Layer 2) <span id="v-sweep-size">200</span>%
+          <input type="range" min="100" max="400" value="200" id="c-sweep-size">
+        </label>
+        <label>Blend mode
+          <select id="c-shine-blend">
+            <option value="color-dodge" selected>color-dodge</option>
+            <option value="screen">screen</option>
+            <option value="overlay">overlay</option>
+            <option value="soft-light">soft-light</option>
+            <option value="hard-light">hard-light</option>
+            <option value="lighten">lighten</option>
+            <option value="normal">normal</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="panel__section">
+        <h3>Glare</h3>
+        <label>Brightness <span id="v-glare-bright">0.7</span>
+          <input type="range" min="0.1" max="2" step="0.05" value="0.7" id="c-glare-bright">
+        </label>
+        <label>Contrast <span id="v-glare-contrast">1.5</span>
+          <input type="range" min="0.5" max="4" step="0.1" value="1.5" id="c-glare-contrast">
+        </label>
+        <label>Opacity multiplier <span id="v-glare-opacity">0.5</span>
+          <input type="range" min="0" max="5" step="0.1" value="0.5" id="c-glare-opacity">
+        </label>
+        <label>Blend mode
+          <select id="c-glare-blend">
+            <option value="overlay" selected>overlay</option>
+            <option value="color-dodge">color-dodge</option>
+            <option value="screen">screen</option>
+            <option value="soft-light">soft-light</option>
+            <option value="hard-light">hard-light</option>
+            <option value="normal">normal</option>
+          </select>
+        </label>
+      </div>
+
+
+      <div class="panel__section">
+        <h3>Border</h3>
+        <label>Width <span id="v-border-width">3</span>px
+          <input type="range" min="0" max="8" step="0.5" value="3" id="c-border-width">
+        </label>
+      </div>
+
+      <button id="btn-reset" class="panel__btn">Reset All</button>
+      <button id="btn-export" class="panel__btn">Copy CSS Values</button>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="controls.js"></script>
+</body>
+</html>

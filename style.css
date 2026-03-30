@@ -1,0 +1,650 @@
+/* ============================================================
+   VCFC Premium 3D Card Effect
+   ============================================================ */
+
+:root {
+  /* Brand colors */
+  --oxblood: #5C0500;
+  --oxblood-dark: #3a0300;
+  --oxblood-light: #7a1a15;
+  --ivory: #F5F0ED;
+  --slate: #363030;
+  --gold-dark: #8b6914;
+  --gold: #b8960b;
+  --gold-mid: #d4af37;
+  --gold-light: #e7c97c;
+  --gold-bright: #f0d875;
+  --gold-pale: #efd69d;
+
+  /* Card dimensions (standard credit card ratio 85.6 × 53.98mm ≈ 1.586:1) */
+  --card-width: 480px;
+  --card-height: 302px;
+  --card-radius: 16px;
+  --border-width: 3px;
+
+  /* Dynamic properties (set by JS) */
+  --mx: 50%;
+  --my: 50%;
+  --rx: 0deg;
+  --ry: 0deg;
+  --border-angle: 45deg;
+  --shine-opacity: 0;
+  --glare-opacity: 0;
+
+  /* Foil effect — uses the same Card Texture as the visual layer
+     so facets align perfectly. Desaturated + contrast-boosted in the
+     shine filter to act as a specular map. */
+  --foil: url('pattern-foil.svg');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--slate);
+  background-image:
+    radial-gradient(ellipse at 50% 40%, rgba(92, 5, 0, 0.15) 0%, transparent 70%);
+  font-family: 'Cormorant', Georgia, serif;
+  overflow: hidden;
+}
+
+/* ---- Scene & Container ---- */
+
+.scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-container {
+  width: var(--card-width);
+  height: var(--card-height);
+  position: relative;
+  perspective: 800px;
+}
+
+/* ---- Card ---- */
+
+.card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+  cursor: grab;
+  border-radius: var(--card-radius);
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+/* ---- Gold Border ---- */
+
+.card__border {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  padding: var(--border-width);
+  background: linear-gradient(
+    var(--border-angle),
+    var(--gold-dark) 0%,
+    var(--gold) 15%,
+    var(--gold-bright) 30%,
+    var(--gold-pale) 45%,
+    var(--gold-bright) 55%,
+    var(--gold-mid) 70%,
+    var(--gold-dark) 85%,
+    var(--gold) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ---- Card Body ---- */
+
+.card__body {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Geometric faceted pattern — from card texture */
+.card__pattern {
+  position: absolute;
+  inset: 0;
+  background-image: url('Card.svg');
+  background-size: 100% 100%;
+  background-position: 0 0;
+}
+
+/* ---- Content ---- */
+
+.card__content {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  z-index: 3;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+/* Gold text mixin-like approach */
+.card__vcfc-text,
+.card__world-debit span {
+  background: linear-gradient(
+    var(--border-angle, 45deg),
+    var(--gold-dark) 0%,
+    var(--gold) 15%,
+    var(--gold-bright) 35%,
+    var(--gold-pale) 50%,
+    var(--gold-bright) 65%,
+    var(--gold-mid) 85%,
+    var(--gold-dark) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1.5px 1px rgba(0, 0, 0, 0.5));
+}
+
+/* Logo group */
+.card__logo-group {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateZ(calc(var(--depth, 50) * 1px));
+}
+
+.card__logo-icon {
+  width: 42px;
+  height: 42px;
+}
+
+.card__logo-icon svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+.card__vcfc-text {
+  font-family: 'Cormorant', Georgia, serif;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+
+/* World Debit */
+.card__world-debit {
+  position: absolute;
+  top: 32px;
+  right: 28px;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  transform: translateZ(calc(var(--depth, 35) * 1px));
+}
+
+.card__world-debit span {
+  font-weight: 500;
+}
+
+/* Chip */
+.card__chip {
+  position: absolute;
+  top: 110px;
+  left: 36px;
+  transform: translateZ(calc(var(--depth, 60) * 1px));
+}
+
+.card__chip-body {
+  width: 52px;
+  height: 40px;
+  border-radius: 7px;
+  background: linear-gradient(
+    145deg,
+    var(--gold-pale) 0%,
+    var(--gold-bright) 20%,
+    var(--gold-mid) 40%,
+    var(--gold-light) 60%,
+    var(--gold-bright) 80%,
+    var(--gold-pale) 100%
+  );
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card__chip-lines {
+  position: absolute;
+  inset: 4px;
+}
+
+.chip-line {
+  position: absolute;
+  background: rgba(139, 105, 20, 0.3);
+}
+
+.chip-line--h {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  transform: translateY(-0.5px);
+}
+
+.chip-line--v {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-0.5px);
+}
+
+.chip-line--bl {
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  height: 1px;
+  transform: rotate(-30deg);
+  transform-origin: bottom left;
+}
+
+.chip-line--br {
+  bottom: 0;
+  right: 0;
+  width: 40%;
+  height: 1px;
+  transform: rotate(30deg);
+  transform-origin: bottom right;
+}
+
+.chip-line--tl {
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 1px;
+  transform: rotate(30deg);
+  transform-origin: top left;
+}
+
+.chip-line--tr {
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 1px;
+  transform: rotate(-30deg);
+  transform-origin: top right;
+}
+
+/* Contactless */
+.card__contactless {
+  position: absolute;
+  top: 118px;
+  left: 102px;
+  width: 28px;
+  height: 28px;
+  transform: translateZ(calc(var(--depth, 45) * 1px)) rotate(90deg);
+}
+
+.card__contactless svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+/* Mastercard */
+.card__mastercard {
+  position: absolute;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  transform: translateZ(calc(var(--depth, 40) * 1px));
+}
+
+.mc-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.mc-circle--red {
+  background: radial-gradient(circle at 40% 35%, #ff4040 0%, #eb001b 60%, #c5001a 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.mc-circle--orange {
+  background: radial-gradient(circle at 60% 35%, #ffb347 0%, #f79e1b 60%, #d48b0e 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-left: -14px;
+  z-index: 1;
+}
+
+/* ---- Shine (holographic foil effect — Pokemon card technique) ---- */
+
+.card__shine {
+  position: absolute;
+  inset: var(--border-width);
+  border-radius: calc(var(--card-radius) - var(--border-width));
+
+  background-image:
+    /* Layer 1: radial light centered on cursor */
+    radial-gradient(
+      circle at var(--mx) var(--my),
+      rgba(255, 255, 255, 0.9) 5%,
+      rgba(0, 0, 0, 0.6) 50%,
+      rgba(255, 255, 255, 0.7) 80%
+    ),
+    /* Layer 2: diagonal sweep that follows cursor */
+    linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.8) 15%,
+      rgba(255, 255, 255, 0.9),
+      rgba(0, 0, 0, 0.8) 85%
+    ),
+    /* Layer 3: gold foil gradient */
+    var(--foil);
+
+  background-blend-mode: soft-light, difference;
+  background-size: 120% 120%, 200% 200%, calc(100% + var(--border-width) * 2) calc(100% + var(--border-width) * 2);
+  background-position:
+    center center,
+    calc(100% * var(--pointer-from-left, 0.5)) calc(100% * var(--pointer-from-top, 0.5)),
+    calc(-1 * var(--border-width)) calc(-1 * var(--border-width));
+
+  filter: brightness(0.55) contrast(2.5) saturate(0.3);
+  mix-blend-mode: color-dodge;
+
+  opacity: var(--shine-opacity, 0);
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ---- Edge Shine (element borders catch light for embossed depth) ---- */
+
+.card__edge-shine {
+  position: absolute;
+  inset: var(--border-width);
+  border-radius: calc(var(--card-radius) - var(--border-width));
+
+  background-image:
+    radial-gradient(
+      circle at var(--mx) var(--my),
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.5) 30%,
+      rgba(0, 0, 0, 1) 70%
+    ),
+    url('pattern-edges.svg');
+
+  background-blend-mode: multiply;
+  background-size:
+    120% 120%,
+    calc(100% + var(--border-width) * 2) calc(100% + var(--border-width) * 2);
+  background-position:
+    center center,
+    calc(-1 * var(--border-width)) calc(-1 * var(--border-width));
+
+  filter: brightness(0.6) contrast(2);
+  mix-blend-mode: color-dodge;
+
+  opacity: calc(var(--shine-opacity, 0) * 0.7);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ---- Glare (specular highlight) ---- */
+
+.card__glare {
+  position: absolute;
+  inset: var(--border-width);
+  border-radius: calc(var(--card-radius) - var(--border-width));
+
+  background-image:
+    radial-gradient(
+      farthest-corner circle at var(--mx) var(--my),
+      hsla(45, 80%, 90%, 0.8) 10%,
+      hsla(45, 60%, 80%, 0.5) 20%,
+      hsla(0, 0%, 0%, 0.7) 90%
+    );
+
+  filter: brightness(0.7) contrast(1.5);
+  mix-blend-mode: overlay;
+  opacity: var(--glare-opacity, 0);
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* ---- Edge Light (simulates light catching the gold edge) ---- */
+
+.card__edge-light {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  box-shadow:
+    inset 0 0 0 var(--border-width) transparent;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* ---- Active States (always on — reacts to cursor anywhere) ---- */
+
+.card__edge-light {
+  opacity: 0.6;
+  box-shadow:
+    inset calc(var(--mx) - 50%) calc(var(--my) - 50%) 15px -3px rgba(255, 215, 100, 0.15);
+}
+
+/* ---- Ambient shadow beneath card ---- */
+
+.card-container::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  left: 10%;
+  right: 10%;
+  height: 60px;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(0, 0, 0, 0.35) 0%,
+    transparent 70%
+  );
+  filter: blur(15px);
+  z-index: -1;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.1s ease-out;
+  pointer-events: none;
+}
+
+/* ---- Gold shimmer animation on idle ---- */
+
+@keyframes subtle-shimmer {
+  0%, 100% {
+    --border-angle: 45deg;
+  }
+  50% {
+    --border-angle: 225deg;
+  }
+}
+
+/* If no interaction, play a very subtle shimmer */
+.card--idle .card__border,
+.card--idle .card__vcfc-text,
+.card--idle .card__world-debit span {
+  animation: subtle-shimmer 8s ease-in-out infinite;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 540px) {
+  :root {
+    --card-width: 340px;
+    --card-height: 214px;
+  }
+
+  .card__logo-group { top: 20px; left: 20px; }
+  .card__logo-icon { width: 32px; height: 32px; }
+  .card__vcfc-text { font-size: 20px; }
+  .card__world-debit { top: 24px; right: 20px; font-size: 11px; }
+  .card__chip { top: 78px; left: 26px; }
+  .card__chip-body { width: 40px; height: 30px; }
+  .card__contactless { top: 84px; left: 76px; width: 22px; height: 22px; }
+  .card__mastercard { bottom: 20px; right: 20px; }
+  .mc-circle { width: 34px; height: 34px; }
+  .mc-circle--orange { margin-left: -10px; }
+}
+
+/* ============================================================
+   Control Panel
+   ============================================================ */
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  background: rgba(20, 18, 18, 0.95);
+  backdrop-filter: blur(12px);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  transform: translateX(280px);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, sans-serif;
+  font-size: 11px;
+  color: #aaa;
+}
+
+.panel--open {
+  transform: translateX(0);
+}
+
+.panel__toggle {
+  position: absolute;
+  left: -72px;
+  top: 16px;
+  background: rgba(20, 18, 18, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px 0 0 6px;
+  color: #999;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: -apple-system, sans-serif;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.panel__toggle:hover {
+  color: #ddd;
+  background: rgba(40, 35, 35, 0.95);
+}
+
+.panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.panel__section {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panel__section h3 {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #d4af37;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.panel__section label {
+  display: block;
+  margin-bottom: 8px;
+  color: #888;
+  font-size: 11px;
+}
+
+.panel__section label span {
+  float: right;
+  color: #ccc;
+  font-variant-numeric: tabular-nums;
+}
+
+.panel__section input[type="range"] {
+  width: 100%;
+  margin-top: 4px;
+  accent-color: #d4af37;
+  height: 3px;
+  cursor: pointer;
+}
+
+.panel__section select {
+  width: 100%;
+  margin-top: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ccc;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.panel__btn {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: #d4af37;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: -apple-system, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.panel__btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+}
+
+.panel__body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.panel__body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
