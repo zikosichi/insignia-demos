@@ -10,7 +10,7 @@
   const nav = document.getElementById('viewNav');
   const buttons = nav.querySelectorAll('.view-nav__btn');
   const views = document.querySelectorAll('.view');
-  let activeView = 'card';
+  let activeView = 'phone';
 
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -158,7 +158,7 @@
 
       // Card shifts position with tilt (parallax float)
       const translateX = cpY * 0.4;
-      const translateY = cpX * 0.3;
+      const translateY = cpX * (isMobile ? 0.3 : -0.3);
       updateCard(cardPhone, 0, 0, false);
       cardPhone.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`;
 
