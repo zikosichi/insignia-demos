@@ -34,7 +34,7 @@
   /* Foil effect — uses the same Card Texture as the visual layer
      so facets align perfectly. Desaturated + contrast-boosted in the
      shine filter to act as a specular map. */
-  --foil: url('pattern-foil.svg');
+  --foil: url('assets/pattern-foil.svg');
 }
 
 * {
@@ -48,9 +48,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--slate);
-  background-image:
-    radial-gradient(ellipse at 50% 40%, rgba(92, 5, 0, 0.15) 0%, transparent 70%);
+  background: transparent;
   font-family: 'Cormorant', Georgia, serif;
   overflow: hidden;
 }
@@ -129,7 +127,7 @@ body {
 .card__pattern {
   position: absolute;
   inset: 0;
-  background-image: url('Card.svg');
+  background-image: url('assets/Card.svg');
   background-size: 100% 100%;
   background-position: 0 0;
 }
@@ -397,7 +395,7 @@ body {
       rgba(255, 255, 255, 0.5) 30%,
       rgba(0, 0, 0, 1) 70%
     ),
-    url('pattern-edges.svg');
+    url('assets/pattern-edges.svg');
 
   background-blend-mode: multiply;
   background-size:
