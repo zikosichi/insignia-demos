@@ -43,15 +43,6 @@
   box-sizing: border-box;
 }
 
-body {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  font-family: 'Cormorant', Georgia, serif;
-  overflow: hidden;
-}
 
 /* ---- Scene & Container ---- */
 
@@ -66,6 +57,21 @@ body {
   height: var(--card-height);
   position: relative;
   perspective: 800px;
+}
+
+.card-container::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 20%;
+  right: 20%;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  filter: blur(16px);
+  transform: translateX(var(--shadow-x, 0px)) translateY(var(--shadow-y, 0px));
+  transition: transform 0.1s ease-out;
+  z-index: -1;
 }
 
 /* ---- Card ---- */

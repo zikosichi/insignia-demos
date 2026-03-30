@@ -47,7 +47,7 @@
   // ---- Phone view ----
   const phone = document.querySelector('.phone');
   const cardPhone = document.getElementById('card-phone');
-  const cardSection = document.querySelector('.card-section');
+  const phoneCardContainer = document.querySelector('.phone .card-container');
   let cpX = 0, cpY = 0, cpTX = 0, cpTY = 0;
 
   // ---- Mouse tracking ----
@@ -152,14 +152,16 @@
         phone.style.setProperty('--phone-ry', `${cpY}deg`);
       }
 
-      // Card stays flat in phone, only effects react
+      // Card shifts position with tilt (parallax float)
+      const translateX = cpY * 0.8;  // horizontal shift follows Y rotation
+      const translateY = cpX * -0.6; // vertical shift follows X rotation
       updateCard(cardPhone, 0, 0, false);
-      cardPhone.style.transform = 'none';
+      cardPhone.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`;
 
       // Shadow parallax
-      if (cardSection) {
-        cardSection.style.setProperty('--shadow-x', `${cpY * -2}px`);
-        cardSection.style.setProperty('--shadow-y', `${cpX * 1.4}px`);
+      if (phoneCardContainer) {
+        phoneCardContainer.style.setProperty('--shadow-x', `${cpY * -2}px`);
+        phoneCardContainer.style.setProperty('--shadow-y', `${cpX * 1.4}px`);
       }
     }
 

@@ -36,34 +36,6 @@
   --gold-pale: #efd69d;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #242020;
-  background-image:
-    /* Golden hour — top right */
-    radial-gradient(ellipse 60% 50% at 75% 15%, rgba(140, 120, 60, 0.15) 0%, transparent 100%),
-    /* Sandstone — right */
-    radial-gradient(ellipse 50% 60% at 90% 55%, rgba(120, 100, 70, 0.1) 0%, transparent 100%),
-    /* Teal sea — bottom left */
-    radial-gradient(ellipse 55% 45% at 15% 75%, rgba(50, 85, 88, 0.15) 0%, transparent 100%),
-    /* Sea deeper — bottom center */
-    radial-gradient(ellipse 60% 35% at 45% 90%, rgba(40, 65, 68, 0.12) 0%, transparent 100%),
-    /* Oxblood — center */
-    radial-gradient(ellipse 50% 50% at 50% 45%, rgba(70, 20, 18, 0.22) 0%, transparent 100%),
-    /* Terracotta — bottom right */
-    radial-gradient(ellipse 45% 40% at 85% 80%, rgba(105, 80, 55, 0.08) 0%, transparent 100%),
-    /* Olive — left */
-    radial-gradient(ellipse 40% 45% at 10% 35%, rgba(55, 60, 38, 0.08) 0%, transparent 100%),
-    /* Warm glow — upper left */
-    radial-gradient(ellipse 50% 35% at 25% 20%, rgba(120, 100, 60, 0.08) 0%, transparent 100%);
-  font-family: 'Inter', -apple-system, sans-serif;
-  perspective: 1200px;
-}
 
 
 /* ---- Phone ---- */
@@ -228,98 +200,28 @@ body {
 /* ---- Card Section ---- */
 
 .card-section {
-  padding: 0 24px 24px;
+  padding: 0 24px 8px;
   flex-shrink: 0;
   position: relative;
 }
 
-/* Shadow that moves with phone tilt */
-.card-section::after {
-  content: '';
-  position: absolute;
-  bottom: 8px;
-  left: 15%;
-  right: 15%;
-  height: 30px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  filter: blur(16px);
-  transform: translateX(var(--shadow-x, 0px)) translateY(var(--shadow-y, 0px));
-  transition: transform 0.1s ease-out;
-  z-index: 0;
-}
 
-.card-container {
+/* Phone-scoped card overrides */
+.phone .card-container {
   width: 100%;
+  height: auto;
   perspective: 600px;
   position: relative;
   z-index: 1;
 }
 
-.card {
+.phone .card {
   width: 100%;
+  height: auto;
   padding-bottom: 63.05%;
-  position: relative;
-  transform-style: preserve-3d;
-  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 0.1s ease-out;
-  will-change: transform;
-  border-radius: var(--card-radius);
 }
 
-.card__body {
-  position: absolute;
-  inset: 0;
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  z-index: 1;
-}
-
-.card__pattern {
-  position: absolute;
-  inset: 0;
-  background-image: url('assets/Card.svg');
-  background-size: 100% 100%;
-  background-position: 0 0;
-}
-
-.card__border {
-  position: absolute;
-  inset: 0;
-  border-radius: var(--card-radius);
-  padding: var(--border-width);
-  background: linear-gradient(
-    var(--border-angle),
-    var(--gold-dark) 0%, var(--gold-mid) 15%, var(--gold-bright) 30%,
-    var(--gold-pale) 45%, var(--gold-bright) 55%, var(--gold-mid) 70%,
-    var(--gold-dark) 85%, var(--gold-mid) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.card__shine {
-  position: absolute;
-  inset: var(--border-width);
-  border-radius: calc(var(--card-radius) - var(--border-width));
-  background-image:
-    radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.9) 5%, rgba(0,0,0,0.6) 50%, rgba(255,255,255,0.7) 80%),
-    linear-gradient(-45deg, rgba(0,0,0,0.8) 15%, rgba(255,255,255,0.9), rgba(0,0,0,0.8) 85%),
-    var(--foil);
-  background-blend-mode: soft-light, difference;
-  background-size: 120% 120%, 200% 200%, calc(100% + var(--border-width) * 2) calc(100% + var(--border-width) * 2);
-  background-position: center center, calc(100% * var(--pointer-from-left, 0.5)) calc(100% * var(--pointer-from-top, 0.5)), calc(-1 * var(--border-width)) calc(-1 * var(--border-width));
-  filter: brightness(0.55) contrast(2.5) saturate(0.3);
-  mix-blend-mode: color-dodge;
-  opacity: var(--shine-opacity, 0);
-  z-index: 4;
-  pointer-events: none;
-}
-
-.card__edge-shine {
+.phone .card__edge-shine {
   position: absolute;
   inset: var(--border-width);
   border-radius: calc(var(--card-radius) - var(--border-width));
@@ -336,17 +238,6 @@ body {
   pointer-events: none;
 }
 
-.card__glare {
-  position: absolute;
-  inset: var(--border-width);
-  border-radius: calc(var(--card-radius) - var(--border-width));
-  background-image: radial-gradient(farthest-corner circle at var(--mx) var(--my), hsla(45,80%,90%,0.8) 10%, hsla(45,60%,80%,0.5) 20%, hsla(0,0%,0%,0.7) 90%);
-  filter: brightness(0.7) contrast(1.5);
-  mix-blend-mode: overlay;
-  opacity: var(--glare-opacity, 0);
-  z-index: 6;
-  pointer-events: none;
-}
 
 /* ---- Transactions ---- */
 
