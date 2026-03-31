@@ -1,6 +1,8 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import Card3D from './Card3D'
 import usePointer from '../hooks/usePointer'
+import arrowLeft from '../assets/arrow-left.svg'
+import arrowRight from '../assets/arrow-right.svg'
 import './PhoneMockup.css'
 
 // Background themes per card — extracted from card imagery
@@ -15,14 +17,21 @@ export default function PhoneMockup({ cards }) {
   const phoneRef = useRef(null)
   const { x: mouseX, y: mouseY, isMobile } = usePointer(phoneRef)
   const [activeIndex, setActiveIndex] = useState(0)
+  const [cursorSide, setCursorSide] = useState('right')
+
+  const handleSlideMouseMove = useCallback((e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    setCursorSide(x < rect.width / 2 ? 'left' : 'right')
+  }, [])
 
   const MAX_PHONE_ROTATION = 15
 
   const phoneRX = (0.5 - mouseY) * MAX_PHONE_ROTATION * 2
   const phoneRY = (mouseX - 0.5) * MAX_PHONE_ROTATION * 2
 
-  const translateX = phoneRY * 0.4
-  const translateY = phoneRX * (isMobile ? 0.3 : -0.3)
+  const translateX = phoneRY * 0.8
+  const translateY = phoneRX * (isMobile ? 0.6 : -0.6)
 
   const shadowX = phoneRY * -2
   const shadowY = phoneRX * 1.4
@@ -38,10 +47,18 @@ export default function PhoneMockup({ cards }) {
         transform: isMobile ? 'none' : `rotateX(${phoneRX}deg) rotateY(${phoneRY}deg)`,
       }}
     >
-      <div
-        className="phone__dark-zone"
-        style={{ background: bgGradient, transition: 'background 0.6s ease' }}
-      >
+      <div className="phone__dark-zone">
+        {/* Stacked background layers — cross-fade via opacity */}
+        {cards.map((card, i) => (
+          <div
+            key={card.id}
+            className="phone__dark-zone-bg"
+            style={{
+              background: cardThemes[card.id] || cardThemes.default,
+              opacity: i === activeIndex ? 1 : 0,
+            }}
+          />
+        ))}
         <div className="phone__status-bar">
           <span className="phone__time">9:41</span>
           <div className="phone__status-icons">
@@ -58,15 +75,40 @@ export default function PhoneMockup({ cards }) {
             className="phone__card-container"
             style={{ '--shadow-x': `${shadowX}px`, '--shadow-y': `${shadowY}px` }}
           >
-            <div style={{ transform: `translateX(${translateX}px) translateY(${translateY}px)` }}>
-              <Card3D
-                cardSvg={activeCard.cardSvg}
-                foilSvg={activeCard.foilSvg}
-                edgesSvg={activeCard.edgesSvg}
-                mouseX={mouseX}
-                mouseY={mouseY}
-                showBorder={activeCard.showBorder !== false}
-              />
+            <div className="phone__carousel" style={{ transform: `translateX(${translateX}px) translateY(${translateY}px)` }}>
+              <div
+                className="phone__carousel-track"
+                style={{
+                  transform: `translateX(calc(-${activeIndex * 100}% - ${activeIndex * 16}px))`,
+                }}
+              >
+                {cards.map((card, i) => (
+                  <div
+                    className={`phone__carousel-slide ${i === activeIndex ? 'phone__carousel-slide--active' : ''}`}
+                    key={card.id}
+                    onMouseMove={i === activeIndex ? handleSlideMouseMove : undefined}
+                    style={i === activeIndex ? { cursor: `url(${cursorSide === 'left' ? arrowLeft : arrowRight}) 12 12, pointer` } : undefined}
+                    onClick={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect()
+                      const clickX = e.clientX - rect.left
+                      if (clickX < rect.width / 2) {
+                        setActiveIndex((activeIndex - 1 + cards.length) % cards.length)
+                      } else {
+                        setActiveIndex((activeIndex + 1) % cards.length)
+                      }
+                    }}
+                  >
+                    <Card3D
+                      cardSvg={card.cardSvg}
+                      foilSvg={card.foilSvg}
+                      edgesSvg={card.edgesSvg}
+                      mouseX={i === activeIndex ? mouseX : 0.5}
+                      mouseY={i === activeIndex ? mouseY : 0.5}
+                      showBorder={card.showBorder !== false}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
