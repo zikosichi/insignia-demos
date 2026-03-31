@@ -1,8 +1,9 @@
 import { useRef, useState, useCallback } from 'react'
 import Card3D from './Card3D'
 import usePointer from '../hooks/usePointer'
-import arrowLeft from '../assets/arrow-left.svg'
-import arrowRight from '../assets/arrow-right.svg'
+// Inline cursor SVGs with explicit white stroke (browsers can't use currentColor in cursors)
+const cursorLeft = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="-2 -2 28 28"><defs><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.35"/></filter></defs><g filter="url(#s)"><line x1="19" y1="12" x2="5" y2="12" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="19" y1="12" x2="5" y2="12" stroke="#000" stroke-width="1.8" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g></svg>')}`
+const cursorRight = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="-2 -2 28 28"><defs><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.35"/></filter></defs><g filter="url(#s)"><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="5" y1="12" x2="19" y2="12" stroke="#000" stroke-width="1.8" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g></svg>')}`
 import './PhoneMockup.css'
 
 // Background themes per card — extracted from card imagery
@@ -88,7 +89,7 @@ export default function PhoneMockup({ cards, activeIndex, onChangeIndex }) {
                     className={`phone__carousel-slide ${i === activeIndex ? 'phone__carousel-slide--active' : ''}`}
                     key={card.id}
                     onMouseMove={i === activeIndex ? handleSlideMouseMove : undefined}
-                    style={i === activeIndex ? { cursor: `url(${cursorSide === 'left' ? arrowLeft : arrowRight}) 12 12, pointer` } : undefined}
+                    style={i === activeIndex ? { cursor: `url("${cursorSide === 'left' ? cursorLeft : cursorRight}") 10 10, pointer` } : undefined}
                     onClick={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect()
                       const clickX = e.clientX - rect.left
