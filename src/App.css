@@ -1,0 +1,36 @@
+.view-nav {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  background: rgba(30, 27, 27, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(186, 161, 79, 0.1);
+  border-radius: 8px;
+  padding: 3px;
+  z-index: 10000;
+}
+
+.view-nav__btn {
+  padding: 6px 20px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.04em;
+  color: rgba(245, 240, 237, 0.4);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-nav__btn--active {
+  color: #F5F0ED;
+  background: rgba(186, 161, 79, 0.15);
+}
+
+.view-nav__btn:hover:not(.view-nav__btn--active) {
+  color: rgba(245, 240, 237, 0.7);
+}

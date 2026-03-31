@@ -1,0 +1,97 @@
+.card3d {
+  width: 100%;
+  padding-bottom: 63.05%; /* card aspect ratio */
+  position: relative;
+  border-radius: 12px;
+  --mx: 50%;
+  --my: 50%;
+  --shine-opacity: 0;
+  --glare-opacity: 0;
+  --border-angle: 45deg;
+  --border-width: 2px;
+}
+
+.card3d__body {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.card3d__pattern {
+  position: absolute;
+  inset: 0;
+  background-size: 100% 100%;
+  background-position: 0 0;
+}
+
+.card3d__border {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: var(--border-width);
+  background: linear-gradient(
+    var(--border-angle),
+    var(--gold-dark) 0%, var(--gold-mid) 15%, var(--gold-bright) 30%,
+    var(--gold-pale) 45%, var(--gold-bright) 55%, var(--gold-mid) 70%,
+    var(--gold-dark) 85%, var(--gold-mid) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.card3d__shine {
+  position: absolute;
+  inset: var(--border-width);
+  border-radius: calc(12px - var(--border-width));
+  background-image:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.9) 5%, rgba(0,0,0,0.6) 50%, rgba(255,255,255,0.7) 80%),
+    linear-gradient(-45deg, rgba(0,0,0,0.8) 15%, rgba(255,255,255,0.9), rgba(0,0,0,0.8) 85%),
+    var(--foil);
+  background-blend-mode: soft-light, difference;
+  background-size: 120% 120%, 200% 200%, calc(100% + var(--border-width) * 2) calc(100% + var(--border-width) * 2);
+  background-position:
+    center center,
+    calc(100% * var(--pointer-from-left, 0.5)) calc(100% * var(--pointer-from-top, 0.5)),
+    calc(-1 * var(--border-width)) calc(-1 * var(--border-width));
+  filter: brightness(0.55) contrast(2.5) saturate(0.3);
+  mix-blend-mode: color-dodge;
+  opacity: var(--shine-opacity, 0);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.card3d__edge-shine {
+  position: absolute;
+  inset: var(--border-width);
+  border-radius: calc(12px - var(--border-width));
+  background-blend-mode: multiply;
+  background-size: 120% 120%, calc(100% + var(--border-width) * 2) calc(100% + var(--border-width) * 2);
+  background-position:
+    center center,
+    calc(-1 * var(--border-width)) calc(-1 * var(--border-width));
+  filter: brightness(0.6) contrast(2);
+  mix-blend-mode: color-dodge;
+  opacity: calc(var(--shine-opacity, 0) * 0.7);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.card3d__glare {
+  position: absolute;
+  inset: var(--border-width);
+  border-radius: calc(12px - var(--border-width));
+  background-image: radial-gradient(
+    farthest-corner circle at var(--mx) var(--my),
+    hsla(45,80%,90%,0.8) 10%, hsla(45,60%,80%,0.5) 20%, hsla(0,0%,0%,0.7) 90%
+  );
+  filter: brightness(0.7) contrast(1.5);
+  mix-blend-mode: overlay;
+  opacity: var(--glare-opacity, 0);
+  z-index: 6;
+  pointer-events: none;
+}
