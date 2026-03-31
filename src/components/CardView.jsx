@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import Card3D from './Card3D'
 import usePointer from '../hooks/usePointer'
 import './CardView.css'
@@ -6,12 +6,13 @@ import './CardView.css'
 export default function CardView({ cards }) {
   const containerRef = useRef(null)
   const { x: mouseX, y: mouseY } = usePointer(containerRef)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const MAX_ROTATION = 20
   const rx = (0.5 - mouseY) * MAX_ROTATION * 2
   const ry = (mouseX - 0.5) * MAX_ROTATION * 2
 
-  const activeCard = cards[0]
+  const activeCard = cards[activeIndex]
 
   return (
     <div className="card-view">
@@ -29,9 +30,22 @@ export default function CardView({ cards }) {
             mouseX={mouseX}
             mouseY={mouseY}
             borderWidth={3}
+            showBorder={activeCard.showBorder !== false}
           />
         </div>
       </div>
+
+      {cards.length > 1 && (
+        <div className="card-view__dots">
+          {cards.map((_, i) => (
+            <button
+              key={i}
+              className={`card-view__dot ${i === activeIndex ? 'card-view__dot--active' : ''}`}
+              onClick={() => setActiveIndex(i)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

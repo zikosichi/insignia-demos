@@ -8,6 +8,8 @@ export default function Card3D({
   mouseX = 0.5,
   mouseY = 0.5,
   borderWidth = 2,
+  showBorder = true,
+  borderRadius = 12,
   className = '',
   style = {},
 }) {
@@ -58,7 +60,7 @@ export default function Card3D({
           style={{ backgroundImage: `url(${cardSvg})` }}
         />
       </div>
-      <div className="card3d__border" />
+      {showBorder && <div className="card3d__border" />}
       <div className="card3d__shine" />
       {edgesSvg && (
         <div

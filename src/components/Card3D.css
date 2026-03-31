@@ -52,7 +52,7 @@
     radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.9) 5%, rgba(0,0,0,0.6) 50%, rgba(255,255,255,0.7) 80%),
     linear-gradient(-45deg, rgba(0,0,0,0.8) 15%, rgba(255,255,255,0.9), rgba(0,0,0,0.8) 85%),
     var(--foil);
-  background-blend-mode: soft-light, difference;
+  background-blend-mode: soft-light, multiply;
   background-size: 120% 120%, 200% 200%, calc(100% + var(--border-width) * 2) calc(100% + var(--border-width) * 2);
   background-position:
     center center,
@@ -60,6 +60,13 @@
     calc(-1 * var(--border-width)) calc(-1 * var(--border-width));
   filter: brightness(0.55) contrast(2.5) saturate(0.3);
   mix-blend-mode: color-dodge;
+  /* Foil map masks the shine — black in foil = no light */
+  -webkit-mask-image: var(--foil);
+  mask-image: var(--foil);
+  -webkit-mask-size: calc(100% + var(--border-width) * 2) calc(100% + var(--border-width) * 2);
+  mask-size: calc(100% + var(--border-width) * 2) calc(100% + var(--border-width) * 2);
+  -webkit-mask-position: calc(-1 * var(--border-width)) calc(-1 * var(--border-width));
+  mask-position: calc(-1 * var(--border-width)) calc(-1 * var(--border-width));
   opacity: var(--shine-opacity, 0);
   z-index: 4;
   pointer-events: none;

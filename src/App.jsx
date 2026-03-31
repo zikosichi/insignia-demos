@@ -7,9 +7,20 @@ import cardSvg from './assets/cards/default/Card.svg'
 import foilSvg from './assets/cards/default/pattern-foil.svg'
 import edgesSvg from './assets/cards/default/pattern-edges.svg'
 
+import peoneCard from './assets/cards/peone/Card.png'
+import peoneFoil from './assets/cards/peone/foil.png'
+
+import bowCard from './assets/cards/bow/Card.png'
+import bowFoil from './assets/cards/bow/foil.png'
+
+import billionaireCard from './assets/cards/billionaire/Card.png'
+import billionaireFoil from './assets/cards/billionaire/foil.png'
+
 const cards = [
   { id: 'default', cardSvg, foilSvg, edgesSvg },
-  // Add more cards here — each with their own SVGs
+  { id: 'peone', cardSvg: peoneCard, foilSvg: peoneFoil, edgesSvg: null, showBorder: false },
+  { id: 'bow', cardSvg: bowCard, foilSvg: bowFoil, edgesSvg: null, showBorder: false },
+  { id: 'billionaire', cardSvg: billionaireCard, foilSvg: billionaireFoil, edgesSvg: null, showBorder: false },
 ]
 
 const isMobile = window.innerWidth <= 500

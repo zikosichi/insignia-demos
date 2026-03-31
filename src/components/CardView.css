@@ -1,12 +1,34 @@
 .card-view {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 32px;
 }
 
 .card-view__container {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.card-view__dots {
+  display: flex;
+  gap: 8px;
+}
+
+.card-view__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(245, 240, 237, 0.2);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.card-view__dot--active {
+  background: rgba(245, 240, 237, 0.7);
 }

@@ -1,11 +1,20 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import Card3D from './Card3D'
 import usePointer from '../hooks/usePointer'
 import './PhoneMockup.css'
 
+// Background themes per card — extracted from card imagery
+const cardThemes = {
+  default: 'linear-gradient(180deg, #3a0300 0%, #5C0500 40%, #4a0a08 100%)',
+  peone: 'linear-gradient(180deg, #4a3040 0%, #6a4060 30%, #8a5575 60%, #6a4055 100%)',
+  bow: 'linear-gradient(180deg, #2a2535 0%, #3a3050 30%, #4a3a5a 60%, #352840 100%)',
+  billionaire: 'linear-gradient(180deg, #3a3018 0%, #4a3d1a 30%, #3d3215 60%, #2a2210 100%)',
+}
+
 export default function PhoneMockup({ cards }) {
   const phoneRef = useRef(null)
   const { x: mouseX, y: mouseY, isMobile } = usePointer(phoneRef)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const MAX_PHONE_ROTATION = 15
 
@@ -18,7 +27,8 @@ export default function PhoneMockup({ cards }) {
   const shadowX = phoneRY * -2
   const shadowY = phoneRX * 1.4
 
-  const activeCard = cards[0]
+  const activeCard = cards[activeIndex]
+  const bgGradient = cardThemes[activeCard.id] || cardThemes.default
 
   return (
     <div
@@ -28,7 +38,10 @@ export default function PhoneMockup({ cards }) {
         transform: isMobile ? 'none' : `rotateX(${phoneRX}deg) rotateY(${phoneRY}deg)`,
       }}
     >
-      <div className="phone__dark-zone">
+      <div
+        className="phone__dark-zone"
+        style={{ background: bgGradient, transition: 'background 0.6s ease' }}
+      >
         <div className="phone__status-bar">
           <span className="phone__time">9:41</span>
           <div className="phone__status-icons">
@@ -52,6 +65,7 @@ export default function PhoneMockup({ cards }) {
                 edgesSvg={activeCard.edgesSvg}
                 mouseX={mouseX}
                 mouseY={mouseY}
+                showBorder={activeCard.showBorder !== false}
               />
             </div>
           </div>
@@ -59,7 +73,12 @@ export default function PhoneMockup({ cards }) {
 
         <div className="phone__card-dots">
           {cards.map((_, i) => (
-            <span key={i} className={`phone__dot ${i === 0 ? 'phone__dot--active' : ''}`} />
+            <span
+              key={i}
+              className={`phone__dot ${i === activeIndex ? 'phone__dot--active' : ''}`}
+              onClick={() => setActiveIndex(i)}
+              style={{ cursor: 'pointer' }}
+            />
           ))}
         </div>
 
@@ -111,7 +130,6 @@ export default function PhoneMockup({ cards }) {
         ))}
       </div>
 
-      <div className="phone__home-indicator" />
     </div>
   )
 }
