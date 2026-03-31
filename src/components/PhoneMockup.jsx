@@ -167,11 +167,26 @@ export default function PhoneMockup({ cards, activeIndex, onChangeIndex }) {
       </div>
 
       <div className="phone__nav">
-        {['Accounts', 'Payments', 'Cards', 'Services', 'Support'].map(name => (
-          <div key={name} className={`phone__nav-item ${name === 'Cards' ? 'phone__nav-item--active' : ''}`}>
-            <span>{name}</span>
-          </div>
-        ))}
+        <div className="phone__nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span>Accounts</span>
+        </div>
+        <div className="phone__nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 12H3"/><path d="M16 7l5 5-5 5"/><path d="M8 17l-5-5 5-5"/></svg>
+          <span>Payments</span>
+        </div>
+        <div className="phone__nav-item phone__nav-item--active">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          <span>Cards</span>
+        </div>
+        <div className="phone__nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg>
+          <span>Services</span>
+        </div>
+        <div className="phone__nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+          <span>Support</span>
+        </div>
       </div>
 
     </div>
