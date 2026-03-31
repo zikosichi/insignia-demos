@@ -13,11 +13,12 @@ const cardThemes = {
   billionaire: 'linear-gradient(180deg, #3a3018 0%, #4a3d1a 30%, #3d3215 60%, #2a2210 100%)',
 }
 
-export default function PhoneMockup({ cards }) {
+export default function PhoneMockup({ cards, activeIndex, onChangeIndex }) {
   const phoneRef = useRef(null)
   const { x: mouseX, y: mouseY, isMobile } = usePointer(phoneRef)
-  const [activeIndex, setActiveIndex] = useState(0)
   const [cursorSide, setCursorSide] = useState('right')
+
+  const setActiveIndex = onChangeIndex
 
   const handleSlideMouseMove = useCallback((e) => {
     const rect = e.currentTarget.getBoundingClientRect()

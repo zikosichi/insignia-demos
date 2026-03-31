@@ -23,22 +23,55 @@ const cards = [
   { id: 'billionaire', cardSvg: billionaireCard, foilSvg: billionaireFoil, edgesSvg: null, showBorder: false },
 ]
 
+// Subtle body backgrounds per card
+const bodyThemes = {
+  default: [
+    'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(70, 20, 18, 0.25) 0%, transparent 100%)',
+  ],
+  peone: [
+    'radial-gradient(ellipse 60% 50% at 40% 35%, rgba(100, 50, 80, 0.2) 0%, transparent 100%)',
+    'radial-gradient(ellipse 50% 40% at 70% 60%, rgba(120, 60, 90, 0.12) 0%, transparent 100%)',
+  ],
+  bow: [
+    'radial-gradient(ellipse 60% 50% at 45% 40%, rgba(60, 45, 80, 0.2) 0%, transparent 100%)',
+    'radial-gradient(ellipse 50% 40% at 65% 55%, rgba(50, 35, 65, 0.12) 0%, transparent 100%)',
+  ],
+  billionaire: [
+    'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(120, 100, 40, 0.18) 0%, transparent 100%)',
+    'radial-gradient(ellipse 50% 40% at 60% 55%, rgba(80, 65, 20, 0.12) 0%, transparent 100%)',
+  ],
+}
+
 const isMobile = window.innerWidth <= 500
 
 export default function App() {
   const [view, setView] = useState('phone')
+  const [activeCardIndex, setActiveCardIndex] = useState(0)
 
-  // On mobile, always show phone view fullscreen
+  const activeId = cards[activeCardIndex]?.id || 'default'
+
   if (isMobile) {
     return (
       <div className="app">
-        <PhoneMockup cards={cards} />
+        <PhoneMockup cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
       </div>
     )
   }
 
   return (
     <div className="app">
+      {/* Body background layers — cross-fade per card */}
+      {Object.entries(bodyThemes).map(([id, gradients]) => (
+        <div
+          key={id}
+          className="app__bg-layer"
+          style={{
+            backgroundImage: gradients.join(', '),
+            opacity: id === activeId ? 1 : 0,
+          }}
+        />
+      ))}
+
       <nav className="view-nav">
         <button
           className={`view-nav__btn ${view === 'card' ? 'view-nav__btn--active' : ''}`}
@@ -55,7 +88,7 @@ export default function App() {
       </nav>
 
       <div style={{ display: view === 'card' ? 'block' : 'none' }}>
-        <CardView cards={cards} />
+        <CardView cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
       </div>
       <div style={{
         display: view === 'phone' ? 'flex' : 'none',
@@ -64,7 +97,7 @@ export default function App() {
         justifyContent: 'center',
         perspective: '1200px',
       }}>
-        <PhoneMockup cards={cards} />
+        <PhoneMockup cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
       </div>
     </div>
   )
