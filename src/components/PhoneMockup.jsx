@@ -32,8 +32,8 @@ export default function PhoneMockup({ cards, activeIndex, onChangeIndex }) {
   const phoneRX = (0.5 - mouseY) * MAX_PHONE_ROTATION * 2
   const phoneRY = (mouseX - 0.5) * MAX_PHONE_ROTATION * 2
 
-  const translateX = phoneRY * 0.8
-  const translateY = phoneRX * (isMobile ? 0.6 : -0.6)
+  const translateX = phoneRY * 0.6
+  const translateY = phoneRX * (isMobile ? 0.3 : -0.3)
 
   const shadowX = phoneRY * -2
   const shadowY = phoneRX * 1.4
