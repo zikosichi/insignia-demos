@@ -141,40 +141,6 @@
   color: #3e3636;
 }
 
-/* ──────── Breathe cover-theme toggle (bottom-left) ──────── */
-.breathe-theme-toggle {
-  position: fixed;
-  bottom: 24px;
-  left: 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  z-index: 100;
-}
-
-.breathe-theme-toggle__btn {
-  padding: 0;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(245, 239, 232, 0.35);
-  background: none;
-  border: 0;
-  cursor: pointer;
-  transition: color 0.2s;
-  font-family: inherit;
-}
-
-.breathe-theme-toggle__btn--active {
-  color: #d4a574;
-}
-
-.breathe-theme-toggle__btn:hover:not(.breathe-theme-toggle__btn--active) {
-  color: rgba(245, 239, 232, 0.75);
-}
-
 /* ──────── Breathe variant (SVG assembly) ──────── */
 .breathe {
   position: relative;
@@ -321,6 +287,54 @@
   width: 28px;
   height: 28px;
   display: inline-block;
+}
+
+/* Cards screen — cover uses the pre-composed 'cover cards light.png' */
+.breathe__cards-cover {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.breathe__cards-cover-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* 3D card overlay — now positioned inside the Cards body. Tweak top% if it drifts. */
+.breathe__cards-3d {
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  z-index: 20;
+  pointer-events: none;
+  /* Layered drop-shadow — warm oxblood tint to echo the card's red,
+     follows the card's rounded shape, tracks tilt */
+  filter: drop-shadow(
+      calc(var(--tilt-shadow-x, 0px) * 0.45)
+        calc(22px + var(--tilt-shadow-y, 0px) * 0.45) 36px rgba(58, 12, 8, 0.3)
+    )
+    drop-shadow(
+      calc(var(--tilt-shadow-x, 0px) * 0.2)
+        calc(8px + var(--tilt-shadow-y, 0px) * 0.2) 14px rgba(58, 12, 8, 0.22)
+    );
+}
+
+/* Thumbnails strip — sits below the 3D card in the body */
+.breathe__cards-thumbs {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72%;
+  height: auto;
+  display: block;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .breathe__body-wrap {
