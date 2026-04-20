@@ -1,0 +1,92 @@
+.tilt-phone-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  perspective: 1400px;
+  padding: 40px 20px;
+}
+
+.tilt-phone {
+  position: relative;
+  width: 402px;
+  max-width: calc(100vw - 40px);
+  aspect-ratio: 402 / 874;
+  background: #F5F0ED;
+  border-radius: 50px;
+  border: 1.5px solid rgba(208, 200, 192, 0.1);
+  box-shadow:
+    calc(var(--tilt-shadow-x, 0px) * 1) calc(var(--tilt-shadow-y, 0px) * 1) 60px rgba(0, 0, 0, 0.5),
+    0 20px 60px rgba(0, 0, 0, 0.4);
+  overflow: clip;
+  transition: transform 0.08s ease-out, box-shadow 0.15s ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt-phone__screen {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  background: #FAF6F0;
+  border-radius: inherit;
+}
+
+/* ──────── iPhone status bar + Dynamic Island ──────── */
+.phone-chrome {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54px;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.phone-chrome__island {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 37px;
+  background: #000;
+  border-radius: 999px;
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+}
+
+.phone-chrome__status {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.phone-chrome__time {
+  width: 126px;
+  /* matches island width so times balances visually — left-aligned inside its slot */
+  padding-left: 4px;
+  box-sizing: border-box;
+}
+
+.phone-chrome__icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 126px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 700px) {
+  .tilt-phone {
+    border-radius: 40px;
+  }
+}

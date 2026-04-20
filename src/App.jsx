@@ -1,6 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CardView from './components/CardView'
 import PhoneMockup from './components/PhoneMockup'
+import HomeMockup from './components/HomeMockup'
+import BlankPhone from './components/BlankPhone'
+import Prototypes from './prototypes/Prototypes'
 import './App.css'
 
 import cardSvg from './assets/cards/default/Card.svg'
@@ -45,15 +48,40 @@ const bodyThemes = {
 const isMobile = window.innerWidth <= 500
 
 export default function App() {
-  const [view, setView] = useState('phone')
+  const [view, setView] = useState('home')
   const [activeCardIndex, setActiveCardIndex] = useState(0)
+  const [page, setPage] = useState(window.location.hash)
+
+  useEffect(() => {
+    const onHash = () => setPage(window.location.hash)
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
   const activeId = cards[activeCardIndex]?.id || 'default'
+
+  // Blank page — standalone, no nav
+  if (page === '#blank') {
+    return (
+      <div className="app">
+        <BlankPhone />
+      </div>
+    )
+  }
+
+  // Prototypes page — the Insignia UI variants demo (Breathe / Skeuomorphism / Modern)
+  if (page === '#prototypes') {
+    return (
+      <div className="app">
+        <Prototypes />
+      </div>
+    )
+  }
 
   if (isMobile) {
     return (
       <div className="app">
-        <PhoneMockup cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
+        <HomeMockup />
       </div>
     )
   }
@@ -73,6 +101,12 @@ export default function App() {
       ))}
 
       <nav className="view-nav">
+        <button
+          className={`view-nav__btn ${view === 'home' ? 'view-nav__btn--active' : ''}`}
+          onClick={() => setView('home')}
+        >
+          Home
+        </button>
         <button
           className={`view-nav__btn ${view === 'card' ? 'view-nav__btn--active' : ''}`}
           onClick={() => setView('card')}
@@ -98,6 +132,15 @@ export default function App() {
         perspective: '1200px',
       }}>
         <PhoneMockup cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
+      </div>
+      <div style={{
+        display: view === 'home' ? 'flex' : 'none',
+        minHeight: '100vh',
+        alignItems: 'center',
+        justifyContent: 'center',
+        perspective: '1200px',
+      }}>
+        <HomeMockup />
       </div>
     </div>
   )

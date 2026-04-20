@@ -1,0 +1,311 @@
+.prototypes-page {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 50% 30%,
+      rgba(93, 7, 20, 0.35) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 50% 100%,
+      rgba(212, 165, 116, 0.08) 0%,
+      transparent 70%
+    ),
+    linear-gradient(180deg, #140807 0%, #0a0403 100%);
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  color: #f5efe8;
+  overflow-x: hidden;
+}
+
+/* ──────── Variant switcher — bottom-right, text-only ──────── */
+.prototypes-switcher {
+  position: fixed;
+  bottom: 24px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  z-index: 100;
+}
+
+.prototypes-switcher__btn {
+  padding: 0;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 239, 232, 0.35);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: inherit;
+}
+
+.prototypes-switcher__btn--active {
+  color: #d4a574;
+}
+
+.prototypes-switcher__btn:hover:not(.prototypes-switcher__btn--active) {
+  color: rgba(245, 239, 232, 0.75);
+}
+
+/* ──────── Tilt toggle — top-right ──────── */
+.prototypes-tilt {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(15, 8, 6, 0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(212, 165, 116, 0.2);
+  border-radius: 10px;
+  color: rgba(245, 239, 232, 0.7);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  user-select: none;
+  z-index: 100;
+}
+
+.prototypes-tilt__track {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  background: rgba(245, 239, 232, 0.12);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.prototypes-tilt__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  background: rgba(245, 239, 232, 0.55);
+  border-radius: 50%;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+
+.prototypes-tilt--on .prototypes-tilt__track {
+  background: rgba(212, 165, 116, 0.5);
+}
+
+.prototypes-tilt--on .prototypes-tilt__knob {
+  transform: translateX(14px);
+  background: #f5efe8;
+}
+
+.prototypes-tilt--on {
+  color: #f5efe8;
+}
+
+/* ──────── Placeholder content inside phone ──────── */
+.breathe-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #faf6f0;
+}
+
+.breathe-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  color: #6b605f;
+  padding: 0 24px;
+}
+
+.breathe-placeholder__label {
+  font-family: "Cormorant", Georgia, serif;
+  font-size: 34px;
+  color: #1e1615;
+}
+
+.breathe-placeholder__hint {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.breathe-placeholder__hint code {
+  background: rgba(30, 22, 21, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: #3e3636;
+}
+
+/* ──────── Breathe variant (SVG assembly) ──────── */
+.breathe {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #faf6f0;
+}
+
+.breathe__scroll {
+  position: absolute;
+  inset: 0 0 70px 0; /* leave space for navbar */
+  overflow-y: auto;
+  overflow-x: clip;
+  scrollbar-width: none;
+}
+.breathe__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.breathe__cover {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+.breathe__cover-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.breathe__amount {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translateX(-50%);
+  width: 92%;
+  pointer-events: none;
+}
+
+.breathe__crown {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translateX(-50%);
+  width: 92%;
+  pointer-events: none;
+  mix-blend-mode: color-burn;
+}
+
+.breathe__ctas {
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  transform: translateX(-50%);
+  width: 90%;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+/* ──────── Gold reflective-border CTA buttons ──────── */
+.breathe-cta {
+  position: relative;
+  flex: 1;
+  height: 70px;
+  border: 0;
+  border-radius: 999px;
+  background: #D43515;
+  color: #F9F1EA;
+  cursor: pointer;
+  isolation: isolate;
+  /* --cta-border-w controls border thickness; --mx/--my/--border-angle come from TiltPhone */
+  --cta-border-w: 2.5px;
+  /* Parallax shadow — offsets track phone tilt via --tilt-shadow-x/y from TiltPhone */
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.6),
+    calc(var(--tilt-shadow-x, 0px) * 0.45)
+      calc(28px + var(--tilt-shadow-y, 0px) * 0.45)
+      64px
+      rgba(168, 55, 15, 0.18),
+    calc(var(--tilt-shadow-x, 0px) * 0.25)
+      calc(12px + var(--tilt-shadow-y, 0px) * 0.25)
+      24px
+      rgba(168, 55, 15, 0.3),
+    0 3px 6px rgba(0, 0, 0, 0.14);
+  transition: transform 0.12s ease;
+}
+
+/* Reflective gold border — linear gradient rotates with --border-angle,
+   masked so only the border ring shows (content-box XOR trick). */
+.breathe-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--cta-border-w);
+  background: linear-gradient(
+    var(--border-angle, 45deg),
+    #BAA14F 0%,
+    #d4af37 15%,
+    #f0d875 30%,
+    #efd69d 45%,
+    #f0d875 55%,
+    #d4af37 70%,
+    #BAA14F 85%,
+    #d4af37 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.breathe-cta:hover {
+  transform: translateY(-1px);
+}
+
+.breathe-cta:active {
+  transform: translateY(0);
+}
+
+.breathe-cta__glow {
+  display: none; /* no diffuse halo — the reflection on the border is the glow */
+}
+
+.breathe-cta__icon {
+  position: relative;
+  z-index: 4;
+  width: 28px;
+  height: 28px;
+  display: inline-block;
+}
+
+.breathe__body {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: -30px;
+  position: relative;
+  z-index: 10;
+}
+
+.breathe__navbar {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  /* Navbar is 408 wide (phone is 402) — center with slight overflow */
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  z-index: 20;
+}
