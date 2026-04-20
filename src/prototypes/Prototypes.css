@@ -306,7 +306,7 @@
 /* 3D card overlay — now positioned inside the Cards body. Tweak top% if it drifts. */
 .breathe__cards-3d {
   position: absolute;
-  top: 7%;
+  top: 8%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -327,7 +327,7 @@
 /* Thumbnails strip — sits below the 3D card in the body */
 .breathe__cards-thumbs {
   position: absolute;
-  top: 32%;
+  top: 34%;
   left: 50%;
   transform: translateX(-50%);
   width: 72%;
