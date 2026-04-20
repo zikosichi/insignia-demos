@@ -1,18 +1,7 @@
 .prototypes-page {
   position: relative;
   min-height: 100vh;
-  background:
-    radial-gradient(
-      ellipse 70% 50% at 50% 30%,
-      rgba(93, 7, 20, 0.35) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 60% 40% at 50% 100%,
-      rgba(212, 165, 116, 0.08) 0%,
-      transparent 70%
-    ),
-    linear-gradient(180deg, #140807 0%, #0a0403 100%);
+  /* Background inherited from body (global.css) — same as the 3D Card page */
   font-family:
     "Inter",
     system-ui,
@@ -152,6 +141,40 @@
   color: #3e3636;
 }
 
+/* ──────── Breathe cover-theme toggle (bottom-left) ──────── */
+.breathe-theme-toggle {
+  position: fixed;
+  bottom: 24px;
+  left: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  z-index: 100;
+}
+
+.breathe-theme-toggle__btn {
+  padding: 0;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 239, 232, 0.35);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: inherit;
+}
+
+.breathe-theme-toggle__btn--active {
+  color: #d4a574;
+}
+
+.breathe-theme-toggle__btn:hover:not(.breathe-theme-toggle__btn--active) {
+  color: rgba(245, 239, 232, 0.75);
+}
+
 /* ──────── Breathe variant (SVG assembly) ──────── */
 .breathe {
   position: relative;
@@ -189,7 +212,8 @@
   top: 30%;
   transform: translateX(-50%);
   width: 92%;
-  pointer-events: none;
+  cursor: pointer;
+  z-index: 3;
 }
 
 .breathe__crown {
@@ -220,23 +244,21 @@
   height: 70px;
   border: 0;
   border-radius: 999px;
-  background: #D43515;
-  color: #F9F1EA;
+  background: #d43515;
+  color: #f9f1ea;
   cursor: pointer;
   isolation: isolate;
   /* --cta-border-w controls border thickness; --mx/--my/--border-angle come from TiltPhone */
   --cta-border-w: 2.5px;
   /* Parallax shadow — offsets track phone tilt via --tilt-shadow-x/y from TiltPhone */
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.6),
+    /* Inner white rim — sits just inside the gold border, blending with it */
+    inset 0 0 0 calc(var(--cta-border-w) + 1px) rgba(255, 255, 255, 0.55),
+    inset 0 0 6px rgba(255, 255, 255, 0.25),
     calc(var(--tilt-shadow-x, 0px) * 0.45)
-      calc(28px + var(--tilt-shadow-y, 0px) * 0.45)
-      64px
-      rgba(168, 55, 15, 0.18),
+      calc(28px + var(--tilt-shadow-y, 0px) * 0.45) 64px rgba(168, 55, 15, 0.18),
     calc(var(--tilt-shadow-x, 0px) * 0.25)
-      calc(12px + var(--tilt-shadow-y, 0px) * 0.25)
-      24px
-      rgba(168, 55, 15, 0.3),
+      calc(12px + var(--tilt-shadow-y, 0px) * 0.25) 24px rgba(168, 55, 15, 0.3),
     0 3px 6px rgba(0, 0, 0, 0.14);
   transition: transform 0.12s ease;
 }
@@ -244,20 +266,20 @@
 /* Reflective gold border — linear gradient rotates with --border-angle,
    masked so only the border ring shows (content-box XOR trick). */
 .breathe-cta::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: var(--cta-border-w);
   background: linear-gradient(
     var(--border-angle, 45deg),
-    #BAA14F 0%,
+    #baa14f 0%,
     #d4af37 15%,
     #f0d875 30%,
     #efd69d 45%,
     #f0d875 55%,
     #d4af37 70%,
-    #BAA14F 85%,
+    #baa14f 85%,
     #d4af37 100%
   );
   -webkit-mask:
@@ -267,6 +289,18 @@
   mask-composite: exclude;
   pointer-events: none;
   z-index: 2;
+}
+
+/* Darker shadow when the cover is in dark/red theme */
+.breathe--dark .breathe-cta {
+  box-shadow:
+    inset 0 0 0 calc(var(--cta-border-w) + 1px) rgba(255, 255, 255, 0.55),
+    inset 0 0 6px rgba(255, 255, 255, 0.25),
+    calc(var(--tilt-shadow-x, 0px) * 0.45)
+      calc(28px + var(--tilt-shadow-y, 0px) * 0.45) 64px rgba(0, 0, 0, 0.5),
+    calc(var(--tilt-shadow-x, 0px) * 0.25)
+      calc(12px + var(--tilt-shadow-y, 0px) * 0.25) 24px rgba(0, 0, 0, 0.55),
+    0 3px 6px rgba(0, 0, 0, 0.4);
 }
 
 .breathe-cta:hover {
@@ -289,13 +323,66 @@
   display: inline-block;
 }
 
+.breathe__body-wrap {
+  position: relative;
+  margin-top: -30px;
+  z-index: 10;
+}
+
 .breathe__body {
   display: block;
   width: 100%;
   height: auto;
-  margin-top: -30px;
   position: relative;
-  z-index: 10;
+  z-index: 1;
+}
+
+/* Offer card — sits over the "Hôtel du Palais" slot in Body.svg.
+   Wraps the ocean video, a dark bottom-up gradient, and the text SVG. */
+.breathe__offer {
+  position: absolute;
+  left: 5%;
+  right: 4%;
+  top: 67.8%;
+  height: 29.2%;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.breathe__offer-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Dark-to-transparent fade from bottom up — makes the text readable */
+.breathe__offer-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.55) 30%,
+    rgba(0, 0, 0, 0.15) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.breathe__offer-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6%;
+  width: 90%;
+  height: auto;
+  display: block;
+  z-index: 3;
 }
 
 .breathe__navbar {
@@ -308,4 +395,25 @@
   height: auto;
   pointer-events: none;
   z-index: 20;
+}
+
+.breathe__nav-hit {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  aspect-ratio: 403 / 75;
+  display: flex;
+  z-index: 21;
+}
+
+.breathe__nav-btn {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
