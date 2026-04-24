@@ -14,8 +14,7 @@
 .view-nav {
   position: fixed;
   top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 24px;
   display: flex;
   gap: 2px;
   background: rgba(30, 27, 27, 0.8);

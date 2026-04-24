@@ -48,7 +48,7 @@ const bodyThemes = {
 const isMobile = window.innerWidth <= 500
 
 export default function App() {
-  const [view, setView] = useState('home')
+  const [view, setView] = useState('card')
   const [activeCardIndex, setActiveCardIndex] = useState(0)
   const [page, setPage] = useState(window.location.hash)
 
@@ -65,15 +65,6 @@ export default function App() {
     return (
       <div className="app">
         <BlankPhone />
-      </div>
-    )
-  }
-
-  // Prototypes page — the Insignia UI variants demo (Breathe / Skeuomorphism / Modern)
-  if (page === '#prototypes') {
-    return (
-      <div className="app">
-        <Prototypes />
       </div>
     )
   }
@@ -102,20 +93,14 @@ export default function App() {
 
       <nav className="view-nav">
         <button
-          className={`view-nav__btn ${view === 'home' ? 'view-nav__btn--active' : ''}`}
-          onClick={() => setView('home')}
-        >
-          Home
-        </button>
-        <button
           className={`view-nav__btn ${view === 'card' ? 'view-nav__btn--active' : ''}`}
           onClick={() => setView('card')}
         >
           Card
         </button>
         <button
-          className={`view-nav__btn ${view === 'phone' ? 'view-nav__btn--active' : ''}`}
-          onClick={() => setView('phone')}
+          className={`view-nav__btn ${view === 'inapp' ? 'view-nav__btn--active' : ''}`}
+          onClick={() => setView('inapp')}
         >
           In App
         </button>
@@ -124,23 +109,8 @@ export default function App() {
       <div style={{ display: view === 'card' ? 'block' : 'none' }}>
         <CardView cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
       </div>
-      <div style={{
-        display: view === 'phone' ? 'flex' : 'none',
-        minHeight: '100vh',
-        alignItems: 'center',
-        justifyContent: 'center',
-        perspective: '1200px',
-      }}>
-        <PhoneMockup cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
-      </div>
-      <div style={{
-        display: view === 'home' ? 'flex' : 'none',
-        minHeight: '100vh',
-        alignItems: 'center',
-        justifyContent: 'center',
-        perspective: '1200px',
-      }}>
-        <HomeMockup />
+      <div style={{ display: view === 'inapp' ? 'block' : 'none' }}>
+        <Prototypes />
       </div>
     </div>
   )

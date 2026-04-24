@@ -75,21 +75,10 @@ function HomeView({ coverSrc, amountSrc, onToggleTheme }) {
   )
 }
 
-function CardsView({ coverCardsSrc, mouseX, mouseY, onToggleTheme }) {
+function CardsView({ coverCardsSrc, mouseX, mouseY }) {
   return (
     <>
-      <div
-        className="breathe__cards-cover"
-        onClick={onToggleTheme}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            onToggleTheme()
-          }
-        }}
-      >
+      <div className="breathe__cards-cover">
         <img className="breathe__cards-cover-img" src={coverCardsSrc} alt="" />
       </div>
       <div className="breathe__body-wrap breathe__body-wrap--cards">
@@ -110,46 +99,26 @@ function CardsView({ coverCardsSrc, mouseX, mouseY, onToggleTheme }) {
 }
 
 export default function Breathe() {
-  const [coverTheme, setCoverTheme] = useState('light')
-  const [screen, setScreen] = useState('home')
   const breatheRef = useRef(null)
   const { x: mouseX, y: mouseY } = usePointer(breatheRef)
-  const toggleCoverTheme = () =>
-    setCoverTheme((t) => (t === 'light' ? 'dark' : 'light'))
-
-  const coverSrc = coverTheme === 'dark' ? coverRedPng : coverSvg
-  const amountSrc = coverTheme === 'dark' ? amountWhiteSvg : amountSvg
-  const coverCardsSrc =
-    coverTheme === 'dark' ? coverCardsRedPng : coverCardsLightPng
-  const statusTone = coverTheme === 'dark' ? 'light' : 'dark'
 
   return (
     <>
       <div
         ref={breatheRef}
-        className={`breathe breathe--${coverTheme} breathe--screen-${screen}`}
+        className="breathe breathe--dark breathe--screen-cards"
       >
         <div className="breathe__scroll">
-          <PhoneChrome tone={statusTone} />
-          {screen === 'home' && (
-            <HomeView
-              coverSrc={coverSrc}
-              amountSrc={amountSrc}
-              onToggleTheme={toggleCoverTheme}
-            />
-          )}
-          {screen === 'cards' && (
-            <CardsView
-              coverCardsSrc={coverCardsSrc}
-              mouseX={mouseX}
-              mouseY={mouseY}
-              onToggleTheme={toggleCoverTheme}
-            />
-          )}
+          <PhoneChrome tone="light" />
+          <CardsView
+            coverCardsSrc={coverCardsRedPng}
+            mouseX={mouseX}
+            mouseY={mouseY}
+          />
         </div>
         <img
           className="breathe__navbar"
-          src={screen === 'cards' ? navbarTabsSvg : navbarSvg}
+          src={navbarTabsSvg}
           alt=""
         />
         <div className="breathe__nav-hit">
@@ -157,7 +126,6 @@ export default function Breathe() {
             type="button"
             className="breathe__nav-btn"
             aria-label="Home"
-            onClick={() => setScreen('home')}
           />
           <button
             type="button"
@@ -168,7 +136,6 @@ export default function Breathe() {
             type="button"
             className="breathe__nav-btn"
             aria-label="Cards"
-            onClick={() => setScreen('cards')}
           />
           <button
             type="button"
