@@ -11,6 +11,17 @@
   overflow-x: hidden;
 }
 
+/* Mobile: render Breathe full-bleed, no tilt phone chrome */
+.prototypes-page--mobile {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #0d0908;
+}
+.prototypes-page--mobile > .breathe {
+  height: 100%;
+}
+
 /* ──────── Variant switcher — bottom-right, text-only ──────── */
 .prototypes-switcher {
   position: fixed;

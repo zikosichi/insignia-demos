@@ -11,10 +11,20 @@ const variants = [
   { key: 'modern', label: 'Modern', Component: Modern },
 ]
 
+const isMobile = typeof window !== 'undefined' && window.innerWidth <= 500
+
 export default function Prototypes({ screen = 'cards' }) {
   const [variant, setVariant] = useState('breathe')
 
   const Active = variants.find((v) => v.key === variant)?.Component ?? Breathe
+
+  if (isMobile) {
+    return (
+      <div className="prototypes-page prototypes-page--mobile">
+        <Active screen={screen} />
+      </div>
+    )
+  }
 
   return (
     <div className="prototypes-page">

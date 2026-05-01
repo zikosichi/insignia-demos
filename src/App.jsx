@@ -71,8 +71,8 @@ export default function App() {
 
   if (isMobile) {
     return (
-      <div className="app">
-        <HomeMockup />
+      <div className="app app--mobile">
+        <Prototypes screen="home" />
       </div>
     )
   }
