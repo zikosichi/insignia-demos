@@ -18,7 +18,11 @@
   overflow: hidden;
   background: #0d0908;
 }
-.prototypes-page--mobile > .breathe {
+.prototypes-page--mobile > .prototypes-mobile-host {
+  width: 100%;
+  height: 100%;
+}
+.prototypes-page--mobile .breathe {
   height: 100%;
 }
 
