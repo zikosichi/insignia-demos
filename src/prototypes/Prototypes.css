@@ -1232,6 +1232,10 @@
    Hero tuner — temporary dev panel for live-tweaking the
    reflection / parallax knobs. Remove when finalized.
    ───────────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .hero-tuner { display: none; }
+}
+
 .hero-tuner {
   position: fixed;
   bottom: 24px;
