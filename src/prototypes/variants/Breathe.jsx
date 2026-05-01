@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import usePointer from '../../hooks/usePointer'
 import Card3D from '../../components/Card3D'
 import PhoneChrome from '../PhoneChrome'
+import HomeScreen from './breathe/HomeScreen'
 import coverSvg from '../assets/breathe/Cover.svg'
 import coverRedPng from '../assets/breathe/Cover-Red.png'
 import amountSvg from '../assets/breathe/Amount.svg'
@@ -18,6 +19,8 @@ import iconTransfer from '../assets/breathe/IconArrowUpRight.svg'
 import iconExchange from '../assets/breathe/IconArrowsRepeatCircle.svg'
 import oceanWaves from '../assets/breathe/ocean waves.mp4'
 import offerTextSvg from '../assets/breathe/offer text.svg'
+import bgPatternSvg from '../assets/breathe/bg-pattern.svg'
+import bgPatternFoilSvg from '../assets/breathe/bg-pattern-foil.svg'
 import defaultCardSvg from '../../assets/cards/default/Card.svg'
 import defaultFoilSvg from '../../assets/cards/default/pattern-foil.svg'
 import defaultEdgesSvg from '../../assets/cards/default/pattern-edges.svg'
@@ -31,51 +34,7 @@ function CtaButton({ label, icon }) {
   )
 }
 
-function HomeView({ coverSrc, amountSrc, onToggleTheme }) {
-  return (
-    <>
-      <div className="breathe__cover">
-        <img className="breathe__cover-img" src={coverSrc} alt="" />
-        <img className="breathe__crown" src={crownSvg} alt="" />
-        <img
-          className="breathe__amount"
-          src={amountSrc}
-          alt=""
-          onClick={onToggleTheme}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              onToggleTheme()
-            }
-          }}
-        />
-        <div className="breathe__ctas">
-          <CtaButton label="Transfer" icon={iconTransfer} />
-          <CtaButton label="Exchange" icon={iconExchange} />
-        </div>
-      </div>
-      <div className="breathe__body-wrap">
-        <img className="breathe__body" src={bodySvg} alt="" />
-        <div className="breathe__offer">
-          <video
-            className="breathe__offer-video"
-            src={oceanWaves}
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-          <div className="breathe__offer-fade" aria-hidden />
-          <img className="breathe__offer-text" src={offerTextSvg} alt="" />
-        </div>
-      </div>
-    </>
-  )
-}
-
-function CardsView({ coverCardsSrc, mouseX, mouseY }) {
+function CardsScreen({ coverCardsSrc, mouseX, mouseY }) {
   return (
     <>
       <div className="breathe__cards-cover">
@@ -98,7 +57,7 @@ function CardsView({ coverCardsSrc, mouseX, mouseY }) {
   )
 }
 
-export default function Breathe() {
+export default function Breathe({ screen = 'cards' }) {
   const breatheRef = useRef(null)
   const { x: mouseX, y: mouseY } = usePointer(breatheRef)
 
@@ -106,15 +65,23 @@ export default function Breathe() {
     <>
       <div
         ref={breatheRef}
-        className="breathe breathe--dark breathe--screen-cards"
+        className={`breathe breathe--dark breathe--screen-${screen}`}
       >
         <div className="breathe__scroll">
           <PhoneChrome tone="light" />
-          <CardsView
-            coverCardsSrc={coverCardsRedPng}
-            mouseX={mouseX}
-            mouseY={mouseY}
-          />
+          {screen === 'home' ? (
+            <HomeScreen
+              leatherSrc={bgPatternSvg}
+              foilSrc={bgPatternFoilSvg}
+              edgesSrc={bgPatternFoilSvg}
+            />
+          ) : (
+            <CardsScreen
+              coverCardsSrc={coverCardsRedPng}
+              mouseX={mouseX}
+              mouseY={mouseY}
+            />
+          )}
         </div>
         <img
           className="breathe__navbar"

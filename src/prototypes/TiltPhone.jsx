@@ -17,6 +17,10 @@ export default function TiltPhone({ tiltEnabled = true, children }) {
   const borderAngle =
     Math.atan2(mouseY - 0.5, mouseX - 0.5) * (180 / Math.PI) + 90
 
+  const dist = Math.sqrt((mouseX - 0.5) ** 2 + (mouseY - 0.5) ** 2)
+  const shineOpacity = Math.min(1, dist * 2.5 + 0.2)
+  const glareOpacity = Math.min(0.8, dist * 0.5)
+
   return (
     <div className="tilt-phone-stage">
       <div
@@ -31,6 +35,10 @@ export default function TiltPhone({ tiltEnabled = true, children }) {
           '--tilt-shadow-y': `${shadowY}px`,
           '--mx': `${mouseX * 100}%`,
           '--my': `${mouseY * 100}%`,
+          '--pointer-from-left': mouseX.toFixed(4),
+          '--pointer-from-top': mouseY.toFixed(4),
+          '--shine-opacity': shineOpacity.toFixed(3),
+          '--glare-opacity': glareOpacity.toFixed(3),
           '--border-angle': `${borderAngle}deg`,
         }}
       >

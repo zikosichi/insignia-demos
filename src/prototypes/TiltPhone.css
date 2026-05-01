@@ -11,8 +11,8 @@
 .tilt-phone {
   position: relative;
   --phone-max-h: calc(100vh - 80px);
-  width: min(402px, calc(var(--phone-max-h) * 402 / 874));
-  aspect-ratio: 402 / 874;
+  width: min(440px, calc(var(--phone-max-h) * 440 / 874));
+  aspect-ratio: 440 / 874;
   background: #F5F0ED;
   border-radius: 50px;
   border: 1.5px solid rgba(208, 200, 192, 0.1);

@@ -99,18 +99,27 @@ export default function App() {
           Card
         </button>
         <button
-          className={`view-nav__btn ${view === 'inapp' ? 'view-nav__btn--active' : ''}`}
-          onClick={() => setView('inapp')}
+          className={`view-nav__btn ${view === 'cards' ? 'view-nav__btn--active' : ''}`}
+          onClick={() => setView('cards')}
         >
-          In App
+          Cards
+        </button>
+        <button
+          className={`view-nav__btn ${view === 'home' ? 'view-nav__btn--active' : ''}`}
+          onClick={() => setView('home')}
+        >
+          Home
         </button>
       </nav>
 
       <div style={{ display: view === 'card' ? 'block' : 'none' }}>
         <CardView cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
       </div>
-      <div style={{ display: view === 'inapp' ? 'block' : 'none' }}>
-        <Prototypes />
+      <div style={{ display: view === 'cards' ? 'block' : 'none' }}>
+        <Prototypes screen="cards" />
+      </div>
+      <div style={{ display: view === 'home' ? 'block' : 'none' }}>
+        <Prototypes screen="home" />
       </div>
     </div>
   )

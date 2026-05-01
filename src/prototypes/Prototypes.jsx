@@ -11,7 +11,7 @@ const variants = [
   { key: 'modern', label: 'Modern', Component: Modern },
 ]
 
-export default function Prototypes() {
+export default function Prototypes({ screen = 'cards' }) {
   const [variant, setVariant] = useState('breathe')
 
   const Active = variants.find((v) => v.key === variant)?.Component ?? Breathe
@@ -19,7 +19,7 @@ export default function Prototypes() {
   return (
     <div className="prototypes-page">
       <TiltPhone tiltEnabled={true}>
-        <Active />
+        <Active screen={screen} />
       </TiltPhone>
     </div>
   )

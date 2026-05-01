@@ -327,7 +327,7 @@
 /* Thumbnails strip — sits below the 3D card in the body */
 .breathe__cards-thumbs {
   position: absolute;
-  top: 34%;
+  top: 33%;
   left: 50%;
   transform: translateX(-50%);
   width: 72%;
@@ -430,4 +430,832 @@
   margin: 0;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Home screen (Figma "Home" — VCFC UI)
+   ───────────────────────────────────────────────────────── */
+.home {
+  position: relative;
+  width: 100%;
+  color: #1a1714;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
+  background: #F5F3F3;
+}
+
+/* ─── Hero ─── */
+.home__hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 392 / 480;
+  overflow: hidden;
+  isolation: isolate;
+  /* Square pattern tile size — every reflection layer references this so
+     bg/shine/edges stay aligned regardless of hero aspect ratio */
+  --pattern-size: 220%;
+  background: #2a0d0e; /* fallback behind the pattern */
+}
+
+/* Body container — pulled up over the hero with rounded top corners */
+.home__body {
+  position: relative;
+  z-index: 2;
+  margin-top: -16px;
+  min-height: 200px;
+  padding: 16px;
+  background: #F5F3F3;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+/* ─── Account/Charge card stack (rendered SVGs) ─── */
+.home__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.home__cards-card {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 30%;
+  animation: home-card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes home-card-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+    filter: blur(6px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ─── Segmented tabs (Accounts / Charge cards) — pixel-spec from
+       Figma node 344:2700, neutral token palette.
+       --active = current tab index, --count = total tabs.
+       The white "active" pill is a single sliding indicator so the
+       transition between tabs animates rather than swapping classes. */
+.home-tabs {
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding: 4px;
+  gap: 4px;
+  background: #EDE8E8;             /* neutral/3 */
+  border: 1px solid #CDC1C1;       /* neutral/6 */
+  border-radius: 10px;
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+/* Sliding indicator — width = (track - gaps) / count; shifts by
+   (100% + gap) per tab. Top/bottom inset matches container padding. */
+.home-tabs__indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px - (var(--count) - 1) * 4px) / var(--count));
+  background: #FBFAFA;             /* neutral/1 */
+  border-radius: 6px;
+  box-shadow:
+    0 0 0.5px 0 rgba(0, 0, 0, 0.30),
+    0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  transform: translateX(calc(var(--active, 0) * (100% + 4px)));
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.home-tabs__item {
+  position: relative;
+  z-index: 1;
+  flex: 1 0 0;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  border-radius: 24px;             /* hit-area shape (visual handled by indicator) */
+  cursor: pointer;
+  color: #615051;                  /* neutral/11 — inactive */
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  transition: color 0.18s ease;
+}
+
+.home-tabs__item--active {
+  color: #403535;                  /* neutral/12 — active */
+}
+
+.home-tabs__count {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 2px 4px;
+  border-radius: 8px;
+  border: 1px solid #DDD3D3;       /* neutral/5 */
+  background: #E5DDDD;             /* neutral/4 — inactive default */
+  color: #615051;                  /* neutral/11 */
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 24px;
+  font-variant-numeric: tabular-nums;
+  box-sizing: border-box;
+  transition: background 0.18s ease;
+}
+
+.home-tabs__item--active .home-tabs__count {
+  background: #EDE8E8;             /* neutral/3 on active */
+}
+
+.home-tabs__label {
+  white-space: nowrap;
+}
+
+/* Parallax wrapper — drifts opposite to the cursor so the entire reflection
+   stack (bg + shine + edges + glare) shifts together and stays in alignment.
+   Vignette and content stay anchored to the hero. */
+.home__hero-parallax {
+  position: absolute;
+  inset: -24px;
+  z-index: 1;
+  transform: translate(
+    calc((0.5 - var(--pointer-from-left, 0.5)) * var(--parallax-px, 28px)),
+    calc((0.5 - var(--pointer-from-top, 0.5)) * var(--parallax-px, 28px))
+  );
+  /* Darkness — uniformly dims bg + every reflection layer together */
+  filter: brightness(calc(1 - var(--darkness, 0)));
+  will-change: transform, filter;
+}
+
+.home__hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: var(--pattern-size) auto;
+}
+
+/* ──────── Hero reflection stack — same recipe as Card3D ────────
+   Layers (bottom→top): leather bg → shine (foil-masked) → edge-shine
+   (edges-masked) → glare (gold radial) → vignette (text legibility).
+   --mx/--my/--shine-opacity/--glare-opacity/--pointer-from-* come
+   from TiltPhone. */
+
+.home__hero-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.9) 5%, rgba(0,0,0,0.6) 50%, rgba(255,255,255,0.7) 80%),
+    linear-gradient(-45deg, rgba(0,0,0,0.8) 15%, rgba(255,255,255,0.9), rgba(0,0,0,0.8) 85%),
+    var(--hero-foil);
+  background-blend-mode: soft-light, multiply;
+  background-size: 120% 120%, 200% 200%, var(--pattern-size) auto;
+  background-position:
+    center center,
+    calc(100% * var(--pointer-from-left, 0.5)) calc(100% * var(--pointer-from-top, 0.5)),
+    center center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  /* Higher contrast = each gray facet in the foil reflects at a more
+     distinct intensity → per-triangle pop. Controlled by --facet-pop. */
+  filter: brightness(0.5) contrast(calc(1.6 * var(--facet-pop, 1.6))) saturate(0.3);
+  mix-blend-mode: color-dodge;
+  -webkit-mask-image: var(--hero-foil);
+  mask-image: var(--hero-foil);
+  -webkit-mask-size: var(--pattern-size) auto;
+  mask-size: var(--pattern-size) auto;
+  -webkit-mask-position: center center;
+  mask-position: center center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  opacity: calc(var(--shine-opacity, 0.4) * var(--shine-mult, 0.55));
+}
+
+.home__hero-edge-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,1) 0%, rgba(255,255,255,0.5) 30%, rgba(0,0,0,1) 70%),
+    var(--hero-edges);
+  background-blend-mode: multiply;
+  background-size: 120% 120%, var(--pattern-size) auto;
+  background-position: center center, center center;
+  background-repeat: no-repeat, no-repeat;
+  filter: brightness(0.55) contrast(calc(1.4 * var(--facet-pop, 1.6)));
+  mix-blend-mode: color-dodge;
+  opacity: calc(var(--shine-opacity, 0.4) * var(--edge-mult, 0.35));
+}
+
+.home__hero-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background-image: radial-gradient(
+    farthest-corner circle at var(--mx) var(--my),
+    hsla(40, 60%, 85%, 0.45) 10%,
+    hsla(40, 50%, 70%, 0.25) 30%,
+    hsla(0, 0%, 0%, 0.5) 90%
+  );
+  filter: brightness(0.85) contrast(1.1);
+  mix-blend-mode: soft-light;
+  opacity: calc(var(--glare-opacity, 0.2) * var(--glare-mult, 0.5));
+}
+
+/* Vignette + dark wash for text legibility — stronger now that the
+   reflection is dialed back so the type still reads well */
+.home__hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: var(--vignette-strength, 1);
+  background:
+    radial-gradient(ellipse 95% 75% at 50% 40%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.10) 35%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.25) 100%);
+}
+
+.home__hero-content {
+  position: relative;
+  z-index: 6;
+  width: 100%;
+  height: 100%;
+  padding: 70px 16px 56px; /* top accounts for status bar; bottom leaves breathing room below CTAs */
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Top row: avatar (left) | search + my banker (right) */
+.home__top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.home__top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home__top-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f4ece2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 0;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home__top-circle:hover { transform: scale(1.04); }
+.home__top-circle:active { transform: scale(0.96); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+
+.home__pill {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4ece2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home__pill:hover { transform: scale(1.025); }
+.home__pill:active { transform: scale(0.975); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+
+.home__balance {
+  margin-top: auto; /* pushes balance + CTAs to the bottom of the hero */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.home__balance-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: rgba(244, 236, 226, 0.78);
+  letter-spacing: 0.01em;
+}
+
+.home__balance-amount {
+  font-family: "Prata", "Cormorant", Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 40px;
+  text-align: center;
+  color: #FFEFD5;
+  text-shadow:
+    0 0 0.5px rgba(0, 0, 0, 0.18),
+    0 3px 8px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.home__cta-row {
+  margin-top: 24px; /* tight gap below balance */
+  display: flex;
+  gap: 12px;
+}
+
+/* Dark burgundy CTA with reflective gold border (matches Transfer/Exchange spec).
+   Border uses the same masked-gradient trick as .breathe-cta. */
+.home__cta {
+  position: relative;
+  flex: 1;
+  height: 72px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(72, 11, 21, 0.32) 0%, rgba(37, 5, 11, 0.32) 100%);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  color: #f4e4cf;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  isolation: isolate;
+  --cta-border-w: 2px;
+  /* Parallax shadow — tracks phone tilt via --tilt-shadow-x/y from TiltPhone */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    calc(var(--tilt-shadow-x, 0px) * 0.45)
+      calc(22px + var(--tilt-shadow-y, 0px) * 0.45) 48px rgba(0, 0, 0, 0.55),
+    calc(var(--tilt-shadow-x, 0px) * 0.25)
+      calc(10px + var(--tilt-shadow-y, 0px) * 0.25) 18px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home__cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--cta-border-w);
+  background: linear-gradient(
+    var(--border-angle, 135deg),
+    #8a6f30 0%,
+    #c9a14a 18%,
+    #efd585 38%,
+    #f6e4ad 50%,
+    #efd585 62%,
+    #c9a14a 82%,
+    #8a6f30 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.home__cta:hover { transform: scale(1.012); }
+.home__cta:active { transform: scale(0.975); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+
+.home__cta .home__icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.4;
+  color: #f4e4cf;
+}
+
+/* ─── Sections (cards / tx / offers) ─── */
+.home__section {
+  padding: 24px 16px 0;
+}
+
+/* Segmented toggle above the cards */
+.home__seg {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+}
+
+.home__seg-btn {
+  flex: 1;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  color: rgba(26, 23, 20, 0.55);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.home__seg-btn--active {
+  background: #ffffff;
+  color: #1a1714;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Stack of leather card rows */
+.home__cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home__card-row {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  border-radius: 16px;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.home__card-row-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Crop a different region of the leather per row for variety */
+  object-position: center;
+  z-index: 1;
+}
+
+.home__card-row:nth-child(2) .home__card-row-bg { object-position: left top; }
+.home__card-row:nth-child(3) .home__card-row-bg { object-position: right bottom; }
+
+.home__card-row-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.05) 100%);
+}
+
+.home__card-row-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(244, 236, 226, 0.85);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.home__card-row-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.home__card-row-amount {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fbf3e8;
+}
+
+.home__card-row-currencies {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(244, 236, 226, 0.75);
+}
+
+.home__card-row-sep {
+  display: inline-block;
+  width: 1px;
+  height: 12px;
+  background: rgba(244, 236, 226, 0.35);
+  margin: 0 6px 0 0;
+  vertical-align: middle;
+}
+
+.home__card-row-badge {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fbf3e8;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* ─── Section header w/ side rules ─── */
+.home__section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.home__section-rule {
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.10);
+}
+
+.home__section-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(26, 23, 20, 0.75);
+  letter-spacing: 0.01em;
+}
+
+/* ─── Recent transactions ─── */
+.home__tx {
+  display: flex;
+  flex-direction: column;
+}
+
+.home__tx-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.home__tx-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(26, 23, 20, 0.4);
+  flex-shrink: 0;
+}
+
+.home__tx-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.home__tx-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1714;
+  line-height: 1.2;
+}
+
+.home__tx-sub {
+  font-size: 12px;
+  color: rgba(26, 23, 20, 0.5);
+  margin-top: 2px;
+}
+
+.home__tx-amount {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1714;
+  font-variant-numeric: tabular-nums;
+}
+
+.home__tx-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 16px auto 0;
+  background: transparent;
+  border: 0;
+  color: rgba(26, 23, 20, 0.8);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ─── Special offers ─── */
+.home__offer {
+  position: relative;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #1a1310;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+}
+
+.home__offer-progress {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  gap: 4px;
+  z-index: 3;
+}
+
+.home__offer-seg {
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.home__offer-seg--active {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.home__offer-art {
+  height: 220px;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(212, 53, 21, 0.6) 0%, rgba(0, 0, 0, 0) 70%),
+    linear-gradient(135deg, #2a1812 0%, #4a1c12 50%, #1a0e0a 100%);
+}
+
+.home__offer-body {
+  padding: 20px 18px 22px;
+}
+
+.home__offer-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #fbf3e8;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+.home__offer-desc {
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(244, 236, 226, 0.7);
+  margin-bottom: 14px;
+}
+
+.home__offer-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fbf3e8;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.home__bottom-spacer {
+  height: 24px;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Hero tuner — temporary dev panel for live-tweaking the
+   reflection / parallax knobs. Remove when finalized.
+   ───────────────────────────────────────────────────────── */
+.hero-tuner {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 200;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  color: #f4ece2;
+  background: rgba(15, 8, 6, 0.92);
+  border: 1px solid rgba(212, 165, 116, 0.25);
+  border-radius: 10px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  min-width: 260px;
+}
+
+/* Collapsed: shrink to a circular icon-only button */
+.hero-tuner--closed {
+  min-width: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-tuner__toggle {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 10px 12px;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-tuner--closed .hero-tuner__toggle {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hero-tuner__body {
+  padding: 0 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hero-tuner__row {
+  display: grid;
+  grid-template-columns: 96px 1fr 44px;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-tuner__label {
+  color: rgba(244, 236, 226, 0.75);
+}
+
+.hero-tuner__value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: rgba(244, 236, 226, 0.95);
+}
+
+.hero-tuner__row input[type="range"] {
+  width: 100%;
+  margin: 0;
+  accent-color: #d4a574;
+}
+
+.hero-tuner__reset {
+  margin-top: 6px;
+  background: rgba(212, 165, 116, 0.15);
+  border: 1px solid rgba(212, 165, 116, 0.35);
+  color: #f4ece2;
+  font: inherit;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
