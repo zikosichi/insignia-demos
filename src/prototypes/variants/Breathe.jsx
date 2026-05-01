@@ -12,8 +12,6 @@ import bodySvg from '../assets/breathe/Body.svg'
 import bodyCardsSvg from '../assets/breathe/Body cards.svg'
 import coverCardsLightPng from '../assets/breathe/cover cards light.png'
 import coverCardsRedPng from '../assets/breathe/cover cards red.png'
-import navbarSvg from '../assets/breathe/Navbar.svg'
-import navbarTabsSvg from '../assets/breathe/Navbar tabs.svg'
 import cardsThumbnailsPng from '../assets/breathe/cards thumbnails.png'
 import iconTransfer from '../assets/breathe/IconArrowUpRight.svg'
 import iconExchange from '../assets/breathe/IconArrowsRepeatCircle.svg'
@@ -82,33 +80,6 @@ export default function Breathe({ screen = 'cards' }) {
               mouseY={mouseY}
             />
           )}
-        </div>
-        <img
-          className="breathe__navbar"
-          src={navbarTabsSvg}
-          alt=""
-        />
-        <div className="breathe__nav-hit">
-          <button
-            type="button"
-            className="breathe__nav-btn"
-            aria-label="Home"
-          />
-          <button
-            type="button"
-            className="breathe__nav-btn"
-            aria-label="Transactions"
-          />
-          <button
-            type="button"
-            className="breathe__nav-btn"
-            aria-label="Cards"
-          />
-          <button
-            type="button"
-            className="breathe__nav-btn"
-            aria-label="Services"
-          />
         </div>
       </div>
     </>

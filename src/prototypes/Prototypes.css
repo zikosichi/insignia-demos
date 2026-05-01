@@ -151,7 +151,7 @@
 
 .breathe__scroll {
   position: absolute;
-  inset: 0 0 70px 0; /* leave space for navbar */
+  inset: 0; /* HomeScreen renders its own sticky bottom nav */
   overflow-y: auto;
   overflow-x: clip;
   scrollbar-width: none;
@@ -435,11 +435,43 @@
 /* ─────────────────────────────────────────────────────────
    Home screen (Figma "Home" — VCFC UI)
    ───────────────────────────────────────────────────────── */
+/* ─── Proxima Nova — used across the Home screen body ─── */
+@font-face {
+  font-family: "Proxima Nova";
+  src: url("../assets/fonts/proxima-nova/ProximaNova-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Proxima Nova";
+  src: url("../assets/fonts/proxima-nova/ProximaNova-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+/* Proxima Nova has no true 500 — Semibold (600) is the closest weight
+   used in the Figma "Medium" references, so map both 500 and 600 here. */
+@font-face {
+  font-family: "Proxima Nova";
+  src: url("../assets/fonts/proxima-nova/ProximaNova-Semibold.woff2") format("woff2");
+  font-weight: 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Proxima Nova";
+  src: url("../assets/fonts/proxima-nova/ProximaNova-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 .home {
   position: relative;
   width: 100%;
   color: #1a1714;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
+  font-family: "Proxima Nova", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   background: #F5F3F3;
 }
 
@@ -447,7 +479,7 @@
 .home__hero {
   position: relative;
   width: 100%;
-  aspect-ratio: 392 / 480;
+  aspect-ratio: 392 / 420;
   overflow: hidden;
   isolation: isolate;
   /* Square pattern tile size — every reflection layer references this so
@@ -469,34 +501,55 @@
 }
 
 /* ─── Account/Charge card stack (rendered SVGs) ─── */
+/* Stage stacks both lists in the same grid cell so the wrapper takes the max
+   height — switching tabs no longer reflows the page. */
+.home__cards-stage {
+  position: relative;
+  margin-top: 16px;
+  transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .home__cards {
+  position: absolute;
+  inset: 0 0 auto 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.home__cards--active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .home__cards-card {
   display: block;
   width: 100%;
   height: auto;
-  transform-origin: 50% 30%;
-  animation: home-card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--i, 0) * 70ms);
 }
 
-@keyframes home-card-in {
+.home__cards--active .home__cards-card {
+  animation: home-card-slide-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 50ms);
+}
+
+@keyframes home-card-slide-in {
   0% {
     opacity: 0;
-    transform: translateY(14px) scale(0.985);
-    filter: blur(6px);
+    transform: translateX(calc(var(--dir, 1) * 24px));
+    filter: blur(2px);
   }
-  60% {
+  50% {
     filter: blur(0);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0);
     filter: blur(0);
   }
 }
@@ -705,10 +758,10 @@
   z-index: 6;
   width: 100%;
   height: 100%;
-  padding: 70px 16px 56px; /* top accounts for status bar; bottom leaves breathing room below CTAs */
+  padding: 56px 16px 64px; /* top accounts for status bar; bottom leaves breathing room below CTAs */
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 10px;
 }
 
 /* Top row: avatar (left) | search + my banker (right) */
@@ -767,11 +820,11 @@
 .home__pill:active { transform: scale(0.975); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
 
 .home__balance {
-  margin-top: auto; /* pushes balance + CTAs to the bottom of the hero */
+  margin-top: 56px; /* push balance + CTAs further down the hero */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   text-align: center;
 }
 
@@ -799,7 +852,7 @@
 }
 
 .home__cta-row {
-  margin-top: 24px; /* tight gap below balance */
+  margin-top: 18px; /* tight gap below balance */
   display: flex;
   gap: 12px;
 }
@@ -1258,4 +1311,516 @@
   cursor: pointer;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Hero load choreography — gentle, staggered reveal.
+   Eases follow Apple HIG-style ease-out.
+   The amount is the hero moment: blur + scale fade rather than a
+   counter (per stakeholder note that count-ups feel "noisy" on big
+   balances). Stagger ~80ms between siblings.
+   ───────────────────────────────────────────────────────── */
+/* All elements share the same long ease-out and overlap heavily so the
+   reveal reads as one continuous swell rather than discrete steps.
+   Stagger ≤ 60ms between siblings; total length ≈ 1.4s. */
+@keyframes home-hero-bg-in {
+  from { opacity: 0; transform: scale(1.012); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Use `translate` (independent from `transform`) so :hover/:active transforms
+   on the same elements aren't clobbered by the entry animation's fill-mode. */
+@keyframes home-rise-in {
+  from { opacity: 0; translate: 0 5px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+/* Balance characters animate one-by-one — small Y + soft blur per char.
+   Stagger comes from --i set in JSX. */
+@keyframes home-amount-char-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    filter: blur(0);
+  }
+}
+
+.home__hero-bg {
+  animation: home-hero-bg-in 1400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Content gives the light a brief head-start (~400ms) then swells in */
+.home__top-row > .home__top-circle:first-child {
+  animation: home-rise-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) 380ms both;
+}
+.home__top-actions > .home__top-circle {
+  animation: home-rise-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) 415ms both;
+}
+.home__top-actions > .home__pill {
+  animation: home-rise-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) 450ms both;
+}
+
+.home__balance-label {
+  animation: home-rise-in 1200ms cubic-bezier(0.22, 1, 0.36, 1) 475ms both;
+}
+
+.home__balance-amount {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.home__balance-amount-char {
+  display: inline-block;
+  animation: home-amount-char-in 950ms cubic-bezier(0.22, 1, 0.36, 1)
+    calc(525ms + var(--i, 0) * 22ms) both;
+  white-space: pre;
+}
+
+.home__cta-row > .home__cta:nth-child(1) {
+  animation: home-rise-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) 665ms both;
+}
+.home__cta-row > .home__cta:nth-child(2) {
+  animation: home-rise-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) 705ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home__hero-bg,
+  .home__top-row > .home__top-circle:first-child,
+  .home__top-actions > .home__top-circle,
+  .home__top-actions > .home__pill,
+  .home__balance-label,
+  .home__balance-amount-char,
+  .home__cta-row > .home__cta {
+    animation: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   Section header — title with horizontal rules on both sides
+   (used by Recent transactions and Special offers)
+   ───────────────────────────────────────────────────────── */
+.home-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin-top: 32px;
+}
+
+.home-section__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.home-section__rule {
+  flex: 1 0 0;
+  min-width: 0;
+  height: 1px;
+  background: #DDD3D3;             /* neutral/5 */
+}
+
+.home-section__title {
+  flex-shrink: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #403535;                  /* neutral/12 */
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Bottom navigation — Figma node 344:2808
+   4 evenly-spaced tabs, sticks to the bottom of the phone screen.
+   Active tab gets a 1px pastel-gold (#f5d4a9) border + 12px radius.
+   ───────────────────────────────────────────────────────── */
+.home-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  gap: 4px;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  background: #ffffff;
+  border-top: 1px solid #ede8e8;          /* neutral/3 */
+  box-shadow:
+    0 0 0.5px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.home-nav__btn {
+  position: relative;
+  flex: 1 0 0;
+  min-width: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 12px;
+  border: 0;
+  background: #ffffff;
+  color: #403535;                         /* neutral/12 */
+  font: inherit;
+  cursor: pointer;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+  --nav-border-w: 1.5px;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Reflective gold border for the active tab — same masked-gradient trick
+   as .home__cta::before, driven by --border-angle from TiltPhone. */
+.home-nav__btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--nav-border-w);
+  background: linear-gradient(
+    var(--border-angle, 135deg),
+    #8a6f30 0%,
+    #c9a14a 18%,
+    #efd585 38%,
+    #f6e4ad 50%,
+    #efd585 62%,
+    #c9a14a 82%,
+    #8a6f30 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-nav__btn--active::before {
+  opacity: 1;
+}
+
+/* First (Home) tab follows the phone's rounded bottom-left corner. */
+.home-nav__btn:first-child {
+  border-bottom-left-radius: 18px;
+}
+
+.home-nav__btn:active {
+  transform: scale(0.96);
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-nav__icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.home-nav__label {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Stories — "Special offers for you" (Figma node 344:2784)
+   Tap left/right halves to navigate; hold to pause auto-advance.
+   ───────────────────────────────────────────────────────── */
+.home-story {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #403535;                /* neutral/12 fallback */
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black); /* Safari clip fix for child filters */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.home-story__media,
+.home-story__media-el {
+  border-radius: inherit;
+}
+
+.home-story__media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.home-story__media-el {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: home-story-fade 0.45s ease both;
+}
+
+@keyframes home-story-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Progress bar across top — 5 segments by default */
+.home-story__progress {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  gap: 4px;
+  z-index: 4;
+}
+
+.home-story__progress-seg {
+  flex: 1;
+  height: 2px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  overflow: hidden;
+}
+
+.home-story__progress-fill {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 8px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  /* No transition — driven by RAF for smoothness */
+}
+
+/* Tap zones split the card 50/50 horizontally */
+.home-story__nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.home-story__nav--prev { left: 0; }
+.home-story__nav--next { right: 0; }
+
+/* Bottom panel: gradient + backdrop blur, title/desc/CTA */
+.home-story__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+/* Backdrop-blur + dark gradient sits behind the text, faded out at the top
+   so the upper edge of the panel doesn't have a hard cutoff. The mask
+   applies only to this pseudo-element, not the title/description. */
+.home-story__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.48) 50%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 50%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 50%);
+}
+
+.home-story__panel > * {
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.home-story__text {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  width: 100%;
+}
+
+.home-story__title {
+  font-family: "Prata", "Cormorant", Georgia, serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 32px;
+  margin: 0;
+}
+
+.home-story__desc {
+  font-size: 16px;
+  line-height: 24px;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.home-story__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-story__cta:hover { background: rgba(255, 255, 255, 0.18); }
+.home-story__cta:active { transform: scale(0.97); }
+
+.home-story__cta-icon {
+  display: inline-block;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Recent transactions — Figma node 344:2754
+   ───────────────────────────────────────────────────────── */
+/* Card sizes to its content; every row has equal top/bottom padding so
+   the rhythm is uniform. The dot aligns to the merchant-name line, and
+   each row is followed by a 1px divider including the last (acts as a
+   separator from the See-all button). */
+.home-tx {
+  position: relative;
+  width: 100%;
+  background: #FBFAFA;             /* neutral/1 */
+  border-radius: 10px;
+  box-shadow:
+    0 0 0.5px 0 rgba(0, 0, 0, 0.30),
+    0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.home-tx__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home-tx__row {
+  position: relative;
+  padding: 12px 16px;             /* equal vertical padding */
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  column-gap: 8px;
+  align-items: start;
+}
+
+.home-tx__row::after {
+  /* hairline divider at the bottom of every row */
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: #DDD3D3;             /* neutral/5 */
+}
+
+.home-tx__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  /* Center on the merchant-name baseline (24px line-height → center y = 12) */
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.home-tx__text {
+  min-width: 0;
+}
+
+.home-tx__name {
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #403535;                  /* neutral/12 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-tx__sub {
+  margin: 0;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #7F6868;                  /* neutral/10 */
+}
+
+.home-tx__amount {
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #403535;                  /* neutral/12 */
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-tx__cents {
+  font-size: 10.32px;
+  vertical-align: baseline;
+}
+
+.home-tx__more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 12px 16px;             /* same vertical rhythm as rows */
+  cursor: pointer;
+  color: #8E303B;                  /* primary/11 */
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-tx__more svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }

@@ -11,10 +11,10 @@
 .tilt-phone {
   position: relative;
   --phone-max-h: calc(100vh - 80px);
-  width: min(440px, calc(var(--phone-max-h) * 440 / 874));
-  aspect-ratio: 440 / 874;
+  width: min(470px, calc(var(--phone-max-h) * 470 / 900));
+  aspect-ratio: 470 / 900;
   background: #F5F0ED;
-  border-radius: 50px;
+  border-radius: 42px;
   border: 1.5px solid rgba(208, 200, 192, 0.1);
   box-shadow:
     calc(var(--tilt-shadow-x, 0px) * 1) calc(var(--tilt-shadow-y, 0px) * 1) 60px rgba(0, 0, 0, 0.5),

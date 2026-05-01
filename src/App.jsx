@@ -48,7 +48,7 @@ const bodyThemes = {
 const isMobile = window.innerWidth <= 500
 
 export default function App() {
-  const [view, setView] = useState('card')
+  const [view, setView] = useState('home')
   const [activeCardIndex, setActiveCardIndex] = useState(0)
   const [page, setPage] = useState(window.location.hash)
 
