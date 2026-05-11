@@ -61,14 +61,14 @@ const CARD_TABS = [
 
 const CARD_GROUPS = [
   [
-    { id: 'debit-obsidian', label: 'Obsidian debit card', card: defaultCardSvg, foil: defaultFoilSvg, edges: defaultEdgesSvg },
-    { id: 'debit-peone', label: 'Peone debit card', card: peoneCard, foil: peoneFoil },
-    { id: 'debit-bow', label: 'Bow debit card', card: bowCard, foil: bowFoil },
-    { id: 'debit-billionaire', label: 'Billionaire debit card', card: billionaireCard, foil: billionaireFoil },
+    { id: 'debit-obsidian', label: 'Obsidian debit card', tier: 'Obsidian', number: '4929 1108 8402 7316', expires: '08/30', holder: 'Z. Sichinava', cvv: '734', card: defaultCardSvg, foil: defaultFoilSvg, edges: defaultEdgesSvg },
+    { id: 'debit-peone', label: 'Peone debit card', tier: 'Peone', number: '4929 1184 7630 5805', expires: '12/30', holder: 'Z. Sichinava', cvv: '298', card: peoneCard, foil: peoneFoil },
+    { id: 'debit-bow', label: 'Bow debit card', tier: 'Bow', number: '4929 1175 9028 4401', expires: '06/31', holder: 'Z. Sichinava', cvv: '641', card: bowCard, foil: bowFoil },
+    { id: 'debit-billionaire', label: 'Billionaire debit card', tier: 'Billionaire', number: '4929 1139 6284 0196', expires: '10/31', holder: 'Z. Sichinava', cvv: '517', card: billionaireCard, foil: billionaireFoil },
   ],
   [
-    { id: 'charge-bow', label: 'Bow charge card', card: bowCard, foil: bowFoil },
-    { id: 'charge-billionaire', label: 'Billionaire charge card', card: billionaireCard, foil: billionaireFoil },
+    { id: 'charge-bow', label: 'Bow charge card', tier: 'Bow Charge', number: '5319 4408 1172 9035', expires: '04/31', holder: 'Z. Sichinava', cvv: '803', card: bowCard, foil: bowFoil },
+    { id: 'charge-billionaire', label: 'Billionaire charge card', tier: 'Billionaire Charge', number: '5319 4426 8150 3094', expires: '11/31', holder: 'Z. Sichinava', cvv: '926', card: billionaireCard, foil: billionaireFoil },
   ],
 ]
 
@@ -142,6 +142,41 @@ function AppleIcon() {
   )
 }
 
+function CardBack({ card }) {
+  const lastFour = card.number.slice(-4)
+
+  return (
+    <div className="cards-card-back">
+      <div className="cards-card-back__sheen" aria-hidden />
+      <div className="cards-card-back__header">
+        <span>{card.tier}</span>
+        <span>Virtual card</span>
+      </div>
+      <div className="cards-card-back__stripe" aria-hidden />
+      <div className="cards-card-back__details">
+        <div className="cards-card-back__number">
+          <span>Card number</span>
+          <strong>{card.number}</strong>
+        </div>
+        <div className="cards-card-back__grid">
+          <span>
+            <small>Expires</small>
+            <strong>{card.expires}</strong>
+          </span>
+          <span>
+            <small>CVV</small>
+            <strong>{card.cvv}</strong>
+          </span>
+        </div>
+      </div>
+      <div className="cards-card-back__footer">
+        <span>{card.holder}</span>
+        <span>•• {lastFour}</span>
+      </div>
+    </div>
+  )
+}
+
 export default function CardsScreen({
   mouseX,
   mouseY,
@@ -149,55 +184,28 @@ export default function CardsScreen({
 }) {
   const [tabIndex, setTabIndex] = useState(0)
   const [activeCardIndex, setActiveCardIndex] = useState(0)
-  const [drag, setDrag] = useState(null)
+  const [flippedCardId, setFlippedCardId] = useState(null)
   const [tuning, setTuning] = useState(CARDS_DEFAULT_TUNING)
   const showcaseRef = useRef(null)
   const cards = CARD_GROUPS[tabIndex]
   const borderAngle = (Math.atan2(mouseY - 0.5, mouseX - 0.5) * 180) / Math.PI + 90
   const cardOffsetX = (mouseX - 0.5) * tuning.cardDriftX
   const cardOffsetY = (mouseY - 0.5) * tuning.cardDriftY
-  const dragProgress = drag
-    ? Math.max(-1.15, Math.min(1.15, (drag.currentX - drag.startX) / Math.max(drag.width, 1)))
-    : 0
   const goToCard = (index) => {
     const nextIndex = ((index % cards.length) + cards.length) % cards.length
     setActiveCardIndex(nextIndex)
+    setFlippedCardId(null)
   }
 
   const handleTabChange = (index) => {
     setTabIndex(index)
     setActiveCardIndex(0)
-    setDrag(null)
+    setFlippedCardId(null)
   }
 
-  const handlePointerDown = (event) => {
-    if (event.button !== undefined && event.button !== 0) return
-    const width = showcaseRef.current?.clientWidth || 1
-    event.currentTarget.setPointerCapture?.(event.pointerId)
-    setDrag({
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      currentX: event.clientX,
-      width,
-    })
-  }
-
-  const handlePointerMove = (event) => {
-    setDrag((current) => {
-      if (!current || current.pointerId !== event.pointerId) return current
-      return { ...current, currentX: event.clientX }
-    })
-  }
-
-  const handlePointerEnd = (event) => {
-    if (!drag || drag.pointerId !== event.pointerId) return
-    const deltaX = event.clientX - drag.startX
-    const threshold = Math.min(92, drag.width * 0.18)
-
-    if (Math.abs(deltaX) > threshold) {
-      goToCard(activeCardIndex + (deltaX < 0 ? 1 : -1))
-    }
-    setDrag(null)
+  const toggleActiveCard = (cardId) => {
+    if (cards[activeCardIndex]?.id !== cardId) return
+    setFlippedCardId((current) => (current === cardId ? null : cardId))
   }
 
   const slideOffsets = useMemo(() => {
@@ -206,9 +214,9 @@ export default function CardsScreen({
       let offset = index - activeCardIndex
       if (offset > half) offset -= cards.length
       if (offset < -half) offset += cards.length
-      return offset - dragProgress * 1.65
+      return offset
     })
-  }, [activeCardIndex, cards, dragProgress])
+  }, [activeCardIndex, cards])
 
   return (
     <div className="cards-page">
@@ -266,13 +274,9 @@ export default function CardsScreen({
 
         <section
           ref={showcaseRef}
-          className={`cards-card-showcase${drag ? ' cards-card-showcase--dragging' : ''}`}
+          className="cards-card-showcase"
           aria-label="Selected card"
           tabIndex={0}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerEnd}
-          onPointerCancel={handlePointerEnd}
           onKeyDown={(event) => {
             if (event.key === 'ArrowLeft') goToCard(activeCardIndex - 1)
             if (event.key === 'ArrowRight') goToCard(activeCardIndex + 1)
@@ -295,31 +299,39 @@ export default function CardsScreen({
                 const offset = slideOffsets[index]
                 const distance = Math.min(Math.abs(offset), 3)
                 const focused = index === activeCardIndex
+                const flipped = focused && flippedCardId === card.id
 
                 return (
                   <button
                     key={card.id}
                     type="button"
-                    className={`cards-slider__item${focused ? ' cards-slider__item--active' : ''}`}
+                    className={`cards-slider__item${focused ? ' cards-slider__item--active' : ''}${flipped ? ' cards-slider__item--flipped' : ''}`}
                     style={{
                       '--slide-offset': offset.toFixed(4),
                       '--slide-distance': distance.toFixed(4),
                       '--slide-depth': (1 - distance * 0.16).toFixed(4),
                       zIndex: Math.round(100 - distance * 10),
                     }}
-                    aria-label={card.label}
-                    aria-pressed={focused}
-                    onClick={() => goToCard(index)}
+                    aria-label={`${card.label} details`}
+                    aria-pressed={flipped}
+                    onClick={() => (focused ? toggleActiveCard(card.id) : goToCard(index))}
                   >
-                    <Card3D
-                      className="cards-card-showcase__card"
-                      cardSvg={card.card}
-                      foilSvg={card.foil}
-                      edgesSvg={card.edges}
-                      mouseX={mouseX}
-                      mouseY={mouseY}
-                      borderWidth={2}
-                    />
+                    <div className="cards-flip-card">
+                      <div className="cards-flip-card__face cards-flip-card__face--front">
+                        <Card3D
+                          className="cards-card-showcase__card"
+                          cardSvg={card.card}
+                          foilSvg={card.foil}
+                          edgesSvg={card.edges}
+                          mouseX={mouseX}
+                          mouseY={mouseY}
+                          borderWidth={2}
+                        />
+                      </div>
+                      <div className="cards-flip-card__face cards-flip-card__face--back">
+                        <CardBack card={card} />
+                      </div>
+                    </div>
                   </button>
                 )
               })}
