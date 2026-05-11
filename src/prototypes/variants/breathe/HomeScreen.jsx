@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import accountCardTexture from '../../assets/breathe/accounts/account-card-texture.png'
-import accountCardThumb from '../../assets/breathe/accounts/account-card-thumb.png'
+import account1Card from '../../assets/breathe/accounts/account-1-card.png'
 import chargeCardGlow from '../../assets/breathe/accounts/charge-card-glow.svg'
 import chargeCardTexture from '../../assets/breathe/accounts/charge-card-texture.png'
 import chargeCardThumb from '../../assets/breathe/accounts/charge-card-thumb.png'
@@ -24,7 +24,7 @@ const ACCOUNT_CARDS = [
     background: '#482B4F',
     text: '#FFFFFF',
     texture: accountCardTexture,
-    thumb: accountCardThumb,
+    thumb: account1Card,
   },
   {
     id: 'account-2',
@@ -34,7 +34,7 @@ const ACCOUNT_CARDS = [
     background: '#5A2E05',
     text: '#FFFFFF',
     texture: accountCardTexture,
-    thumb: accountCardThumb,
+    thumb: null,
   },
 ]
 
@@ -442,25 +442,24 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
         setParallax(live.x, live.y)
         setPatternScale(elapsed)
       } else {
-        // Done — remove all overrides; CSS rule resumes parallax
-        for (const k of [
-          '--mx',
-          '--my',
-          '--pointer-from-left',
-          '--pointer-from-top',
-          '--shine-opacity',
-          '--glare-opacity',
-        ])
-          el.style.removeProperty(k)
-        el.style.setProperty(
-          '--border-angle',
-          getComputedStyle(parent).getPropertyValue('--border-angle') || '90deg',
-        )
-        window.addEventListener(
-          'pointermove',
-          () => el.style.removeProperty('--border-angle'),
-          { once: true },
-        )
+        // Done — leave the JS-set values in place so they line up with
+        // whatever phase 2 settled on, then let live pointer input take
+        // over on the first move. Previously we overwrote --border-angle
+        // (and removed --mx/--my) here, which caused a visible snap on
+        // the CTA gold-stroke gradient and the shine layer.
+        const release = () => {
+          for (const k of [
+            '--mx',
+            '--my',
+            '--pointer-from-left',
+            '--pointer-from-top',
+            '--shine-opacity',
+            '--glare-opacity',
+            '--border-angle',
+          ])
+            el.style.removeProperty(k)
+        }
+        window.addEventListener('pointermove', release, { once: true })
         el.style.setProperty('--pattern-size', `${targetPatternSize}%`)
         if (parallaxEl) parallaxEl.style.transform = ''
         return
@@ -496,43 +495,45 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
         <div className="home__hero-edge-shine" aria-hidden />
         <div className="home__hero-glare" aria-hidden />
       </div>
-      <div className="home__hero-vignette" aria-hidden />
-      <div className="home__hero-content">
-        <div className="home__top-row">
-          <button className="home__top-circle" aria-label="Profile">
-            <img className="home__top-icon" src={iconPeopleCircle} alt="" />
-          </button>
-          <div className="home__top-actions">
-            <button className="home__top-circle" aria-label="Search">
-              <img className="home__top-icon" src={iconMagnifyingGlass} alt="" />
+      <div className="home__hero-frame">
+        <div className="home__hero-vignette" aria-hidden />
+        <div className="home__hero-content">
+          <div className="home__top-row">
+            <button className="home__top-circle" aria-label="Profile">
+              <img className="home__top-icon" src={iconPeopleCircle} alt="" />
             </button>
-            <button className="home__pill" aria-label="Help">
-              <img className="home__top-icon" src={iconBubbleAnnotation} alt="" />
-              <span>Help</span>
+            <div className="home__top-actions">
+              <button className="home__top-circle" aria-label="Search">
+                <img className="home__top-icon" src={iconMagnifyingGlass} alt="" />
+              </button>
+              <button className="home__pill" aria-label="Help">
+                <img className="home__top-icon" src={iconBubbleAnnotation} alt="" />
+                <span>Help</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="home__balance">
+            <div className="home__balance-label">
+              <HomeIcon name="eye" size={18} />
+              <span>Total balance</span>
+            </div>
+            <BalanceAmount
+              key={tuning.balanceRevealEffect}
+              revealEffect={tuning.balanceRevealEffect}
+            />
+          </div>
+
+          <div className="home__cta-row">
+            <button className={`home__cta${tuning.lightCtas ? ' home__cta--light' : ''}`}>
+              <img className="home__icon" src={iconArrowUp} alt="" aria-hidden />
+              <span>Transfer</span>
+            </button>
+            <button className={`home__cta${tuning.lightCtas ? ' home__cta--light' : ''}`}>
+              <img className="home__icon" src={iconArrowLeftRight} alt="" aria-hidden />
+              <span>Exchange</span>
             </button>
           </div>
-        </div>
-
-        <div className="home__balance">
-          <div className="home__balance-label">
-            <HomeIcon name="eye" size={18} />
-            <span>Total balance</span>
-          </div>
-          <BalanceAmount
-            key={tuning.balanceRevealEffect}
-            revealEffect={tuning.balanceRevealEffect}
-          />
-        </div>
-
-        <div className="home__cta-row">
-          <button className={`home__cta${tuning.lightCtas ? ' home__cta--light' : ''}`}>
-            <img className="home__icon" src={iconArrowUp} alt="" aria-hidden />
-            <span>Transfer</span>
-          </button>
-          <button className={`home__cta${tuning.lightCtas ? ' home__cta--light' : ''}`}>
-            <img className="home__icon" src={iconArrowLeftRight} alt="" aria-hidden />
-            <span>Exchange</span>
-          </button>
         </div>
       </div>
     </div>
@@ -703,9 +704,7 @@ function Stories({ slides, duration = STORY_DEFAULT_DURATION }) {
   return (
     <section className="home-section">
       <header className="home-section__header">
-        <span className="home-section__rule" />
         <h3 className="home-section__title">Special offers for you</h3>
-        <span className="home-section__rule" />
       </header>
       <div
         className="home-story"
@@ -912,7 +911,18 @@ function AccountBox({ card, index }) {
       />
       <p className="home-account-card__title">{card.title}</p>
       <div className="home-account-card__copy">
-        <p className="home-account-card__amount">{card.amount}</p>
+        <p className="home-account-card__amount" aria-label={card.amount}>
+          {Array.from(card.amount).map((ch, j) => (
+            <span
+              key={j}
+              className="home-account-card__amount-char"
+              style={{ '--j': j }}
+              aria-hidden
+            >
+              {ch}
+            </span>
+          ))}
+        </p>
         <div className="home-account-card__breakdown" aria-label={card.breakdown.join(', ')}>
           {card.breakdown.map((item, i) => (
             <span key={item} className="home-account-card__breakdown-item">
@@ -922,9 +932,11 @@ function AccountBox({ card, index }) {
           ))}
         </div>
       </div>
-      <span className="home-account-card__thumb-wrap" aria-hidden>
-        <img className="home-account-card__thumb" src={card.thumb} alt="" />
-      </span>
+      {card.thumb && (
+        <span className="home-account-card__thumb-wrap" aria-hidden>
+          <img className="home-account-card__thumb" src={card.thumb} alt="" />
+        </span>
+      )}
       <span className="home-account-card__stitch" aria-hidden />
     </article>
   )

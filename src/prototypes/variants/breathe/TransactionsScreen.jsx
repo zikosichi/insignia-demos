@@ -12,10 +12,10 @@ import fileDownloadIcon from '../../assets/breathe/transactions/IconFileDownload
 const TRANSACTION_TABS = ['All', 'Accounts', 'Charge cards']
 
 const SPENDING_CATEGORIES = [
-  { label: 'Shopping', amount: '€100,000', value: 100000, color: '#e23a1f' },
-  { label: 'Dining', amount: '€80,000', value: 80000, color: '#c5a631' },
-  { label: 'Travel', amount: '€20,000', value: 20000, color: '#8b5cf6' },
-  { label: 'Other', amount: '€6,000', value: 6000, color: '#188f32' },
+  { label: 'Shopping', amount: '€100,000', value: 100000, color: '#480B15' },
+  { label: 'Dining', amount: '€80,000', value: 80000, color: '#BC384A' },
+  { label: 'Travel', amount: '€20,000', value: 20000, color: '#D87278' },
+  { label: 'Other', amount: '€6,000', value: 6000, color: '#F4B0B1' },
 ]
 
 const TRANSACTION_GROUPS = {

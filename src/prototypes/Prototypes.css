@@ -1302,7 +1302,7 @@
 
 .transactions-ring__track {
   fill: none;
-  stroke: #ede8e8;
+  stroke: #F4B0B1;
   stroke-width: 12;
   opacity: 0;
   animation: transactions-track-in 560ms cubic-bezier(0.22, 1, 0.36, 1) 330ms both;
@@ -1739,7 +1739,12 @@
   width: 100%;
   color: #1a1714;
   font-family: "Proxima Nova", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  background: #F5F3F3;
+  background-color: #2a0d0e;
+  isolation: isolate;
+  /* Establish a block formatting context so .home__body's top margin
+     (which reproduces the hero's old in-flow height) doesn't collapse
+     through .home and shrink the container. */
+  display: flow-root;
 }
 
 /* ─── Hero ─── */
@@ -1755,16 +1760,60 @@
   background: #2a0d0e; /* fallback behind the pattern */
 }
 
-/* Body container — pulled up over the hero with rounded top corners */
+/* On the Home screen the hero stretches to fill the entire .home so its
+   leather/shine/glare layers serve as one continuous background top→
+   bottom. Content + vignette sit inside .home__hero-frame to stay
+   anchored to the original aspect-ratio area at the top. */
+.home > .home__hero {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  width: auto;
+}
+
+/* Frame that constrains hero text + vignette to the original 392/400
+   region at the top of the screen. Sits above the parallax/shine stack. */
+.home__hero-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  aspect-ratio: 392 / 400;
+  pointer-events: none;
+}
+
+.home__hero-frame > * {
+  pointer-events: auto;
+}
+
+/* Body container — pulled up over the hero with rounded top corners.
+   Hero is positioned absolutely (covers full .home), so margin-top
+   reproduces the hero's old in-flow height (392/400 aspect) and then
+   overlaps it by 24px. */
 .home__body {
   position: relative;
   z-index: 2;
-  margin-top: -24px;
+  margin-top: calc(100% * 400 / 392 - 24px);
   min-height: 200px;
-  padding: 32px 16px 16px;
+  /* Bottom padding leaves room for the absolute-positioned .home-nav so
+     the last section (Special offers) is fully visible when scrolled
+     to the bottom. */
+  padding: 32px 16px calc(96px + env(safe-area-inset-bottom, 0px));
   background: #F5F3F3;
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
+  animation: home-body-rise 1000ms cubic-bezier(0.77, 0, 0.18, 1) both;
+}
+
+@keyframes home-body-rise {
+  from {
+    translate: 0 120px;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
 }
 
 .home__body-crest {
@@ -1775,8 +1824,19 @@
   height: auto;
   display: block;
   transform: translate(-50%, -24px);
+  transform-origin: 50% 50%;
   pointer-events: none;
   z-index: 0;
+  animation: home-body-crest-in 1000ms cubic-bezier(0.77, 0, 0.18, 1) both;
+}
+
+@keyframes home-body-crest-in {
+  from {
+    transform: translate(-50%, -24px) scale(1.5);
+  }
+  to {
+    transform: translate(-50%, -24px) scale(1);
+  }
 }
 
 .home__body > :not(.home__body-crest) {
@@ -1886,6 +1946,16 @@
   color: currentColor;
 }
 
+/* Main amount reveal — same recipe as the hero balance (.home__balance-
+   amount-char), staggered per character (--j) and offset slightly per
+   card (--i). */
+.home-account-card__amount-char {
+  display: inline-block;
+  white-space: pre;
+  animation: home-amount-char-in 950ms cubic-bezier(0.22, 1, 0.36, 1)
+    calc(620ms + var(--i, 0) * 80ms + var(--j, 0) * 22ms) both;
+}
+
 .home-account-card__breakdown {
   display: flex;
   width: 100%;
@@ -1900,6 +1970,21 @@
   color: currentColor;
   opacity: 0.6;
   white-space: nowrap;
+  animation: home-account-breakdown-in 700ms cubic-bezier(0.22, 1, 0.36, 1)
+    calc(620ms + var(--i, 0) * 80ms) both;
+}
+
+/* Gentle slide-up + fade-in for the breakdown row. Ends at 0.6 so the
+   muted look from the base style is preserved post-animation. */
+@keyframes home-account-breakdown-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  to {
+    opacity: 0.6;
+    translate: 0 0;
+  }
 }
 
 .home-account-card__breakdown-item {
@@ -2270,7 +2355,9 @@
   inset: 0;
   z-index: 1;
   background-repeat: no-repeat;
-  background-position: center center;
+  /* Top-aligned so it visually continues into the static .home leather
+     bg below — both share the same top edge so the pattern reads as one. */
+  background-position: 50% 0;
   background-size: var(--pattern-size) auto;
 }
 
@@ -2294,7 +2381,7 @@
   background-position:
     center center,
     calc(100% * var(--pointer-from-left, 0.5)) calc(100% * var(--pointer-from-top, 0.5)),
-    center center;
+    50% 0;
   background-repeat: no-repeat, no-repeat, no-repeat;
   /* Higher contrast = each gray facet in the foil reflects at a more
      distinct intensity → per-triangle pop. Controlled by --facet-pop. */
@@ -2304,8 +2391,8 @@
   mask-image: var(--hero-foil);
   -webkit-mask-size: var(--pattern-size) auto;
   mask-size: var(--pattern-size) auto;
-  -webkit-mask-position: center center;
-  mask-position: center center;
+  -webkit-mask-position: 50% 0;
+  mask-position: 50% 0;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   opacity: calc(var(--shine-opacity, 0.4) * var(--shine-mult, 0.55));
@@ -2321,7 +2408,7 @@
     var(--hero-edges);
   background-blend-mode: multiply;
   background-size: 120% 120%, var(--pattern-size) auto;
-  background-position: center center, center center;
+  background-position: center center, 50% 0;
   background-repeat: no-repeat, no-repeat;
   filter: brightness(0.55) contrast(calc(1.4 * var(--facet-pop, 1.6)));
   mix-blend-mode: color-dodge;
@@ -2508,7 +2595,7 @@
 }
 
 .home__cta-row {
-  margin-top: 20px;
+  margin-top: 32px;
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -3329,8 +3416,12 @@
     animation: none;
   }
 
+  .home__body,
+  .home__body-crest,
   .home__body > .home-tabs,
   .home__cards-stage,
+  .home-account-card__amount-char,
+  .home-account-card__breakdown,
   .home-section--tx,
   .home__body > .home-section:not(.home-section--tx) {
     animation: none;
