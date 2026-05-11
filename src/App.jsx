@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 import CardView from './components/CardView'
-import PhoneMockup from './components/PhoneMockup'
-import HomeMockup from './components/HomeMockup'
 import BlankPhone from './components/BlankPhone'
 import Prototypes from './prototypes/Prototypes'
 import './App.css'
@@ -48,7 +46,6 @@ const bodyThemes = {
 const isMobile = window.innerWidth <= 500
 
 export default function App() {
-  const [view, setView] = useState('home')
   const [activeCardIndex, setActiveCardIndex] = useState(0)
   const [page, setPage] = useState(window.location.hash)
 
@@ -59,6 +56,7 @@ export default function App() {
   }, [])
 
   const activeId = cards[activeCardIndex]?.id || 'default'
+  const prototypeScreen = page === '#cards' ? 'cards' : 'home'
 
   // Blank page — standalone, no nav
   if (page === '#blank') {
@@ -69,58 +67,42 @@ export default function App() {
     )
   }
 
+  if (page === '#card') {
+    return (
+      <div className="app">
+        {Object.entries(bodyThemes).map(([id, gradients]) => (
+          <div
+            key={id}
+            className="app__bg-layer"
+            style={{
+              backgroundImage: gradients.join(', '),
+              opacity: id === activeId ? 1 : 0,
+            }}
+          />
+        ))}
+        <CardView
+          cards={cards}
+          activeIndex={activeCardIndex}
+          onChangeIndex={setActiveCardIndex}
+        />
+      </div>
+    )
+  }
+
   if (isMobile) {
     return (
       <div className="app app--mobile">
-        <Prototypes screen="home" />
+        <Prototypes screen={prototypeScreen} />
       </div>
     )
   }
 
   return (
     <div className="app">
-      {/* Body background layers — cross-fade per card */}
-      {Object.entries(bodyThemes).map(([id, gradients]) => (
-        <div
-          key={id}
-          className="app__bg-layer"
-          style={{
-            backgroundImage: gradients.join(', '),
-            opacity: id === activeId ? 1 : 0,
-          }}
-        />
-      ))}
-
-      <nav className="view-nav">
-        <button
-          className={`view-nav__btn ${view === 'card' ? 'view-nav__btn--active' : ''}`}
-          onClick={() => setView('card')}
-        >
-          Card
-        </button>
-        <button
-          className={`view-nav__btn ${view === 'cards' ? 'view-nav__btn--active' : ''}`}
-          onClick={() => setView('cards')}
-        >
-          Cards
-        </button>
-        <button
-          className={`view-nav__btn ${view === 'home' ? 'view-nav__btn--active' : ''}`}
-          onClick={() => setView('home')}
-        >
-          Home
-        </button>
-      </nav>
-
-      <div style={{ display: view === 'card' ? 'block' : 'none' }}>
-        <CardView cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
-      </div>
-      <div style={{ display: view === 'cards' ? 'block' : 'none' }}>
-        <Prototypes screen="cards" controlsEnabled={view === 'cards'} />
-      </div>
-      <div style={{ display: view === 'home' ? 'block' : 'none' }}>
-        <Prototypes screen="home" controlsEnabled={view === 'home'} />
-      </div>
+      <Prototypes
+        screen={prototypeScreen}
+        controlsEnabled={prototypeScreen === 'home' || prototypeScreen === 'cards'}
+      />
     </div>
   )
 }

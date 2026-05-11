@@ -1,17 +1,55 @@
 import { useState } from 'react'
 import Card3D from '../../../components/Card3D'
-import { BottomNav } from './HomeScreen'
+import { ControlPanel, DEFAULT_TUNING } from './HomeScreen'
 import bgPatternSvg from '../../assets/breathe/bg-pattern.svg'
 import bgPatternFoilSvg from '../../assets/breathe/bg-pattern-foil.svg'
 import iconPeopleCircle from '../../assets/breathe/IconPeopleCircle.svg'
 import iconMagnifyingGlass from '../../assets/breathe/IconMagnifyingGlass.svg'
 import iconBubbleAnnotation from '../../assets/breathe/IconBubbleAnnotation5.svg'
+import iconEyeOpen from '../../assets/breathe/IconEyeOpen.svg'
+import iconSnowFlakes from '../../assets/breathe/IconSnowFlakes.svg'
+import iconSettingsGear from '../../assets/breathe/IconSettingsGear2.svg'
+import appleWalletCardIcon from '../../assets/breathe/apple-wallet-card-icon.png'
 import defaultCardSvg from '../../../assets/cards/default/Card.svg'
 import defaultFoilSvg from '../../../assets/cards/default/pattern-foil.svg'
 import defaultEdgesSvg from '../../../assets/cards/default/pattern-edges.svg'
 import peoneCard from '../../../assets/cards/peone/Card.png'
 import bowCard from '../../../assets/cards/bow/Card.png'
 import billionaireCard from '../../../assets/cards/billionaire/Card.png'
+
+const CARDS_DEFAULT_TUNING = {
+  ...DEFAULT_TUNING,
+  shineMult: 0,
+  edgeMult: 0,
+  glareMult: 0,
+  facetPop: 2.2,
+  darkness: 0.12,
+  vignetteStrength: 0.22,
+  patternSize: 470,
+  parallaxPx: 34,
+  cardDriftX: 10,
+  cardDriftY: 7,
+  cardShadow: 0.35,
+  cardShadowBlur: 24,
+  cardShadowY: 12,
+  cardShadowX: 0.55,
+  cardShadowOpacity: 0.23,
+}
+
+const CARD_EXTRA_CONTROL_SECTIONS = [
+  {
+    title: 'Card lift',
+    rows: [
+      ['cardDriftX', 'Move X', 0, 28, 1, 'px'],
+      ['cardDriftY', 'Move Y', 0, 28, 1, 'px'],
+      ['cardShadow', 'Shadow', 0, 2, 0.05],
+      ['cardShadowBlur', 'Shadow blur', 0, 56, 1, 'px'],
+      ['cardShadowY', 'Shadow Y', 0, 32, 1, 'px'],
+      ['cardShadowX', 'Shadow X', 0, 1.5, 0.05],
+      ['cardShadowOpacity', 'Opacity', 0, 0.8, 0.01],
+    ],
+  },
+]
 
 const CARD_TABS = [
   { count: 6, label: 'Debit cards' },
@@ -30,30 +68,15 @@ const CARD_THUMBS = [
 const CARD_ACTIONS = [
   {
     label: 'Card details',
-    icon: (
-      <>
-        <path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z" />
-        <circle cx="12" cy="12" r="2.5" />
-      </>
-    ),
+    icon: iconEyeOpen,
   },
   {
     label: 'Freeze',
-    icon: (
-      <>
-        <path d="M12 3v18M5.6 6.2l12.8 11.6M18.4 6.2 5.6 17.8" />
-        <path d="m9 4 3 3 3-3M9 20l3-3 3 3M4 9l3 3-3 3M20 9l-3 3 3 3" />
-      </>
-    ),
+    icon: iconSnowFlakes,
   },
   {
     label: 'Settings',
-    icon: (
-      <>
-        <circle cx="12" cy="12" r="3" />
-        <path d="M12 2.75v2M12 19.25v2M4.25 12h-2M21.75 12h-2M6.52 6.52 5.1 5.1M18.9 18.9l-1.42-1.42M17.48 6.52 18.9 5.1M5.1 18.9l1.42-1.42" />
-      </>
-    ),
+    icon: iconSettingsGear,
   },
 ]
 
@@ -92,29 +115,10 @@ function CardsSegmentedTabs({ activeIndex, onChange }) {
   )
 }
 
-function ActionIcon({ children }) {
-  return (
-    <svg
-      className="cards-action__icon"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      {children}
-    </svg>
-  )
-}
-
 function CardAction({ action }) {
   return (
     <button className="cards-action" type="button">
-      <ActionIcon>{action.icon}</ActionIcon>
+      <img className="cards-action__icon" src={action.icon} alt="" aria-hidden />
       <span>{action.label}</span>
     </button>
   )
@@ -131,9 +135,16 @@ function AppleIcon() {
   )
 }
 
-export default function CardsScreen({ mouseX, mouseY, onNavigate }) {
+export default function CardsScreen({
+  mouseX,
+  mouseY,
+  showControls = true,
+}) {
   const [tabIndex, setTabIndex] = useState(0)
+  const [tuning, setTuning] = useState(CARDS_DEFAULT_TUNING)
   const borderAngle = (Math.atan2(mouseY - 0.5, mouseX - 0.5) * 180) / Math.PI + 90
+  const cardOffsetX = (mouseX - 0.5) * tuning.cardDriftX
+  const cardOffsetY = (mouseY - 0.5) * tuning.cardDriftY
 
   return (
     <div className="cards-page">
@@ -142,14 +153,14 @@ export default function CardsScreen({ mouseX, mouseY, onNavigate }) {
         style={{
           '--hero-foil': `url(${bgPatternFoilSvg})`,
           '--hero-edges': `url(${bgPatternFoilSvg})`,
-          '--pattern-size': '470%',
-          '--shine-mult': 0.52,
-          '--edge-mult': 0.32,
-          '--glare-mult': 1.29,
-          '--facet-pop': 1.45,
-          '--darkness': 0,
-          '--vignette-strength': 0.22,
-          '--parallax-px': '34px',
+          '--pattern-size': `${tuning.patternSize}%`,
+          '--shine-mult': tuning.shineMult,
+          '--edge-mult': tuning.edgeMult,
+          '--glare-mult': tuning.glareMult,
+          '--facet-pop': tuning.facetPop,
+          '--darkness': tuning.darkness,
+          '--vignette-strength': tuning.vignetteStrength,
+          '--parallax-px': `${tuning.parallaxPx}px`,
           '--mx': `${mouseX * 100}%`,
           '--my': `${mouseY * 100}%`,
           '--pointer-from-left': mouseX,
@@ -190,15 +201,28 @@ export default function CardsScreen({ mouseX, mouseY, onNavigate }) {
         <CardsSegmentedTabs activeIndex={tabIndex} onChange={setTabIndex} />
 
         <section className="cards-card-showcase" aria-label="Selected card">
-          <Card3D
-            className="cards-card-showcase__card"
-            cardSvg={defaultCardSvg}
-            foilSvg={defaultFoilSvg}
-            edgesSvg={defaultEdgesSvg}
-            mouseX={mouseX}
-            mouseY={mouseY}
-            borderWidth={2}
-          />
+          <div
+            className="cards-card-showcase__lift"
+            style={{
+              '--card-lift-x': `${cardOffsetX.toFixed(2)}px`,
+              '--card-lift-y': `${cardOffsetY.toFixed(2)}px`,
+              '--card-shadow': tuning.cardShadow,
+              '--card-shadow-blur': `${tuning.cardShadowBlur}px`,
+              '--card-shadow-y': `${tuning.cardShadowY}px`,
+              '--card-shadow-x': tuning.cardShadowX,
+              '--card-shadow-opacity': tuning.cardShadowOpacity,
+            }}
+          >
+            <Card3D
+              className="cards-card-showcase__card"
+              cardSvg={defaultCardSvg}
+              foilSvg={defaultFoilSvg}
+              edgesSvg={defaultEdgesSvg}
+              mouseX={mouseX}
+              mouseY={mouseY}
+              borderWidth={2}
+            />
+          </div>
         </section>
 
         <div className="cards-thumbs" aria-label="Cards">
@@ -227,8 +251,7 @@ export default function CardsScreen({ mouseX, mouseY, onNavigate }) {
 
         <section className="cards-wallet">
           <div className="cards-wallet__thumb" aria-hidden>
-            <img src={defaultCardSvg} alt="" />
-            <span />
+            <img src={appleWalletCardIcon} alt="" />
           </div>
           <div className="cards-wallet__text">
             <h2>Add to Apple Wallet</h2>
@@ -275,7 +298,15 @@ export default function CardsScreen({ mouseX, mouseY, onNavigate }) {
         </section>
       </main>
 
-      <BottomNav activeId="cards" onChange={onNavigate} />
+      {showControls && (
+        <ControlPanel
+          tuning={tuning}
+          setTuning={setTuning}
+          onReset={() => setTuning(CARDS_DEFAULT_TUNING)}
+          showContentControls={false}
+          extraSections={CARD_EXTRA_CONTROL_SECTIONS}
+        />
+      )}
     </div>
   )
 }

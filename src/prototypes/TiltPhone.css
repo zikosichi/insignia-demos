@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: max(100%, 392px);
   min-height: 100vh;
   perspective: 1400px;
   padding: 40px 20px;
@@ -10,8 +10,8 @@
 
 .tilt-phone {
   position: relative;
-  --phone-max-h: calc(100vh - 80px);
-  width: min(392px, calc(var(--phone-max-h) * 715 / 1496));
+  width: 392px;
+  height: calc(392px * 1496 / 715);
   aspect-ratio: 715 / 1496;
   background: #F5F0ED;
   border-radius: 50px;

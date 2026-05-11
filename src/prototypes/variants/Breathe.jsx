@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import usePointer from '../../hooks/usePointer'
 import PhoneChrome from '../PhoneChrome'
-import HomeScreen from './breathe/HomeScreen'
+import HomeScreen, { BottomNav } from './breathe/HomeScreen'
 import CardsScreen from './breathe/CardsScreen'
 import bgPatternSvg from '../assets/breathe/bg-pattern.svg'
 import bgPatternFoilSvg from '../assets/breathe/bg-pattern-foil.svg'
@@ -19,6 +19,9 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
   const handleNavigate = (next) => {
     if (next !== 'home' && next !== 'cards') return
     setActiveScreen(next)
+    if (window.location.hash !== `#${next}`) {
+      window.location.hash = next
+    }
     scrollRef.current?.scrollTo({ top: 0, behavior: 'auto' })
   }
 
@@ -35,7 +38,6 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
               leatherSrc={bgPatternSvg}
               foilSrc={bgPatternFoilSvg}
               edgesSrc={bgPatternFoilSvg}
-              onNavigate={handleNavigate}
               showControls={controlsEnabled && activeScreen === 'home'}
             />
           </div>
@@ -43,10 +45,11 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
             <CardsScreen
               mouseX={mouseX}
               mouseY={mouseY}
-              onNavigate={handleNavigate}
+              showControls={controlsEnabled && activeScreen === 'cards'}
             />
           </div>
         </div>
+        <BottomNav activeId={activeScreen} onChange={handleNavigate} />
       </div>
     </>
   )
