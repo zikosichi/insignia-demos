@@ -499,7 +499,7 @@
 .home__hero {
   position: relative;
   width: 100%;
-  aspect-ratio: 392 / 400;
+  aspect-ratio: 392 / 412;
   overflow: hidden;
   isolation: isolate;
   /* Square pattern tile size — every reflection layer references this so
@@ -1256,7 +1256,7 @@
   box-sizing: border-box;
   position: relative;
   flex: 1;
-  height: 64px;
+  height: 68px;
   border: 0;
   border-radius: 12px;
   background: linear-gradient(180deg, #480b15 0%, #25050b 100%);
@@ -1338,6 +1338,26 @@
   opacity: 0.95;
 }
 
+.home__cta--light {
+  height: 72px;
+  background:
+    linear-gradient(180deg, rgba(255, 254, 247, 0.98) 0%, rgba(249, 241, 221, 0.96) 100%);
+  color: #74501a;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 0 0 1px rgba(255, 246, 213, 0.34),
+    0 5px 12px rgba(43, 15, 4, 0.2),
+    0 12px 22px rgba(43, 15, 4, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -8px 14px rgba(184, 134, 51, 0.08);
+}
+
+.home__cta--light::before,
+.home__cta--light::after {
+  display: none;
+}
+
 .home__cta:hover { transform: scale(1.012); }
 .home__cta:active { transform: scale(0.975); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
 
@@ -1346,6 +1366,10 @@
   width: 24px;
   height: 24px;
   color: #ffefd5;
+}
+
+.home__cta--light .home__icon {
+  filter: brightness(0) saturate(100%) invert(28%) sepia(82%) saturate(752%) hue-rotate(8deg) brightness(93%) contrast(92%);
 }
 
 .home__cta > * {
@@ -1728,6 +1752,14 @@
 
 .hero-tuner__row input[type="range"] {
   width: 100%;
+  margin: 0;
+  accent-color: #d4a574;
+}
+
+.hero-tuner__row--checkbox input[type="checkbox"] {
+  justify-self: start;
+  width: 16px;
+  height: 16px;
   margin: 0;
   accent-color: #d4a574;
 }

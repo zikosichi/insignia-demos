@@ -74,12 +74,15 @@ const DEFAULT_TUNING = {
   vignetteStrength: 0.22,
   parallaxPx: 34,
   patternSize: 470,
+  lightCtas: true,
 }
 
 function ControlPanel({ tuning, setTuning, onReset }) {
   const [open, setOpen] = useState(false)
   const set = (key) => (e) =>
     setTuning((t) => ({ ...t, [key]: parseFloat(e.target.value) }))
+  const setChecked = (key) => (e) =>
+    setTuning((t) => ({ ...t, [key]: e.target.checked }))
   const rows = [
     ['shineMult', 'Shine', 0, 2, 0.01],
     ['edgeMult', 'Edge shine', 0, 2, 0.01],
@@ -115,6 +118,17 @@ function ControlPanel({ tuning, setTuning, onReset }) {
               <span className="hero-tuner__value">{tuning[k]}</span>
             </label>
           ))}
+          <label className="hero-tuner__row hero-tuner__row--checkbox">
+            <span className="hero-tuner__label">Light CTAs</span>
+            <input
+              type="checkbox"
+              checked={tuning.lightCtas}
+              onChange={setChecked('lightCtas')}
+            />
+            <span className="hero-tuner__value">
+              {tuning.lightCtas ? 'Light' : 'Dark'}
+            </span>
+          </label>
           <button className="hero-tuner__reset" onClick={onReset}>
             Reset
           </button>
@@ -371,11 +385,11 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
         </div>
 
         <div className="home__cta-row">
-          <button className="home__cta">
+          <button className={`home__cta${tuning.lightCtas ? ' home__cta--light' : ''}`}>
             <img className="home__icon" src={iconArrowUp} alt="" aria-hidden />
             <span>Transfer</span>
           </button>
-          <button className="home__cta">
+          <button className={`home__cta${tuning.lightCtas ? ' home__cta--light' : ''}`}>
             <img className="home__icon" src={iconArrowLeftRight} alt="" aria-hidden />
             <span>Exchange</span>
           </button>
