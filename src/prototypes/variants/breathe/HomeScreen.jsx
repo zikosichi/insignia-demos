@@ -1,26 +1,79 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-import accountBrown from '../../assets/breathe/accounts/main/brown.svg'
-import accountGreen from '../../assets/breathe/accounts/main/green.svg'
-import accountPink from '../../assets/breathe/accounts/main/pink.svg'
-import chargeLightbrown from '../../assets/breathe/accounts/charge/lightbrown.svg'
-import chargePink from '../../assets/breathe/accounts/charge/pink.svg'
+import accountCardTexture from '../../assets/breathe/accounts/account-card-texture.png'
+import accountCardThumb from '../../assets/breathe/accounts/account-card-thumb.png'
+import chargeCardGlow from '../../assets/breathe/accounts/charge-card-glow.svg'
+import chargeCardTexture from '../../assets/breathe/accounts/charge-card-texture.png'
+import chargeCardThumb from '../../assets/breathe/accounts/charge-card-thumb.png'
 
 import offerAubergeVideo from '../../assets/breathe/offers/auberge-du-vent.mp4'
+import iconPeopleCircle from '../../assets/breathe/IconPeopleCircle.svg'
+import iconMagnifyingGlass from '../../assets/breathe/IconMagnifyingGlass.svg'
+import iconBubbleAnnotation from '../../assets/breathe/IconBubbleAnnotation5.svg'
+import iconArrowLeftRight from '../../assets/breathe/IconArrowLeftRight.svg'
+import iconArrowUp from '../../assets/breathe/IconArrowUp.svg'
+import bodyTopCrest from '../../assets/breathe/body-top-crest.svg'
 
-const ACCOUNT_CARDS = [accountBrown, accountGreen, accountPink]
-const CHARGE_CARDS = [chargeLightbrown, chargePink]
+const ACCOUNT_CARDS = [
+  {
+    id: 'account-1',
+    title: 'Account 1',
+    amount: '€1,850,000',
+    breakdown: ['€1,850,000', '$420,000', '£95,000'],
+    background: '#482B4F',
+    text: '#FFFFFF',
+    texture: accountCardTexture,
+    thumb: accountCardThumb,
+  },
+  {
+    id: 'account-2',
+    title: 'Account 2',
+    amount: '€1,420,000',
+    breakdown: ['€940,000', '$310,000', '£72,000'],
+    background: '#5A2E05',
+    text: '#FFFFFF',
+    texture: accountCardTexture,
+    thumb: accountCardThumb,
+  },
+]
+
+const CHARGE_CARDS = [
+  {
+    id: 'charge-1',
+    title: 'Charge card 1',
+    status: 'Available',
+    amount: '€31,580',
+    usage: '€18,420 of €50,000 used',
+    progress: 64 / 328,
+    background: '#CAB495',
+    texture: chargeCardTexture,
+    glow: chargeCardGlow,
+    thumb: chargeCardThumb,
+  },
+  {
+    id: 'charge-2',
+    title: 'Charge card 2',
+    status: 'Available',
+    amount: '€31,580',
+    usage: '€18,420 of €50,000 used',
+    progress: 64 / 328,
+    background: '#D8ABB6',
+    texture: chargeCardTexture,
+    glow: chargeCardGlow,
+    thumb: chargeCardThumb,
+  },
+]
 
 const DEFAULT_TUNING = {
-  shineMult: 0.53,
-  edgeMult: 0.27,
-  glareMult: 1.21,
-  facetPop: 1.4,
-  darkness: 0.35,
-  vignetteStrength: 1,
-  parallaxPx: 28,
-  patternSize: 220,
+  shineMult: 0.52,
+  edgeMult: 0.32,
+  glareMult: 1.29,
+  facetPop: 1.45,
+  darkness: 0,
+  vignetteStrength: 0.22,
+  parallaxPx: 34,
+  patternSize: 500,
 }
 
 function ControlPanel({ tuning, setTuning, onReset }) {
@@ -151,7 +204,10 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
       parseFloat(getComputedStyle(el).getPropertyValue('--parallax-px')) || 28
     // Bg travels further than the live mouse parallax range
     const introParallaxStart = originalPx * 1.5
-    const parent = el.closest('.tilt-phone') || el
+    const parent =
+      el.closest('.tilt-phone') ||
+      el.closest('.prototypes-mobile-host') ||
+      el
     const parallaxEl = el.querySelector('.home__hero-parallax')
     const setReflection = (mx, my) => {
       const dist = Math.hypot(mx - 0.5, my - 0.5)
@@ -167,16 +223,20 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
       el.style.setProperty('--glare-opacity', glare.toFixed(3))
       el.style.setProperty('--border-angle', `${angle.toFixed(2)}deg`)
     }
-    const setParallax = (px) => {
+    const setParallax = (px, py) => {
       if (parallaxEl) {
-        parallaxEl.style.transform = `translate3d(0, ${px.toFixed(2)}px, 0)`
+        parallaxEl.style.transform = `translate3d(${px.toFixed(2)}px, ${py.toFixed(2)}px, 0)`
       }
     }
     // Read the live mouse-driven parallax value from the parent
-    const liveParallaxY = () => {
+    const liveParallax = () => {
       const cs = getComputedStyle(parent)
+      const mx = parseFloat(cs.getPropertyValue('--pointer-from-left')) || 0.5
       const my = parseFloat(cs.getPropertyValue('--pointer-from-top')) || 0.5
-      return (0.5 - my) * originalPx
+      return {
+        x: (0.5 - mx) * originalPx,
+        y: (0.5 - my) * originalPx,
+      }
     }
     const tick = (now) => {
       const elapsed = now - start
@@ -188,8 +248,10 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
         const my = fromY + (toY - fromY) * e
         setReflection(mx, my)
         // Bg parallax: from introParallaxStart (low) → live mouse position
-        const py = introParallaxStart + (liveParallaxY() - introParallaxStart) * e
-        setParallax(py)
+        const live = liveParallax()
+        const px = live.x * e
+        const py = introParallaxStart + (live.y - introParallaxStart) * e
+        setParallax(px, py)
       } else if (elapsed < totalDuration) {
         // Phase 2: blend reflection toward live mouse, parallax already
         // tracks live mouse — no further work needed there.
@@ -201,7 +263,8 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
         const mouseMy =
           parseFloat(cs.getPropertyValue('--pointer-from-top')) || 0.5
         setReflection(toX + (mouseMx - toX) * e, toY + (mouseMy - toY) * e)
-        setParallax(liveParallaxY())
+        const live = liveParallax()
+        setParallax(live.x, live.y)
       } else {
         // Done — remove all overrides; CSS rule resumes parallax
         for (const k of [
@@ -252,15 +315,15 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
       <div className="home__hero-content">
         <div className="home__top-row">
           <button className="home__top-circle" aria-label="Profile">
-            <HomeIcon name="user" />
+            <img className="home__top-icon" src={iconPeopleCircle} alt="" />
           </button>
           <div className="home__top-actions">
             <button className="home__top-circle" aria-label="Search">
-              <HomeIcon name="search" />
+              <img className="home__top-icon" src={iconMagnifyingGlass} alt="" />
             </button>
-            <button className="home__pill" aria-label="My banker">
-              <HomeIcon name="bubble" size={18} />
-              <span>My banker</span>
+            <button className="home__pill" aria-label="Help">
+              <img className="home__top-icon" src={iconBubbleAnnotation} alt="" />
+              <span>Help</span>
             </button>
           </div>
         </div>
@@ -286,12 +349,12 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
 
         <div className="home__cta-row">
           <button className="home__cta">
-            <HomeIcon name="arrowUp" />
-            <span>Transfer money</span>
+            <img className="home__icon" src={iconArrowUp} alt="" aria-hidden />
+            <span>Transfer</span>
           </button>
           <button className="home__cta">
-            <HomeIcon name="arrowSwap" />
-            <span>Exchange currency</span>
+            <img className="home__icon" src={iconArrowLeftRight} alt="" aria-hidden />
+            <span>Exchange</span>
           </button>
         </div>
       </div>
@@ -302,9 +365,8 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
 /* ── Recent transactions block (Figma node 344:2754) ── */
 
 const ACCOUNT_DOT_COLORS = {
-  1: '#6897D9', // tension/8
-  2: '#BF8A39', // warning/8
-  3: '#68A862', // neighbor/8
+  1: '#BEB3CD',
+  2: '#D9AD9C',
 }
 
 function Amount({ value }) {
@@ -322,11 +384,9 @@ function Amount({ value }) {
 
 function RecentTransactions({ items }) {
   return (
-    <section className="home-section">
+    <section className="home-section home-section--tx">
       <header className="home-section__header">
-        <span className="home-section__rule" />
         <h3 className="home-section__title">Recent transactions</h3>
-        <span className="home-section__rule" />
       </header>
       <div className="home-tx">
         <ul className="home-tx__list">
@@ -372,7 +432,7 @@ const RECENT_TRANSACTIONS = [
   { name: 'Palais de Lumière', account: 2, amount: '−€23,750.49' },
   { name: 'Apple Store', account: 1, amount: '−€450.00' },
   { name: 'Château de l’Étoile', account: 2, amount: '−€15,600.67' },
-  { name: 'Auberge du Vent', account: 3, amount: '−€2,300.00' },
+  { name: 'Auberge du Vent', account: 1, amount: '−€2,300.00' },
 ]
 
 /* ── Stories: "Special offers for you" (Figma node 344:2784) ──
@@ -638,6 +698,77 @@ function SegmentedTabs({ tabs, activeIndex, onChange }) {
   )
 }
 
+function AccountBox({ card, index }) {
+  return (
+    <article
+      className="home__cards-card home-account-card"
+      style={{
+        '--i': index,
+        '--account-bg': card.background,
+        '--account-text': card.text,
+      }}
+    >
+      <span
+        className="home-account-card__texture"
+        style={{ backgroundImage: `url(${card.texture})` }}
+        aria-hidden
+      />
+      <p className="home-account-card__title">{card.title}</p>
+      <div className="home-account-card__copy">
+        <p className="home-account-card__amount">{card.amount}</p>
+        <div className="home-account-card__breakdown" aria-label={card.breakdown.join(', ')}>
+          {card.breakdown.map((item, i) => (
+            <span key={item} className="home-account-card__breakdown-item">
+              {i > 0 && <span className="home-account-card__separator" aria-hidden />}
+              <span>{item}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <span className="home-account-card__thumb-wrap" aria-hidden>
+        <img className="home-account-card__thumb" src={card.thumb} alt="" />
+      </span>
+      <span className="home-account-card__stitch" aria-hidden />
+    </article>
+  )
+}
+
+function ChargeCard({ card, index }) {
+  return (
+    <article
+      className="home__cards-card home-charge-card"
+      style={{
+        '--i': index,
+        '--charge-bg': card.background,
+        '--charge-progress': `${card.progress * 100}%`,
+      }}
+    >
+      <span
+        className="home-charge-card__texture"
+        style={{ backgroundImage: `url(${card.texture})` }}
+        aria-hidden
+      />
+      <span className="home-charge-card__glow home-charge-card__glow--right" aria-hidden>
+        <img src={card.glow} alt="" />
+      </span>
+      <span className="home-charge-card__glow home-charge-card__glow--left" aria-hidden>
+        <img src={card.glow} alt="" />
+      </span>
+      <p className="home-charge-card__title">{card.title}</p>
+      <p className="home-charge-card__status">{card.status}</p>
+      <p className="home-charge-card__amount">{card.amount}</p>
+      <p className="home-charge-card__usage">{card.usage}</p>
+      <span className="home-charge-card__progress" aria-hidden>
+        <span />
+      </span>
+      <span className="home-charge-card__thumb-wrap" aria-hidden>
+        <img className="home-charge-card__thumb" src={card.thumb} alt="" />
+      </span>
+      <span className="home-charge-card__stitch" aria-hidden />
+    </article>
+  )
+}
+
 export default function HomeScreen({ leatherSrc, foilSrc, edgesSrc }) {
   const [tuning, setTuning] = useState(DEFAULT_TUNING)
   const [tabIndex, setTabIndex] = useState(0)
@@ -659,7 +790,7 @@ export default function HomeScreen({ leatherSrc, foilSrc, edgesSrc }) {
     return () => ro.disconnect()
   }, [tabIndex])
   useEffect(() => {
-    // Re-measure once images load (SVGs without intrinsic size before parse).
+    // Re-measure once card texture assets load.
     const imgs = listRefs[tabIndex].current?.querySelectorAll('img') ?? []
     let pending = imgs.length
     if (!pending) return
@@ -683,6 +814,7 @@ export default function HomeScreen({ leatherSrc, foilSrc, edgesSrc }) {
         tuning={tuning}
       />
       <div className="home__body">
+        <img className="home__body-crest" src={bodyTopCrest} alt="" aria-hidden />
         <SegmentedTabs
           tabs={[
             { count: ACCOUNT_CARDS.length, label: 'Accounts' },
@@ -707,15 +839,13 @@ export default function HomeScreen({ leatherSrc, foilSrc, edgesSrc }) {
                 className={`home__cards${active ? ' home__cards--active' : ''}`}
                 aria-hidden={!active}
               >
-                {set.map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt=""
-                    className="home__cards-card"
-                    style={{ '--i': i }}
-                  />
-                ))}
+                {set.map((card, i) =>
+                  idx === 0 ? (
+                    <AccountBox key={card.id} card={card} index={i} />
+                  ) : (
+                    <ChargeCard key={card.id} card={card} index={i} />
+                  ),
+                )}
               </div>
             )
           })}

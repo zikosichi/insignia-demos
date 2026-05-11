@@ -19,7 +19,7 @@
   background: #0d0908;
 }
 .prototypes-page--mobile > .prototypes-mobile-host {
-  width: 100%;
+  width: 342px;
   height: 100%;
 }
 .prototypes-page--mobile .breathe {
@@ -230,7 +230,7 @@
   cursor: pointer;
   isolation: isolate;
   /* --cta-border-w controls border thickness; --mx/--my/--border-angle come from TiltPhone */
-  --cta-border-w: 2.5px;
+  --cta-border-w: 1.5px;
   /* Parallax shadow — offsets track phone tilt via --tilt-shadow-x/y from TiltPhone */
   box-shadow:
     /* Inner white rim — sits just inside the gold border, blending with it */
@@ -465,12 +465,17 @@
   font-style: normal;
   font-display: swap;
 }
-/* Proxima Nova has no true 500 — Semibold (600) is the closest weight
-   used in the Figma "Medium" references, so map both 500 and 600 here. */
+@font-face {
+  font-family: "Proxima Nova";
+  src: url("../assets/fonts/proxima-nova/ProximaNova-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "Proxima Nova";
   src: url("../assets/fonts/proxima-nova/ProximaNova-Semibold.woff2") format("woff2");
-  font-weight: 500 600;
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
@@ -494,7 +499,7 @@
 .home__hero {
   position: relative;
   width: 100%;
-  aspect-ratio: 392 / 420;
+  aspect-ratio: 392 / 400;
   overflow: hidden;
   isolation: isolate;
   /* Square pattern tile size — every reflection layer references this so
@@ -507,15 +512,32 @@
 .home__body {
   position: relative;
   z-index: 2;
-  margin-top: -16px;
+  margin-top: -24px;
   min-height: 200px;
-  padding: 16px;
+  padding: 32px 16px 16px;
   background: #F5F3F3;
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
 }
 
-/* ─── Account/Charge card stack (rendered SVGs) ─── */
+.home__body-crest {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 342px;
+  height: auto;
+  display: block;
+  transform: translate(-50%, -24px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home__body > :not(.home__body-crest) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Account/Charge card stack ─── */
 /* Stage stacks both lists in the same grid cell so the wrapper takes the max
    height — switching tabs no longer reflows the page. */
 .home__cards-stage {
@@ -545,12 +567,316 @@
 .home__cards-card {
   display: block;
   width: 100%;
-  height: auto;
 }
 
 .home__cards--active .home__cards-card {
   animation: home-card-slide-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--i, 0) * 50ms);
+}
+
+.home-account-card {
+  position: relative;
+  height: 116px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--account-bg);
+  color: var(--account-text);
+  isolation: isolate;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.home-account-card__texture {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: 471px;
+  height: 157px;
+  transform: translate(-50%, -50%);
+  background-position: center;
+  background-size: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.home-account-card__title {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  z-index: 2;
+  margin: 0;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0;
+  color: currentColor;
+  opacity: 0.6;
+}
+
+.home-account-card__copy {
+  position: absolute;
+  left: 16px;
+  top: 48px;
+  z-index: 2;
+  width: min(213px, calc(100% - 96px));
+}
+
+.home-account-card__amount {
+  margin: 0;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: 0;
+  color: currentColor;
+}
+
+.home-account-card__breakdown {
+  display: flex;
+  width: 100%;
+  gap: 6px;
+  align-items: center;
+  overflow: hidden;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  color: currentColor;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+.home-account-card__breakdown-item {
+  display: inline-flex;
+  min-width: 0;
+  gap: 6px;
+  align-items: center;
+}
+
+.home-account-card__breakdown-item span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-account-card__separator {
+  display: block;
+  flex: 0 0 auto;
+  width: 1px;
+  height: 16px;
+  background: currentColor;
+  opacity: 0.34;
+}
+
+.home-account-card__thumb-wrap {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 32px;
+  height: 20px;
+  overflow: hidden;
+  border: 0.5px solid color-mix(in srgb, currentColor 40%, transparent);
+  border-radius: 2px;
+}
+
+.home-account-card__thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-account-card__stitch {
+  position: absolute;
+  inset: 4px;
+  z-index: 3;
+  border-radius: 6px;
+  opacity: 0.2;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 13px) top left / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, currentColor 0 6px, transparent 6px 13px) bottom left / 100% 1px no-repeat,
+    repeating-linear-gradient(180deg, currentColor 0 6px, transparent 6px 13px) top left / 1px 100% no-repeat,
+    repeating-linear-gradient(180deg, currentColor 0 6px, transparent 6px 13px) top right / 1px 100% no-repeat;
+}
+
+.home-charge-card {
+  position: relative;
+  height: 116px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background: var(--charge-bg);
+  color: #000;
+  box-shadow:
+    0 0 0.5px rgba(0, 0, 0, 0.18),
+    0 3px 8px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  isolation: isolate;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.home-charge-card__texture {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: 471px;
+  height: 157px;
+  transform: translate(-50%, -50%);
+  background-position: center;
+  background-size: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.home-charge-card__glow {
+  position: absolute;
+  z-index: 1;
+  width: 287px;
+  height: 275px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.home-charge-card__glow img {
+  width: 240px;
+  height: 160px;
+  transform: rotate(-38.58deg) scaleY(-1);
+}
+
+.home-charge-card__glow--right {
+  left: calc(50% + 137.7px);
+  top: calc(50% + 20.37px);
+  transform: translate(-50%, -50%);
+}
+
+.home-charge-card__glow--left {
+  left: calc(50% - 132.3px);
+  top: calc(50% - 28.63px);
+  transform: translate(-50%, -50%);
+}
+
+.home-charge-card__title,
+.home-charge-card__status,
+.home-charge-card__amount {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: currentColor;
+  mix-blend-mode: hard-light;
+}
+
+.home-charge-card__title {
+  left: 15px;
+  top: 15px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  opacity: 0.6;
+}
+
+.home-charge-card__status {
+  left: 15px;
+  top: 51px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0;
+  opacity: 0.6;
+}
+
+.home-charge-card__amount {
+  left: 15px;
+  top: 65px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: 0;
+  opacity: 0.8;
+}
+
+.home-charge-card__usage {
+  position: absolute;
+  right: 15px;
+  top: 72px;
+  z-index: 3;
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0;
+  color: #000;
+  text-align: right;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.home-charge-card__progress {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  top: 97px;
+  z-index: 3;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 600px;
+  background: rgba(0, 0, 0, 0.16);
+  mix-blend-mode: hard-light;
+}
+
+.home-charge-card__progress span {
+  display: block;
+  width: var(--charge-progress);
+  height: 100%;
+  border-radius: 60px;
+  background: #000;
+}
+
+.home-charge-card__thumb-wrap {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 3;
+  width: 32px;
+  height: 20px;
+  overflow: hidden;
+  border: 0.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+}
+
+.home-charge-card__thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-charge-card__stitch {
+  position: absolute;
+  inset: 3px;
+  z-index: 4;
+  border-radius: 6px;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, #000 0 6px, transparent 6px 13px) top left / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, #000 0 6px, transparent 6px 13px) bottom left / 100% 1px no-repeat,
+    repeating-linear-gradient(180deg, #000 0 6px, transparent 6px 13px) top left / 1px 100% no-repeat,
+    repeating-linear-gradient(180deg, #000 0 6px, transparent 6px 13px) top right / 1px 100% no-repeat;
 }
 
 @keyframes home-card-slide-in {
@@ -623,7 +949,7 @@
   color: #615051;                  /* neutral/11 — inactive */
   font-family: inherit;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   transition: color 0.18s ease;
 }
@@ -645,7 +971,7 @@
   background: #E5DDDD;             /* neutral/4 — inactive default */
   color: #615051;                  /* neutral/11 */
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   font-variant-numeric: tabular-nums;
   box-sizing: border-box;
@@ -773,7 +1099,7 @@
   z-index: 6;
   width: 100%;
   height: 100%;
-  padding: 56px 16px 64px; /* top accounts for status bar; bottom leaves breathing room below CTAs */
+  padding: 64px 16px 56px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -794,48 +1120,87 @@
 }
 
 .home__top-circle {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.06);
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 0;
+  background: linear-gradient(180deg, rgba(104, 54, 54, 0.4) 0%, rgba(76, 31, 32, 0.4) 100%);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.25),
+    0 6px 6px rgba(0, 0, 0, 0.25),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.55),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25);
   color: #f4ece2;
   display: inline-flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   cursor: pointer;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: 0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 6px;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .home__top-circle:hover { transform: scale(1.04); }
 .home__top-circle:active { transform: scale(0.96); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
 
+.home__top-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
 .home__pill {
-  height: 36px;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  min-width: 32px;
+  height: 32px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 0;
+  background: linear-gradient(180deg, rgba(104, 54, 54, 0.4) 0%, rgba(76, 31, 32, 0.4) 100%);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.25),
+    0 6px 6px rgba(0, 0, 0, 0.25),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.55),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25);
   color: #f4ece2;
   display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 500;
+  gap: 4px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
   cursor: pointer;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home__pill span {
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  width: 34px;
+  height: 24px;
+  font-family: "Proxima Nova", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #FFFFFF;
 }
 
 .home__pill:hover { transform: scale(1.025); }
 .home__pill:active { transform: scale(0.975); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
 
 .home__balance {
-  margin-top: 56px; /* push balance + CTAs further down the hero */
+  margin-top: 36px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -847,9 +1212,22 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
-  color: rgba(244, 236, 226, 0.78);
-  letter-spacing: 0.01em;
+  font-family: "Proxima Nova", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #FFEFD5;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.home__balance-label span {
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  width: 93px;
+  height: 24px;
 }
 
 .home__balance-amount {
@@ -867,42 +1245,42 @@
 }
 
 .home__cta-row {
-  margin-top: 18px; /* tight gap below balance */
+  margin-top: 8px;
   display: flex;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-/* Dark burgundy CTA with reflective gold border (matches Transfer/Exchange spec).
-   Border uses the same masked-gradient trick as .breathe-cta. */
+/* Dark burgundy CTA with gold border, matched to Figma node 371:588. */
 .home__cta {
+  box-sizing: border-box;
   position: relative;
   flex: 1;
-  height: 72px;
+  height: 64px;
   border: 0;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(72, 11, 21, 0.32) 0%, rgba(37, 5, 11, 0.32) 100%);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
-  color: #f4e4cf;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #480b15 0%, #25050b 100%);
+  color: #ffefd5;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-size: 17px;
+  gap: 0;
+  font-family: "Proxima Nova", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-size: 16px;
   font-weight: 500;
-  letter-spacing: -0.005em;
+  line-height: 24px;
+  letter-spacing: 0;
   cursor: pointer;
   isolation: isolate;
-  --cta-border-w: 2px;
-  /* Parallax shadow — tracks phone tilt via --tilt-shadow-x/y from TiltPhone */
+  --cta-bevel-outer-w: 1px;
+  --cta-bevel-inner-w: 1px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    calc(var(--tilt-shadow-x, 0px) * 0.45)
-      calc(22px + var(--tilt-shadow-y, 0px) * 0.45) 48px rgba(0, 0, 0, 0.55),
-    calc(var(--tilt-shadow-x, 0px) * 0.25)
-      calc(10px + var(--tilt-shadow-y, 0px) * 0.25) 18px rgba(0, 0, 0, 0.45),
-    0 2px 6px rgba(0, 0, 0, 0.3);
+    0 0 16px rgba(247, 242, 208, 0.18),
+    0 -2px 4px rgba(0, 0, 0, 0.28),
+    0 5px 14px rgba(0, 0, 0, 0.42),
+    0 14px 28px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 239, 213, 0.08);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -910,35 +1288,69 @@
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 2;
   border-radius: inherit;
-  padding: var(--cta-border-w);
-  background: linear-gradient(
-    var(--border-angle, 135deg),
-    #8a6f30 0%,
-    #c9a14a 18%,
-    #efd585 38%,
-    #f6e4ad 50%,
-    #efd585 62%,
-    #c9a14a 82%,
-    #8a6f30 100%
-  );
+  padding: var(--cta-bevel-outer-w);
+  background:
+    conic-gradient(
+      from var(--border-angle, 135deg),
+      #7f5f16 0deg,
+      #ab7b43 60deg,
+      #dbc39d 118deg,
+      #8b6d19 180deg,
+      #c4945d 242deg,
+      #f7f2d0 304deg,
+      #7f5f16 360deg
+    );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(247, 242, 208, 0.22));
+}
+
+.home__cta::after {
+  content: "";
+  position: absolute;
+  inset: var(--cta-bevel-outer-w);
   z-index: 2;
+  border-radius: calc(12px - var(--cta-bevel-outer-w));
+  padding: var(--cta-bevel-inner-w);
+  background:
+    conic-gradient(
+      from calc(var(--border-angle, 135deg) + 18deg),
+      #c39159 0deg,
+      #f7f2d0 66deg,
+      #dbc39d 126deg,
+      #9f7b2c 184deg,
+      #d4b470 246deg,
+      #fff5bf 304deg,
+      #c39159 360deg
+    );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.95;
 }
 
 .home__cta:hover { transform: scale(1.012); }
 .home__cta:active { transform: scale(0.975); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
 
 .home__cta .home__icon {
-  width: 22px;
-  height: 22px;
-  stroke-width: 1.4;
-  color: #f4e4cf;
+  display: block;
+  width: 24px;
+  height: 24px;
+  color: #ffefd5;
+}
+
+.home__cta > * {
+  position: relative;
+  z-index: 3;
 }
 
 /* ─── Sections (cards / tx / offers) ─── */
@@ -1432,6 +1844,10 @@
   margin-top: 32px;
 }
 
+.home-section--tx {
+  gap: 12px;
+}
+
 .home-section__header {
   display: flex;
   align-items: center;
@@ -1455,6 +1871,10 @@
   font-weight: 400;
   color: #403535;                  /* neutral/12 */
   text-align: center;
+}
+
+.home-section--tx .home-section__title {
+  text-align: left;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -1727,15 +2147,12 @@
 }
 
 /* ─────────────────────────────────────────────────────────
-   Recent transactions — Figma node 344:2754
+   Recent transactions — Figma node 371:636
    ───────────────────────────────────────────────────────── */
-/* Card sizes to its content; every row has equal top/bottom padding so
-   the rhythm is uniform. The dot aligns to the merchant-name line, and
-   each row is followed by a 1px divider including the last (acts as a
-   separator from the See-all button). */
 .home-tx {
   position: relative;
   width: 100%;
+  height: 320px;
   background: #FBFAFA;             /* neutral/1 */
   border-radius: 10px;
   box-shadow:
@@ -1748,22 +2165,23 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  height: 264px;
 }
 
 .home-tx__row {
   position: relative;
-  padding: 12px 16px;             /* equal vertical padding */
+  height: 64px;
+  padding: 16px 16px 0;
   display: grid;
   grid-template-columns: 8px 1fr auto;
-  column-gap: 8px;
+  column-gap: 6px;
   align-items: start;
 }
 
 .home-tx__row::after {
-  /* hairline divider at the bottom of every row */
   content: "";
   position: absolute;
-  bottom: 0;
+  bottom: -8px;
   left: 16px;
   right: 16px;
   height: 1px;
@@ -1781,6 +2199,8 @@
 
 .home-tx__text {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .home-tx__name {
@@ -1798,8 +2218,8 @@
 .home-tx__sub {
   margin: 0;
   font-family: inherit;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 16px;
+  line-height: 24px;
   font-weight: 400;
   color: #7F6868;                  /* neutral/10 */
 }
@@ -1827,9 +2247,10 @@
   justify-content: center;
   gap: 4px;
   width: 100%;
+  height: 56px;
   background: transparent;
   border: 0;
-  padding: 12px 16px;             /* same vertical rhythm as rows */
+  padding: 0 16px;
   cursor: pointer;
   color: #8E303B;                  /* primary/11 */
   font-family: inherit;
