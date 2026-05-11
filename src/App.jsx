@@ -116,10 +116,10 @@ export default function App() {
         <CardView cards={cards} activeIndex={activeCardIndex} onChangeIndex={setActiveCardIndex} />
       </div>
       <div style={{ display: view === 'cards' ? 'block' : 'none' }}>
-        <Prototypes screen="cards" />
+        <Prototypes screen="cards" controlsEnabled={view === 'cards'} />
       </div>
       <div style={{ display: view === 'home' ? 'block' : 'none' }}>
-        <Prototypes screen="home" />
+        <Prototypes screen="home" controlsEnabled={view === 'home'} />
       </div>
     </div>
   )

@@ -44,7 +44,7 @@ function MobilePointerHost({ children }) {
   )
 }
 
-export default function Prototypes({ screen = 'cards' }) {
+export default function Prototypes({ screen = 'cards', controlsEnabled = true }) {
   const [variant, setVariant] = useState('breathe')
 
   const Active = variants.find((v) => v.key === variant)?.Component ?? Breathe
@@ -53,7 +53,7 @@ export default function Prototypes({ screen = 'cards' }) {
     return (
       <div className="prototypes-page prototypes-page--mobile">
         <MobilePointerHost>
-          <Active screen={screen} />
+          <Active screen={screen} controlsEnabled={controlsEnabled} />
         </MobilePointerHost>
       </div>
     )
@@ -62,7 +62,7 @@ export default function Prototypes({ screen = 'cards' }) {
   return (
     <div className="prototypes-page">
       <TiltPhone tiltEnabled={true}>
-        <Active screen={screen} />
+        <Active screen={screen} controlsEnabled={controlsEnabled} />
       </TiltPhone>
     </div>
   )

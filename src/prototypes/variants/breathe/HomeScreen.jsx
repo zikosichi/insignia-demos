@@ -75,63 +75,122 @@ const DEFAULT_TUNING = {
   parallaxPx: 34,
   patternSize: 470,
   lightCtas: true,
+  balanceRevealEffect: 'blur',
+}
+
+const BALANCE_VALUE = 4206000
+const BALANCE_TEXT = `€${BALANCE_VALUE.toLocaleString('en-US')}`
+
+function getInitialCounterValue(revealEffect) {
+  if (revealEffect !== 'counter') return BALANCE_VALUE
+  if (typeof window === 'undefined') return BALANCE_VALUE
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? BALANCE_VALUE
+    : 0
 }
 
 function ControlPanel({ tuning, setTuning, onReset }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const set = (key) => (e) =>
     setTuning((t) => ({ ...t, [key]: parseFloat(e.target.value) }))
   const setChecked = (key) => (e) =>
     setTuning((t) => ({ ...t, [key]: e.target.checked }))
-  const rows = [
-    ['shineMult', 'Shine', 0, 2, 0.01],
-    ['edgeMult', 'Edge shine', 0, 2, 0.01],
-    ['glareMult', 'Glare', 0, 2, 0.01],
-    ['facetPop', 'Facet pop', 0.5, 4, 0.05],
-    ['darkness', 'Darkness', 0, 0.9, 0.01],
-    ['vignetteStrength', 'Vignette', 0, 2, 0.01],
-    ['parallaxPx', 'Parallax (px)', 0, 80, 1],
-    ['patternSize', 'Pattern size (%)', 100, 500, 5],
+  const setText = (key) => (e) =>
+    setTuning((t) => ({ ...t, [key]: e.target.value }))
+  const sections = [
+    {
+      title: 'Reflection',
+      rows: [
+        ['shineMult', 'Shine', 0, 2, 0.01],
+        ['edgeMult', 'Edge shine', 0, 2, 0.01],
+        ['glareMult', 'Glare', 0, 2, 0.01],
+        ['facetPop', 'Facet pop', 0.5, 4, 0.05],
+      ],
+    },
+    {
+      title: 'Surface',
+      rows: [
+        ['darkness', 'Darkness', 0, 0.9, 0.01],
+        ['vignetteStrength', 'Vignette', 0, 2, 0.01],
+        ['patternSize', 'Pattern size', 100, 500, 5, '%'],
+      ],
+    },
+    {
+      title: 'Motion',
+      rows: [['parallaxPx', 'Parallax', 0, 80, 1, 'px']],
+    },
   ]
   return createPortal(
     <div className={`hero-tuner${open ? '' : ' hero-tuner--closed'}`}>
       <button
+        type="button"
         className="hero-tuner__toggle"
         onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
         aria-label="Hero tuner"
       >
-        {open ? '▾ Hero' : '⚙'}
+        <span className="hero-tuner__title">Hero controls</span>
+        <span className="hero-tuner__chevron" aria-hidden>
+          {open ? '⌃' : '⌄'}
+        </span>
       </button>
       {open && (
         <div className="hero-tuner__body">
-          {rows.map(([k, label, min, max, step]) => (
-            <label key={k} className="hero-tuner__row">
-              <span className="hero-tuner__label">{label}</span>
-              <input
-                type="range"
-                min={min}
-                max={max}
-                step={step}
-                value={tuning[k]}
-                onChange={set(k)}
-              />
-              <span className="hero-tuner__value">{tuning[k]}</span>
-            </label>
+          {sections.map((section) => (
+            <section key={section.title} className="hero-tuner__section">
+              <div className="hero-tuner__section-title">{section.title}</div>
+              {section.rows.map(([k, label, min, max, step, suffix = '']) => (
+                <label key={k} className="hero-tuner__row">
+                  <span className="hero-tuner__label">{label}</span>
+                  <span className="hero-tuner__control">
+                    <input
+                      type="range"
+                      min={min}
+                      max={max}
+                      step={step}
+                      value={tuning[k]}
+                      onChange={set(k)}
+                    />
+                    <span className="hero-tuner__value">
+                      {tuning[k]}
+                      {suffix}
+                    </span>
+                  </span>
+                </label>
+              ))}
+            </section>
           ))}
-          <label className="hero-tuner__row hero-tuner__row--checkbox">
-            <span className="hero-tuner__label">Light CTAs</span>
-            <input
-              type="checkbox"
-              checked={tuning.lightCtas}
-              onChange={setChecked('lightCtas')}
-            />
-            <span className="hero-tuner__value">
-              {tuning.lightCtas ? 'Light' : 'Dark'}
-            </span>
-          </label>
-          <button className="hero-tuner__reset" onClick={onReset}>
-            Reset
-          </button>
+          <section className="hero-tuner__section">
+            <div className="hero-tuner__section-title">Content</div>
+            <label className="hero-tuner__field">
+              <span className="hero-tuner__label">Balance reveal</span>
+              <select
+                value={tuning.balanceRevealEffect}
+                onChange={setText('balanceRevealEffect')}
+              >
+                <option value="blur">Blur</option>
+                <option value="counter">Counter</option>
+              </select>
+            </label>
+            <label className="hero-tuner__switch-row">
+              <span>
+                <span className="hero-tuner__label">Light CTAs</span>
+                <span className="hero-tuner__hint">
+                  {tuning.lightCtas ? 'Enabled' : 'Disabled'}
+                </span>
+              </span>
+              <input
+                type="checkbox"
+                checked={tuning.lightCtas}
+                onChange={setChecked('lightCtas')}
+              />
+            </label>
+          </section>
+          <div className="hero-tuner__footer">
+            <button className="hero-tuner__reset" onClick={onReset}>
+              Reset controls
+            </button>
+          </div>
         </div>
       )}
     </div>,
@@ -190,6 +249,64 @@ const ICONS = {
 
 function HomeIcon({ name, size, stroke }) {
   return <Icon d={ICONS[name]} size={size} stroke={stroke} />
+}
+
+function BalanceAmount({ revealEffect }) {
+  const [counterValue, setCounterValue] = useState(() =>
+    getInitialCounterValue(revealEffect),
+  )
+
+  useEffect(() => {
+    if (revealEffect !== 'counter') return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    let raf
+    let timeout
+    const delay = 525
+    const duration = 1200
+
+    timeout = window.setTimeout(() => {
+      const start = performance.now()
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / duration)
+        const eased = 1 - Math.pow(1 - t, 3)
+        setCounterValue(Math.round(BALANCE_VALUE * eased))
+        if (t < 1) raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
+    }, delay)
+
+    return () => {
+      window.clearTimeout(timeout)
+      cancelAnimationFrame(raf)
+    }
+  }, [revealEffect])
+
+  if (revealEffect === 'counter') {
+    return (
+      <div
+        className="home__balance-amount home__balance-amount--counter"
+        aria-label={BALANCE_TEXT}
+      >
+        €{counterValue.toLocaleString('en-US')}
+      </div>
+    )
+  }
+
+  return (
+    <div className="home__balance-amount" aria-label={BALANCE_TEXT}>
+      {Array.from(BALANCE_TEXT).map((ch, i) => (
+        <span
+          key={i}
+          className="home__balance-amount-char"
+          style={{ '--i': i }}
+          aria-hidden
+        >
+          {ch}
+        </span>
+      ))}
+    </div>
+  )
 }
 
 function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
@@ -370,18 +487,10 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
             <HomeIcon name="eye" size={18} />
             <span>Total balance</span>
           </div>
-          <div className="home__balance-amount" aria-label="€4,206,000">
-            {Array.from('€4,206,000').map((ch, i) => (
-              <span
-                key={i}
-                className="home__balance-amount-char"
-                style={{ '--i': i }}
-                aria-hidden
-              >
-                {ch}
-              </span>
-            ))}
-          </div>
+          <BalanceAmount
+            key={tuning.balanceRevealEffect}
+            revealEffect={tuning.balanceRevealEffect}
+          />
         </div>
 
         <div className="home__cta-row">
@@ -676,7 +785,7 @@ const NAV_TABS = [
   { id: 'services', label: 'Services' },
 ]
 
-function BottomNav({ activeId = 'home', onChange }) {
+export function BottomNav({ activeId = 'home', onChange }) {
   return (
     <nav className="home-nav" role="tablist" aria-label="Primary">
       {NAV_TABS.map((tab) => {
@@ -806,7 +915,13 @@ function ChargeCard({ card, index }) {
   )
 }
 
-export default function HomeScreen({ leatherSrc, foilSrc, edgesSrc }) {
+export default function HomeScreen({
+  leatherSrc,
+  foilSrc,
+  edgesSrc,
+  onNavigate,
+  showControls = true,
+}) {
   const [tuning, setTuning] = useState(DEFAULT_TUNING)
   const [tabIndex, setTabIndex] = useState(0)
   const [direction, setDirection] = useState(1)
@@ -892,12 +1007,14 @@ export default function HomeScreen({ leatherSrc, foilSrc, edgesSrc }) {
         <RecentTransactions items={RECENT_TRANSACTIONS} />
         <Stories slides={SPECIAL_OFFERS} />
       </div>
-      <BottomNav />
-      <ControlPanel
-        tuning={tuning}
-        setTuning={setTuning}
-        onReset={() => setTuning(DEFAULT_TUNING)}
-      />
+      <BottomNav activeId="home" onChange={onNavigate} />
+      {showControls && (
+        <ControlPanel
+          tuning={tuning}
+          setTuning={setTuning}
+          onReset={() => setTuning(DEFAULT_TUNING)}
+        />
+      )}
     </div>
   )
 }
