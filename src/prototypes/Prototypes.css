@@ -19,7 +19,8 @@
   background: #0d0908;
 }
 .prototypes-page--mobile > .prototypes-mobile-host {
-  width: 342px;
+  width: 100%;
+  min-width: 0;
   height: 100%;
 }
 .prototypes-page--mobile .breathe {
@@ -1592,6 +1593,10 @@
   z-index: 1;
 }
 
+.home__body > .home-tabs {
+  animation: home-content-in 720ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+}
+
 /* ─── Account/Charge card stack ─── */
 /* Stage stacks both lists in the same grid cell so the wrapper takes the max
    height — switching tabs no longer reflows the page. */
@@ -1599,6 +1604,7 @@
   position: relative;
   margin-top: 16px;
   transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: home-content-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 240ms both;
 }
 
 .home__cards {
@@ -1947,6 +1953,17 @@
     opacity: 1;
     transform: translateX(0);
     filter: blur(0);
+  }
+}
+
+@keyframes home-content-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
   }
 }
 
@@ -3121,6 +3138,14 @@
     animation: none;
   }
 
+  .home__body > .home-tabs,
+  .home__cards-stage,
+  .home-section--tx,
+  .home__body > .home-section:not(.home-section--tx) {
+    animation: none;
+    translate: none;
+  }
+
   .cards-tabs,
   .cards-card-showcase,
   .cards-thumbs,
@@ -3187,6 +3212,11 @@
 
 .home-section--tx {
   gap: 12px;
+  animation: home-content-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 390ms both;
+}
+
+.home__body > .home-section:not(.home-section--tx) {
+  animation: home-content-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 540ms both;
 }
 
 .home-section__header {
