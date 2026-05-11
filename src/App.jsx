@@ -56,7 +56,8 @@ export default function App() {
   }, [])
 
   const activeId = cards[activeCardIndex]?.id || 'default'
-  const prototypeScreen = page === '#cards' ? 'cards' : 'home'
+  const prototypeScreen =
+    page === '#cards' ? 'cards' : page === '#transactions' ? 'transactions' : 'home'
 
   // Blank page — standalone, no nav
   if (page === '#blank') {

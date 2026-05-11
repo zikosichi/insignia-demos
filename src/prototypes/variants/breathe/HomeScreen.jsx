@@ -80,6 +80,7 @@ export const DEFAULT_TUNING = {
 
 const BALANCE_VALUE = 4206000
 const BALANCE_TEXT = `€${BALANCE_VALUE.toLocaleString('en-US')}`
+const CONTROL_PANEL_OPEN_KEY = 'breathe-control-panel-open'
 
 function getInitialCounterValue(revealEffect) {
   if (revealEffect !== 'counter') return BALANCE_VALUE
@@ -96,7 +97,10 @@ export function ControlPanel({
   showContentControls = true,
   extraSections = [],
 }) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.localStorage.getItem(CONTROL_PANEL_OPEN_KEY) === 'true'
+  })
   const set = (key) => (e) =>
     setTuning((t) => ({ ...t, [key]: parseFloat(e.target.value) }))
   const setChecked = (key) => (e) =>
@@ -127,18 +131,36 @@ export function ControlPanel({
     },
     ...extraSections,
   ]
+
+  const toggleOpen = () => {
+    setOpen((current) => {
+      const next = !current
+      window.localStorage.setItem(CONTROL_PANEL_OPEN_KEY, String(next))
+      return next
+    })
+  }
+
   return createPortal(
     <div className={`hero-tuner${open ? '' : ' hero-tuner--closed'}`}>
       <button
         type="button"
         className="hero-tuner__toggle"
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggleOpen}
         aria-expanded={open}
         aria-label="Hero tuner"
       >
         <span className="hero-tuner__title">Hero controls</span>
         <span className="hero-tuner__chevron" aria-hidden>
-          {open ? '⌃' : '⌄'}
+          <svg viewBox="0 0 20 20" focusable="false">
+            <path
+              d="m5.5 7.5 4.5 4.5 4.5-4.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </span>
       </button>
       {open && (
@@ -776,14 +798,22 @@ const NAV_ICONS = {
       <path d="M19.5 9.96011C19.5 9.54794 19.297 9.16194 18.957 8.92886L12.707 4.64371C12.2811 4.35168 11.7189 4.35168 11.293 4.64371L5.04297 8.92886C4.70304 9.16195 4.5 9.54796 4.5 9.96011V18.2502C4.50007 18.9405 5.05968 19.5002 5.75 19.5002H8.75V16.7502C8.75 14.9552 10.2051 13.5002 12 13.5002C13.7949 13.5002 15.25 14.9552 15.25 16.7502V19.5002H18.25C18.9403 19.5002 19.4999 18.9405 19.5 18.2502V9.96011ZM21 18.2502C20.9999 19.7689 19.7688 21.0002 18.25 21.0002H14.5C14.0858 21.0002 13.7501 20.6643 13.75 20.2502V16.7502C13.75 15.7837 12.9665 15.0002 12 15.0002C11.0335 15.0002 10.25 15.7837 10.25 16.7502V20.2502C10.2499 20.6643 9.91417 21.0002 9.5 21.0002H5.75C4.23127 21.0002 3.00007 19.7689 3 18.2502V9.96011C3 9.05329 3.4474 8.20433 4.19531 7.69156L10.4453 3.4064C11.3822 2.76427 12.6178 2.76427 13.5547 3.4064L19.8047 7.69156C20.5527 8.20435 21 9.05331 21 9.96011V18.2502Z" />
     ),
   },
-  transactions: (
-    <>
-      <path d="M4 19.25V4.75C4 3.23122 5.23122 2 6.75 2H11.9219C12.6511 2.00007 13.3505 2.29002 13.8662 2.80566L19.1943 8.13379C19.71 8.64946 19.9999 9.3489 20 10.0781V19.25C20 20.7688 18.7688 22 17.25 22H6.75C5.23122 22 4 20.7688 4 19.25ZM5.5 19.25C5.5 19.9404 6.05964 20.5 6.75 20.5H17.25C17.9404 20.5 18.5 19.9404 18.5 19.25V10.0781C18.4999 9.74673 18.3682 9.42869 18.1338 9.19434L12.8057 3.86621C12.5713 3.63183 12.2533 3.50007 11.9219 3.5H6.75C6.05964 3.5 5.5 4.05964 5.5 4.75V19.25Z" />
-      <path d="M12 7.25V3.25H13.5V7.25C13.5 7.94036 14.0596 8.5 14.75 8.5H18.75V10H14.75C13.2312 10 12 8.76878 12 7.25Z" />
-      <path d="M12.25 12.5C12.6642 12.5 13 12.8358 13 13.25C13 13.6642 12.6642 14 12.25 14H8.75C8.33579 14 8 13.6642 8 13.25C8 12.8358 8.33579 12.5 8.75 12.5H12.25Z" />
-      <path d="M15.25 16.5C15.6642 16.5 16 16.8358 16 17.25C16 17.6642 15.6642 18 15.25 18H8.75C8.33579 18 8 17.6642 8 17.25C8 16.8358 8.33579 16.5 8.75 16.5H15.25Z" />
-    </>
-  ),
+  transactions: {
+    selected: (
+      <>
+        <path fillRule="evenodd" clipRule="evenodd" d="M12 7.25C12 8.76878 13.2312 10 14.75 10H20V19.25C20 20.7688 18.7688 22 17.25 22H6.75C5.23122 22 4 20.7688 4 19.25V4.75C4 3.23122 5.23122 2 6.75 2H12V7.25ZM8.75 17.5C8.33579 17.5 8 17.8358 8 18.25C8 18.6642 8.33579 19 8.75 19H15.25C15.6642 19 16 18.6642 16 18.25C16 17.8358 15.6642 17.5 15.25 17.5H8.75ZM8.75 13.5C8.33579 13.5 8 13.8358 8 14.25C8 14.6642 8.33579 15 8.75 15H12.25C12.6642 15 13 14.6642 13 14.25C13 13.8358 12.6642 13.5 12.25 13.5H8.75Z" />
+        <path d="M13.5732 2.5127L19.4873 8.42676C19.5111 8.45056 19.5344 8.475 19.5566 8.5H14.75C14.0597 8.5 13.5 7.94032 13.5 7.25V2.44336C13.525 2.46564 13.5494 2.48889 13.5732 2.5127Z" />
+      </>
+    ),
+    unselected: (
+      <>
+        <path d="M4 19.25V4.75C4 3.23122 5.23122 2 6.75 2H11.9219C12.6511 2.00007 13.3505 2.29002 13.8662 2.80566L19.1943 8.13379C19.71 8.64946 19.9999 9.3489 20 10.0781V19.25C20 20.7688 18.7688 22 17.25 22H6.75C5.23122 22 4 20.7688 4 19.25ZM5.5 19.25C5.5 19.9404 6.05964 20.5 6.75 20.5H17.25C17.9404 20.5 18.5 19.9404 18.5 19.25V10.0781C18.4999 9.74673 18.3682 9.42869 18.1338 9.19434L12.8057 3.86621C12.5713 3.63183 12.2533 3.50007 11.9219 3.5H6.75C6.05964 3.5 5.5 4.05964 5.5 4.75V19.25Z" />
+        <path d="M12 7.25V3.25H13.5V7.25C13.5 7.94036 14.0596 8.5 14.75 8.5H18.75V10H14.75C13.2312 10 12 8.76878 12 7.25Z" />
+        <path d="M12.25 12.5C12.6642 12.5 13 12.8358 13 13.25C13 13.6642 12.6642 14 12.25 14H8.75C8.33579 14 8 13.6642 8 13.25C8 12.8358 8.33579 12.5 8.75 12.5H12.25Z" />
+        <path d="M15.25 16.5C15.6642 16.5 16 16.8358 16 17.25C16 17.6642 15.6642 18 15.25 18H8.75C8.33579 18 8 17.6642 8 17.25C8 16.8358 8.33579 16.5 8.75 16.5H15.25Z" />
+      </>
+    ),
+  },
   cards: {
     selected: (
       <path fillRule="evenodd" clipRule="evenodd" d="M4.75 4.00293C3.23122 4.00293 2 5.23415 2 6.75293V9H21.9961V10.5H2V17.2461C2 18.7649 3.23122 19.9961 4.75 19.9961H19.2461C20.7649 19.9961 21.9961 18.7649 21.9961 17.2461V9.04593C21.9962 8.27968 21.9963 7.51306 21.9957 6.74653C21.9945 5.22932 20.7633 4.00293 19.248 4.00293H4.75ZM6.75 12.5C6.33579 12.5 6 12.8358 6 13.25C6 13.6642 6.33579 14 6.75 14H9.75C10.1642 14 10.5 13.6642 10.5 13.25C10.5 12.8358 10.1642 12.5 9.75 12.5H6.75Z" />
@@ -940,6 +970,7 @@ export default function HomeScreen({
   leatherSrc,
   foilSrc,
   edgesSrc,
+  isActive = true,
   showControls = true,
 }) {
   const [tuning, setTuning] = useState(DEFAULT_TUNING)
@@ -955,6 +986,7 @@ export default function HomeScreen({
   const listRefs = [useRef(null), useRef(null)]
   const [stageHeight, setStageHeight] = useState(null)
   useLayoutEffect(() => {
+    if (!isActive) return
     const node = listRefs[tabIndex].current
     if (!node) return
     const update = () => setStageHeight(node.offsetHeight)
@@ -962,8 +994,9 @@ export default function HomeScreen({
     const ro = new ResizeObserver(update)
     ro.observe(node)
     return () => ro.disconnect()
-  }, [tabIndex])
+  }, [isActive, tabIndex])
   useEffect(() => {
+    if (!isActive) return
     // Re-measure once card texture assets load.
     const imgs = listRefs[tabIndex].current?.querySelectorAll('img') ?? []
     let pending = imgs.length
@@ -978,7 +1011,7 @@ export default function HomeScreen({
       if (img.complete) onLoad()
       else img.addEventListener('load', onLoad, { once: true })
     })
-  }, [tabIndex])
+  }, [isActive, tabIndex])
   return (
     <div className="home">
       <Hero
