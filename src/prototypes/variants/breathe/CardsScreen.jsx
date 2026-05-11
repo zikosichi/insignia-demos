@@ -348,8 +348,10 @@ export default function CardsScreen({
         </div>
 
         <div className="cards-actions">
-          {CARD_ACTIONS.map((action) => (
-            <CardAction key={action.label} action={action} />
+          {CARD_ACTIONS.map((action, index) => (
+            <div className="cards-action-reveal" key={action.label} style={{ '--item-index': index }}>
+              <CardAction action={action} />
+            </div>
           ))}
         </div>
 
