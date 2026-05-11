@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Card3D from '../../../components/Card3D'
 import { ControlPanel, DEFAULT_TUNING } from './HomeScreen'
 import bgPatternSvg from '../../assets/breathe/bg-pattern.svg'
@@ -14,8 +14,11 @@ import defaultCardSvg from '../../../assets/cards/default/Card.svg'
 import defaultFoilSvg from '../../../assets/cards/default/pattern-foil.svg'
 import defaultEdgesSvg from '../../../assets/cards/default/pattern-edges.svg'
 import peoneCard from '../../../assets/cards/peone/Card.png'
+import peoneFoil from '../../../assets/cards/peone/foil.png'
 import bowCard from '../../../assets/cards/bow/Card.png'
+import bowFoil from '../../../assets/cards/bow/foil.png'
 import billionaireCard from '../../../assets/cards/billionaire/Card.png'
+import billionaireFoil from '../../../assets/cards/billionaire/foil.png'
 
 const CARDS_DEFAULT_TUNING = {
   ...DEFAULT_TUNING,
@@ -52,17 +55,21 @@ const CARD_EXTRA_CONTROL_SECTIONS = [
 ]
 
 const CARD_TABS = [
-  { count: 6, label: 'Debit cards' },
+  { count: 4, label: 'Debit cards' },
   { count: 2, label: 'Charge cards' },
 ]
 
-const CARD_THUMBS = [
-  defaultCardSvg,
-  peoneCard,
-  bowCard,
-  billionaireCard,
-  defaultCardSvg,
-  peoneCard,
+const CARD_GROUPS = [
+  [
+    { id: 'debit-obsidian', label: 'Obsidian debit card', card: defaultCardSvg, foil: defaultFoilSvg, edges: defaultEdgesSvg },
+    { id: 'debit-peone', label: 'Peone debit card', card: peoneCard, foil: peoneFoil },
+    { id: 'debit-bow', label: 'Bow debit card', card: bowCard, foil: bowFoil },
+    { id: 'debit-billionaire', label: 'Billionaire debit card', card: billionaireCard, foil: billionaireFoil },
+  ],
+  [
+    { id: 'charge-bow', label: 'Bow charge card', card: bowCard, foil: bowFoil },
+    { id: 'charge-billionaire', label: 'Billionaire charge card', card: billionaireCard, foil: billionaireFoil },
+  ],
 ]
 
 const CARD_ACTIONS = [
@@ -141,10 +148,67 @@ export default function CardsScreen({
   showControls = true,
 }) {
   const [tabIndex, setTabIndex] = useState(0)
+  const [activeCardIndex, setActiveCardIndex] = useState(0)
+  const [drag, setDrag] = useState(null)
   const [tuning, setTuning] = useState(CARDS_DEFAULT_TUNING)
+  const showcaseRef = useRef(null)
+  const cards = CARD_GROUPS[tabIndex]
   const borderAngle = (Math.atan2(mouseY - 0.5, mouseX - 0.5) * 180) / Math.PI + 90
   const cardOffsetX = (mouseX - 0.5) * tuning.cardDriftX
   const cardOffsetY = (mouseY - 0.5) * tuning.cardDriftY
+  const dragProgress = drag
+    ? Math.max(-1.15, Math.min(1.15, (drag.currentX - drag.startX) / Math.max(drag.width, 1)))
+    : 0
+  const goToCard = (index) => {
+    const nextIndex = ((index % cards.length) + cards.length) % cards.length
+    setActiveCardIndex(nextIndex)
+  }
+
+  const handleTabChange = (index) => {
+    setTabIndex(index)
+    setActiveCardIndex(0)
+    setDrag(null)
+  }
+
+  const handlePointerDown = (event) => {
+    if (event.button !== undefined && event.button !== 0) return
+    const width = showcaseRef.current?.clientWidth || 1
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+    setDrag({
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      currentX: event.clientX,
+      width,
+    })
+  }
+
+  const handlePointerMove = (event) => {
+    setDrag((current) => {
+      if (!current || current.pointerId !== event.pointerId) return current
+      return { ...current, currentX: event.clientX }
+    })
+  }
+
+  const handlePointerEnd = (event) => {
+    if (!drag || drag.pointerId !== event.pointerId) return
+    const deltaX = event.clientX - drag.startX
+    const threshold = Math.min(92, drag.width * 0.18)
+
+    if (Math.abs(deltaX) > threshold) {
+      goToCard(activeCardIndex + (deltaX < 0 ? 1 : -1))
+    }
+    setDrag(null)
+  }
+
+  const slideOffsets = useMemo(() => {
+    const half = cards.length / 2
+    return cards.map((_, index) => {
+      let offset = index - activeCardIndex
+      if (offset > half) offset -= cards.length
+      if (offset < -half) offset += cards.length
+      return offset - dragProgress * 1.65
+    })
+  }, [activeCardIndex, cards, dragProgress])
 
   return (
     <div className="cards-page">
@@ -198,9 +262,22 @@ export default function CardsScreen({
       </section>
 
       <main className="cards-body">
-        <CardsSegmentedTabs activeIndex={tabIndex} onChange={setTabIndex} />
+        <CardsSegmentedTabs activeIndex={tabIndex} onChange={handleTabChange} />
 
-        <section className="cards-card-showcase" aria-label="Selected card">
+        <section
+          ref={showcaseRef}
+          className={`cards-card-showcase${drag ? ' cards-card-showcase--dragging' : ''}`}
+          aria-label="Selected card"
+          tabIndex={0}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerEnd}
+          onPointerCancel={handlePointerEnd}
+          onKeyDown={(event) => {
+            if (event.key === 'ArrowLeft') goToCard(activeCardIndex - 1)
+            if (event.key === 'ArrowRight') goToCard(activeCardIndex + 1)
+          }}
+        >
           <div
             className="cards-card-showcase__lift"
             style={{
@@ -213,27 +290,54 @@ export default function CardsScreen({
               '--card-shadow-opacity': tuning.cardShadowOpacity,
             }}
           >
-            <Card3D
-              className="cards-card-showcase__card"
-              cardSvg={defaultCardSvg}
-              foilSvg={defaultFoilSvg}
-              edgesSvg={defaultEdgesSvg}
-              mouseX={mouseX}
-              mouseY={mouseY}
-              borderWidth={2}
-            />
+            <div className="cards-slider" aria-live="polite">
+              {cards.map((card, index) => {
+                const offset = slideOffsets[index]
+                const distance = Math.min(Math.abs(offset), 3)
+                const focused = index === activeCardIndex
+
+                return (
+                  <button
+                    key={card.id}
+                    type="button"
+                    className={`cards-slider__item${focused ? ' cards-slider__item--active' : ''}`}
+                    style={{
+                      '--slide-offset': offset.toFixed(4),
+                      '--slide-distance': distance.toFixed(4),
+                      '--slide-depth': (1 - distance * 0.16).toFixed(4),
+                      zIndex: Math.round(100 - distance * 10),
+                    }}
+                    aria-label={card.label}
+                    aria-pressed={focused}
+                    onClick={() => goToCard(index)}
+                  >
+                    <Card3D
+                      className="cards-card-showcase__card"
+                      cardSvg={card.card}
+                      foilSvg={card.foil}
+                      edgesSvg={card.edges}
+                      mouseX={mouseX}
+                      mouseY={mouseY}
+                      borderWidth={2}
+                    />
+                  </button>
+                )
+              })}
+            </div>
           </div>
         </section>
 
         <div className="cards-thumbs" aria-label="Cards">
-          {CARD_THUMBS.map((src, i) => (
+          {cards.map((card, i) => (
             <button
-              key={`${src}-${i}`}
+              key={card.id}
               type="button"
-              className={`cards-thumb${i === 0 ? ' cards-thumb--active' : ''}`}
-              aria-label={`Card ${i + 1}`}
+              className={`cards-thumb${i === activeCardIndex ? ' cards-thumb--active' : ''}`}
+              aria-label={card.label}
+              aria-current={i === activeCardIndex}
+              onClick={() => goToCard(i)}
             >
-              <img src={src} alt="" />
+              <img src={card.card} alt="" />
             </button>
           ))}
           <button type="button" className="cards-thumb cards-thumb--add" aria-label="Add card">
