@@ -73,7 +73,7 @@ const DEFAULT_TUNING = {
   darkness: 0,
   vignetteStrength: 0.22,
   parallaxPx: 34,
-  patternSize: 500,
+  patternSize: 470,
 }
 
 function ControlPanel({ tuning, setTuning, onReset }) {
@@ -197,11 +197,15 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
     const introDuration = 1100
     const blendDuration = 500
     const totalDuration = introDuration + blendDuration
+    const patternDuration = totalDuration + 300
     // Light travel: shorter than full hero — feels gentler
     const fromX = 0.5, fromY = 0.72
     const toX = 0.5, toY = 0.28
     const originalPx =
       parseFloat(getComputedStyle(el).getPropertyValue('--parallax-px')) || 28
+    const targetPatternSize =
+      parseFloat(getComputedStyle(el).getPropertyValue('--pattern-size')) || 470
+    const introPatternSize = 440
     // Bg travels further than the live mouse parallax range
     const introParallaxStart = originalPx * 1.5
     const parent =
@@ -228,6 +232,14 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
         parallaxEl.style.transform = `translate3d(${px.toFixed(2)}px, ${py.toFixed(2)}px, 0)`
       }
     }
+    const setPatternScale = (elapsed) => {
+      const t = Math.min(1, elapsed / patternDuration)
+      const e = 1 - Math.pow(1 - t, 3)
+      el.style.setProperty(
+        '--pattern-size',
+        `${(introPatternSize + (targetPatternSize - introPatternSize) * e).toFixed(2)}%`,
+      )
+    }
     // Read the live mouse-driven parallax value from the parent
     const liveParallax = () => {
       const cs = getComputedStyle(parent)
@@ -252,6 +264,7 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
         const px = live.x * e
         const py = introParallaxStart + (live.y - introParallaxStart) * e
         setParallax(px, py)
+        setPatternScale(elapsed)
       } else if (elapsed < totalDuration) {
         // Phase 2: blend reflection toward live mouse, parallax already
         // tracks live mouse — no further work needed there.
@@ -265,6 +278,7 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
         setReflection(toX + (mouseMx - toX) * e, toY + (mouseMy - toY) * e)
         const live = liveParallax()
         setParallax(live.x, live.y)
+        setPatternScale(elapsed)
       } else {
         // Done — remove all overrides; CSS rule resumes parallax
         for (const k of [
@@ -274,9 +288,18 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning }) {
           '--pointer-from-top',
           '--shine-opacity',
           '--glare-opacity',
-          '--border-angle',
         ])
           el.style.removeProperty(k)
+        el.style.setProperty(
+          '--border-angle',
+          getComputedStyle(parent).getPropertyValue('--border-angle') || '90deg',
+        )
+        window.addEventListener(
+          'pointermove',
+          () => el.style.removeProperty('--border-angle'),
+          { once: true },
+        )
+        el.style.setProperty('--pattern-size', `${targetPatternSize}%`)
         if (parallaxEl) parallaxEl.style.transform = ''
         return
       }
@@ -773,8 +796,10 @@ export default function HomeScreen({ leatherSrc, foilSrc, edgesSrc }) {
   const [tuning, setTuning] = useState(DEFAULT_TUNING)
   const [tabIndex, setTabIndex] = useState(0)
   const [direction, setDirection] = useState(1)
+  const [hasChangedCardsTab, setHasChangedCardsTab] = useState(false)
   const handleTabChange = (next) => {
     setDirection(next > tabIndex ? 1 : -1)
+    setHasChangedCardsTab(true)
     setTabIndex(next)
   }
 
@@ -824,7 +849,7 @@ export default function HomeScreen({ leatherSrc, foilSrc, edgesSrc }) {
           onChange={handleTabChange}
         />
         <div
-          className="home__cards-stage"
+          className={`home__cards-stage${hasChangedCardsTab ? ' home__cards-stage--animate' : ''}`}
           style={{
             '--dir': direction,
             height: stageHeight != null ? `${stageHeight}px` : undefined,

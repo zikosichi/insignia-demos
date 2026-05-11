@@ -569,7 +569,7 @@
   width: 100%;
 }
 
-.home__cards--active .home__cards-card {
+.home__cards-stage--animate .home__cards--active .home__cards-card {
   animation: home-card-slide-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--i, 0) * 50ms);
 }
@@ -1293,7 +1293,7 @@
   padding: var(--cta-bevel-outer-w);
   background:
     conic-gradient(
-      from var(--border-angle, 135deg),
+      from var(--border-angle, 90deg),
       #7f5f16 0deg,
       #ab7b43 60deg,
       #dbc39d 118deg,
@@ -1320,7 +1320,7 @@
   padding: var(--cta-bevel-inner-w);
   background:
     conic-gradient(
-      from calc(var(--border-angle, 135deg) + 18deg),
+      from calc(var(--border-angle, 90deg) + 18deg),
       #c39159 0deg,
       #f7f2d0 66deg,
       #dbc39d 126deg,
