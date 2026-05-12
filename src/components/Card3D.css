@@ -11,6 +11,13 @@
   --border-width: 2px;
 }
 
+.card3d--silver {
+  --gold-dark: #5a5a60;
+  --gold-mid: #a8a8ae;
+  --gold-bright: #e8e8ec;
+  --gold-pale: #f4f4f6;
+}
+
 .card3d__body {
   position: absolute;
   inset: 0;

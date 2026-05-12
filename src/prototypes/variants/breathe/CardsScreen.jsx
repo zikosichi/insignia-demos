@@ -13,12 +13,20 @@ import appleWalletCardIcon from '../../assets/breathe/apple-wallet-card-icon.png
 import defaultCardSvg from '../../../assets/cards/default/Card.svg'
 import defaultFoilSvg from '../../../assets/cards/default/pattern-foil.svg'
 import defaultEdgesSvg from '../../../assets/cards/default/pattern-edges.svg'
-import peoneCard from '../../../assets/cards/peone/Card.png'
-import peoneFoil from '../../../assets/cards/peone/foil.png'
-import bowCard from '../../../assets/cards/bow/Card.png'
-import bowFoil from '../../../assets/cards/bow/foil.png'
-import billionaireCard from '../../../assets/cards/billionaire/Card.png'
-import billionaireFoil from '../../../assets/cards/billionaire/foil.png'
+import defaultBack from '../../../assets/cards/default/back.png'
+import defaultBackFoil from '../../../assets/cards/default/back-foil.png'
+import personalMcFront from '../../../assets/cards/personal-mastercard/front.png'
+import personalMcFoil from '../../../assets/cards/personal-mastercard/foil.png'
+import personalMcBack from '../../../assets/cards/personal-mastercard/back.png'
+import personalMcBackFoil from '../../../assets/cards/personal-mastercard/back-foil.png'
+import corporateVisaFront from '../../../assets/cards/corporate-visa/front.png'
+import corporateVisaFoil from '../../../assets/cards/corporate-visa/foil.png'
+import corporateVisaBack from '../../../assets/cards/corporate-visa/back.png'
+import corporateVisaBackFoil from '../../../assets/cards/corporate-visa/back-foil.png'
+import corporateMcFront from '../../../assets/cards/corporate-mastercard/front.png'
+import corporateMcFoil from '../../../assets/cards/corporate-mastercard/foil.png'
+import corporateMcBack from '../../../assets/cards/corporate-mastercard/back.png'
+import corporateMcBackFoil from '../../../assets/cards/corporate-mastercard/back-foil.png'
 
 const CARDS_DEFAULT_TUNING = {
   ...DEFAULT_TUNING,
@@ -61,14 +69,14 @@ const CARD_TABS = [
 
 const CARD_GROUPS = [
   [
-    { id: 'debit-obsidian', label: 'Obsidian debit card', tier: 'Obsidian', number: '4929 1108 8402 7316', expires: '08/30', holder: 'Z. Sichinava', cvv: '734', card: defaultCardSvg, foil: defaultFoilSvg, edges: defaultEdgesSvg },
-    { id: 'debit-peone', label: 'Peone debit card', tier: 'Peone', number: '4929 1184 7630 5805', expires: '12/30', holder: 'Z. Sichinava', cvv: '298', card: peoneCard, foil: peoneFoil },
-    { id: 'debit-bow', label: 'Bow debit card', tier: 'Bow', number: '4929 1175 9028 4401', expires: '06/31', holder: 'Z. Sichinava', cvv: '641', card: bowCard, foil: bowFoil },
-    { id: 'debit-billionaire', label: 'Billionaire debit card', tier: 'Billionaire', number: '4929 1139 6284 0196', expires: '10/31', holder: 'Z. Sichinava', cvv: '517', card: billionaireCard, foil: billionaireFoil },
+    { id: 'debit-personal-visa', label: 'Personal Visa', tier: 'Personal', number: '4929 1108 8402 7316', expires: '08/30', holder: 'Z. Sichinava', cvv: '734', card: defaultCardSvg, foil: defaultFoilSvg, edges: defaultEdgesSvg, back: defaultBack, backFoil: defaultBackFoil },
+    { id: 'debit-personal-mc', label: 'Personal Mastercard', tier: 'Personal', number: '5319 1184 7630 5805', expires: '12/30', holder: 'Z. Sichinava', cvv: '298', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
+    { id: 'debit-corporate-visa', label: 'Corporate Visa', tier: 'Corporate', number: '4929 1175 9028 4401', expires: '06/31', holder: 'Z. Sichinava', cvv: '641', card: corporateVisaFront, foil: corporateVisaFoil, back: corporateVisaBack, backFoil: corporateVisaBackFoil },
+    { id: 'debit-corporate-mc', label: 'Corporate Mastercard', tier: 'Corporate', number: '5319 1139 6284 0196', expires: '10/31', holder: 'Z. Sichinava', cvv: '517', card: corporateMcFront, foil: corporateMcFoil, back: corporateMcBack, backFoil: corporateMcBackFoil },
   ],
   [
-    { id: 'charge-bow', label: 'Bow charge card', tier: 'Bow Charge', number: '5319 4408 1172 9035', expires: '04/31', holder: 'Z. Sichinava', cvv: '803', card: bowCard, foil: bowFoil },
-    { id: 'charge-billionaire', label: 'Billionaire charge card', tier: 'Billionaire Charge', number: '5319 4426 8150 3094', expires: '11/31', holder: 'Z. Sichinava', cvv: '926', card: billionaireCard, foil: billionaireFoil },
+    { id: 'charge-corporate-visa', label: 'Corporate Visa charge', tier: 'Corporate Charge', number: '4929 4408 1172 9035', expires: '04/31', holder: 'Z. Sichinava', cvv: '803', card: corporateVisaFront, foil: corporateVisaFoil, back: corporateVisaBack, backFoil: corporateVisaBackFoil },
+    { id: 'charge-corporate-mc', label: 'Corporate Mastercard charge', tier: 'Corporate Charge', number: '5319 4426 8150 3094', expires: '11/31', holder: 'Z. Sichinava', cvv: '926', card: corporateMcFront, foil: corporateMcFoil, back: corporateMcBack, backFoil: corporateMcBackFoil },
   ],
 ]
 
@@ -143,6 +151,14 @@ function AppleIcon() {
 }
 
 function CardBack({ card }) {
+  if (card.back) {
+    return (
+      <div className="cards-card-back cards-card-back--image">
+        <img className="cards-card-back__image" src={card.back} alt="" />
+      </div>
+    )
+  }
+
   const lastFour = card.number.slice(-4)
 
   return (
@@ -319,7 +335,7 @@ export default function CardsScreen({
                     <div className="cards-flip-card">
                       <div className="cards-flip-card__face cards-flip-card__face--front">
                         <Card3D
-                          className="cards-card-showcase__card"
+                          className={`cards-card-showcase__card${card.tier?.startsWith('Corporate') ? ' card3d--silver' : ''}`}
                           cardSvg={card.card}
                           foilSvg={card.foil}
                           edgesSvg={card.edges}
@@ -329,7 +345,19 @@ export default function CardsScreen({
                         />
                       </div>
                       <div className="cards-flip-card__face cards-flip-card__face--back">
-                        <CardBack card={card} />
+                        {card.back && card.backFoil ? (
+                          <Card3D
+                            className={`cards-card-showcase__card${card.tier?.startsWith('Corporate') ? ' card3d--silver' : ''}`}
+                            cardSvg={card.back}
+                            foilSvg={card.backFoil}
+                            mouseX={mouseX}
+                            mouseY={mouseY}
+                            borderWidth={2}
+                            showBorder={false}
+                          />
+                        ) : (
+                          <CardBack card={card} />
+                        )}
                       </div>
                     </div>
                   </button>

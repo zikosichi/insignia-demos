@@ -8,20 +8,18 @@ import cardSvg from './assets/cards/default/Card.svg'
 import foilSvg from './assets/cards/default/pattern-foil.svg'
 import edgesSvg from './assets/cards/default/pattern-edges.svg'
 
-import peoneCard from './assets/cards/peone/Card.png'
-import peoneFoil from './assets/cards/peone/foil.png'
-
-import bowCard from './assets/cards/bow/Card.png'
-import bowFoil from './assets/cards/bow/foil.png'
-
-import billionaireCard from './assets/cards/billionaire/Card.png'
-import billionaireFoil from './assets/cards/billionaire/foil.png'
+import personalMcFront from './assets/cards/personal-mastercard/front.png'
+import personalMcFoil from './assets/cards/personal-mastercard/foil.png'
+import corporateVisaFront from './assets/cards/corporate-visa/front.png'
+import corporateVisaFoil from './assets/cards/corporate-visa/foil.png'
+import corporateMcFront from './assets/cards/corporate-mastercard/front.png'
+import corporateMcFoil from './assets/cards/corporate-mastercard/foil.png'
 
 const cards = [
   { id: 'default', cardSvg, foilSvg, edgesSvg },
-  { id: 'peone', cardSvg: peoneCard, foilSvg: peoneFoil, edgesSvg: null, showBorder: false },
-  { id: 'bow', cardSvg: bowCard, foilSvg: bowFoil, edgesSvg: null, showBorder: false },
-  { id: 'billionaire', cardSvg: billionaireCard, foilSvg: billionaireFoil, edgesSvg: null, showBorder: false },
+  { id: 'personal-mc', cardSvg: personalMcFront, foilSvg: personalMcFoil, edgesSvg: null, showBorder: false },
+  { id: 'corporate-visa', cardSvg: corporateVisaFront, foilSvg: corporateVisaFoil, edgesSvg: null, showBorder: false },
+  { id: 'corporate-mc', cardSvg: corporateMcFront, foilSvg: corporateMcFoil, edgesSvg: null, showBorder: false },
 ]
 
 // Subtle body backgrounds per card
@@ -29,15 +27,15 @@ const bodyThemes = {
   default: [
     'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(70, 20, 18, 0.25) 0%, transparent 100%)',
   ],
-  peone: [
+  'personal-mc': [
     'radial-gradient(ellipse 60% 50% at 40% 35%, rgba(100, 50, 80, 0.2) 0%, transparent 100%)',
     'radial-gradient(ellipse 50% 40% at 70% 60%, rgba(120, 60, 90, 0.12) 0%, transparent 100%)',
   ],
-  bow: [
+  'corporate-visa': [
     'radial-gradient(ellipse 60% 50% at 45% 40%, rgba(60, 45, 80, 0.2) 0%, transparent 100%)',
     'radial-gradient(ellipse 50% 40% at 65% 55%, rgba(50, 35, 65, 0.12) 0%, transparent 100%)',
   ],
-  billionaire: [
+  'corporate-mc': [
     'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(120, 100, 40, 0.18) 0%, transparent 100%)',
     'radial-gradient(ellipse 50% 40% at 60% 55%, rgba(80, 65, 20, 0.12) 0%, transparent 100%)',
   ],
@@ -57,7 +55,7 @@ export default function App() {
 
   const activeId = cards[activeCardIndex]?.id || 'default'
   const prototypeScreen =
-    page === '#cards' ? 'cards' : page === '#transactions' ? 'transactions' : 'home'
+    page === '#cards' ? 'cards' : page === '#transactions' ? 'transactions' : page === '#services' ? 'services' : 'home'
 
   // Blank page — standalone, no nav
   if (page === '#blank') {

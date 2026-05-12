@@ -23,6 +23,7 @@ export default function CardView({ cards, activeIndex, onChangeIndex }) {
           transition: 'transform 0.1s ease-out',
         }}>
           <Card3D
+            className={activeCard.id?.startsWith('corporate') ? 'card3d--silver' : ''}
             cardSvg={activeCard.cardSvg}
             foilSvg={activeCard.foilSvg}
             edgesSvg={activeCard.edgesSvg}

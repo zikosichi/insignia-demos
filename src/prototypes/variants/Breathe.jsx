@@ -4,6 +4,7 @@ import PhoneChrome from '../PhoneChrome'
 import HomeScreen, { BottomNav } from './breathe/HomeScreen'
 import CardsScreen from './breathe/CardsScreen'
 import TransactionsScreen, { TransactionsSearchBar } from './breathe/TransactionsScreen'
+import ServicesScreen from './breathe/ServicesScreen'
 import bgPatternSvg from '../assets/breathe/bg-pattern.svg'
 import bgPatternFoilSvg from '../assets/breathe/bg-pattern-foil.svg'
 
@@ -18,7 +19,7 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
   }, [screen])
 
   const handleNavigate = (next) => {
-    if (next !== 'home' && next !== 'transactions' && next !== 'cards') return
+    if (next !== 'home' && next !== 'transactions' && next !== 'cards' && next !== 'services') return
     setActiveScreen(next)
     if (window.location.hash !== `#${next}`) {
       window.location.hash = next
@@ -52,6 +53,9 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
           </div>
           <div className={`breathe__screen${activeScreen === 'transactions' ? ' breathe__screen--active' : ''}`}>
             <TransactionsScreen />
+          </div>
+          <div className={`breathe__screen${activeScreen === 'services' ? ' breathe__screen--active' : ''}`}>
+            <ServicesScreen />
           </div>
         </div>
         {activeScreen === 'transactions' && <TransactionsSearchBar />}
