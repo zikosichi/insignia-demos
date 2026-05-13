@@ -1,0 +1,385 @@
+.exchange {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #2a0d0e;
+  font-family: 'Proxima Nova', 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  color: #1A1414;
+}
+
+/* ── Hero ── matches transactions/transfer pattern */
+.exchange-hero {
+  height: 118px;
+  aspect-ratio: auto;
+  background: #2a0d0e;
+  flex-shrink: 0;
+}
+
+.exchange-hero .home__hero-bg,
+.exchange-hero .home__top-row > .home__top-circle,
+.exchange-hero .home__top-actions > .home__top-circle,
+.exchange-hero .home__top-actions > .home__pill,
+.exchange-hero .exchange-hero__title {
+  animation: none;
+  opacity: 1;
+  translate: 0 0;
+  filter: none;
+}
+
+.exchange-hero__content {
+  padding: 74px 16px 0;
+  animation: none;
+}
+
+.exchange-hero__content .home__top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.exchange-hero__lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.exchange-hero__lead:active {
+  scale: 0.97;
+}
+
+.exchange-hero__title {
+  margin: 0;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 32px;
+  letter-spacing: -0.01em;
+  color: #F5F0ED;
+}
+
+/* ── Body ── only this scrolls */
+.exchange__body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-height: 0;
+  padding: 16px 16px 24px;
+  background: #F5F3F3;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
+}
+
+.exchange__body::-webkit-scrollbar { display: none; }
+.exchange__body > * { flex-shrink: 0; }
+
+.exchange__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exchange__section-title {
+  margin: 0;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #403535;
+}
+
+/* ── Pickers card (Exchange between) ── */
+.exchange__pickers {
+  position: relative;
+  background: #fbfafa;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0.5px 0 rgba(0, 0, 0, 0.3),
+    0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.exchange__swap {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.exchange-picker {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 24px;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 11px;
+  background: #ede8e8;
+  border: 1px solid #cdc1c1;
+  border-radius: 10px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.exchange-picker:active {
+  scale: 0.99;
+}
+
+.exchange-picker__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.exchange-picker__label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #8d7777;
+}
+
+.exchange-picker__name-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.exchange-picker__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.exchange-picker__account {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #403535;
+}
+
+.exchange-picker__right {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.exchange-picker__flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.exchange-picker__amount {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #403535;
+  white-space: nowrap;
+}
+
+.exchange-picker__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+/* ── Rate and amount card ── */
+.exchange__rate {
+  background: #fbfafa;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0.5px 0 rgba(0, 0, 0, 0.3),
+    0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.exchange-input {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 11px;
+  background: #ede8e8;
+  border: 1px solid #cdc1c1;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #8d7777;
+}
+
+.exchange__rate-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #403535;
+}
+
+/* Slot-reel currency rate */
+.exchange__rate-value {
+  font-family: "SF Mono", "JetBrains Mono", "Menlo", "Roboto Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.rolling-number {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.rolling-number__static {
+  display: inline-block;
+  white-space: pre;
+}
+
+.rolling-digit {
+  display: inline-block;
+  width: 1ch;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1em;
+}
+
+.rolling-digit__reel {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  animation: rolling-digit-spin 1500ms cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms) both;
+}
+
+.rolling-digit__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1em;
+  line-height: 1em;
+}
+
+/* Spin through ~2 full cycles then land on target.
+   The reel is 10 cells tall (10em). Start near the top, end after
+   2 wraps + the target offset for a slot-machine read. */
+@keyframes rolling-digit-spin {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    /* Land position: -(10 + target) * 1em — one extra cycle for a calm
+       counter feel (was 20 = two cycles which read as a casino spin). */
+    transform: translateY(calc((var(--target, 0) + 10) * -1em));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rolling-digit__reel {
+    animation: none;
+    transform: translateY(calc(var(--target, 0) * -1em));
+  }
+}
+
+/* ── Footer (Continue button) ── pinned at bottom */
+.exchange__footer {
+  flex-shrink: 0;
+  padding: 16px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+  background: #F5F3F3;
+}
+
+.exchange__continue {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  background: #403535;
+  border: 0;
+  border-radius: 10px;
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  cursor: pointer;
+  isolation: isolate;
+  filter:
+    drop-shadow(0 0 0.25px rgba(0, 0, 0, 0.3))
+    drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.15));
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Reflective gold stroke — same recipe as Transfer action icons; the
+   --border-angle var comes from the TiltPhone parent. */
+.exchange__continue::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    var(--border-angle, 45deg),
+    #baa14f 0%,
+    #d4af37 15%,
+    #f0d875 30%,
+    #efd69d 45%,
+    #f0d875 55%,
+    #d4af37 70%,
+    #baa14f 85%,
+    #d4af37 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.exchange__continue:active {
+  scale: 0.99;
+}

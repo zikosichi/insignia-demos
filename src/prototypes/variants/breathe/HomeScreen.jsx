@@ -340,7 +340,7 @@ function BalanceAmount({ revealEffect }) {
   )
 }
 
-function Hero({ leatherSrc, foilSrc, edgesSrc, tuning, onTransfer }) {
+function Hero({ leatherSrc, foilSrc, edgesSrc, tuning, onTransfer, onExchange }) {
   const heroRef = useRef(null)
   // Intro: animate the same --mx/--my the live mouse drives, so the
   // existing shine/edge/glare layers light up and the highlight sweeps
@@ -533,7 +533,11 @@ function Hero({ leatherSrc, foilSrc, edgesSrc, tuning, onTransfer }) {
               <img className="home__icon" src={iconArrowUp} alt="" aria-hidden />
               <span>Transfer</span>
             </button>
-            <button className={`home__cta${tuning.lightCtas ? ' home__cta--light' : ''}`}>
+            <button
+              type="button"
+              className={`home__cta${tuning.lightCtas ? ' home__cta--light' : ''}`}
+              onClick={onExchange}
+            >
               <img className="home__icon" src={iconArrowLeftRight} alt="" aria-hidden />
               <span>Exchange</span>
             </button>
@@ -987,6 +991,7 @@ export default function HomeScreen({
   isActive = true,
   showControls = true,
   onTransfer,
+  onExchange,
 }) {
   const [tuning, setTuning] = useState(DEFAULT_TUNING)
   const [tabIndex, setTabIndex] = useState(0)
@@ -1035,6 +1040,7 @@ export default function HomeScreen({
         edgesSrc={edgesSrc}
         tuning={tuning}
         onTransfer={onTransfer}
+        onExchange={onExchange}
       />
       <div className="home__body">
         <img className="home__body-crest" src={bodyTopCrest} alt="" aria-hidden />

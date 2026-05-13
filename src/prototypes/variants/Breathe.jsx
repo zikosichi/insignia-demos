@@ -6,6 +6,7 @@ import CardsScreen from './breathe/CardsScreen'
 import TransactionsScreen, { TransactionsSearchBar } from './breathe/TransactionsScreen'
 import ServicesScreen from './breathe/ServicesScreen'
 import TransferScreen from './breathe/TransferScreen'
+import ExchangeScreen from './breathe/ExchangeScreen'
 import bgPatternSvg from '../assets/breathe/bg-pattern.svg'
 import bgPatternFoilSvg from '../assets/breathe/bg-pattern-foil.svg'
 
@@ -78,6 +79,7 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
               isActive={activeScreen === 'home'}
               showControls={controlsEnabled && activeScreen === 'home'}
               onTransfer={() => openSubScreen('transfer')}
+              onExchange={() => openSubScreen('exchange')}
             />
           </div>
           <div className={screenClass('cards')}>
@@ -101,6 +103,7 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
             className={`breathe__subscreen${subScreenClosing ? ' breathe__subscreen--closing' : ''}`}
           >
             {subScreen === 'transfer' && <TransferScreen onClose={closeSubScreen} />}
+            {subScreen === 'exchange' && <ExchangeScreen onClose={closeSubScreen} />}
           </div>
         )}
       </div>
