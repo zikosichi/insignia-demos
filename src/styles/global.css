@@ -75,12 +75,4 @@ body::after {
     background: #ffffff;
     background-image: none;
   }
-  /* #root must explicitly fill body so .prototypes-page--mobile's 100%
-     height resolves to the full body height. Use absolute positioning
-     instead of height:100% — percentages can be brittle when body is
-     position:fixed. */
-  #root {
-    position: absolute;
-    inset: 0;
-  }
 }
