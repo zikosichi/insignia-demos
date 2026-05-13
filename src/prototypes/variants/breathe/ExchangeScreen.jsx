@@ -316,7 +316,14 @@ export default function ExchangeScreen({ onClose }) {
               aria-label="Sell amount"
               value={sellValue}
               onChange={(e) => setSellFromUser(e.target.value)}
-              onFocus={() => setFocused('sell')}
+              onFocus={(e) => {
+                setFocused('sell')
+                const el = e.currentTarget
+                window.setTimeout(
+                  () => el.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+                  280,
+                )
+              }}
               onBlur={() => setFocused((f) => (f === 'sell' ? null : f))}
             />
             <input
@@ -328,7 +335,14 @@ export default function ExchangeScreen({ onClose }) {
               aria-label="Buy amount"
               value={buyValue}
               onChange={(e) => setBuyFromUser(e.target.value)}
-              onFocus={() => setFocused('buy')}
+              onFocus={(e) => {
+                setFocused('buy')
+                const el = e.currentTarget
+                window.setTimeout(
+                  () => el.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+                  280,
+                )
+              }}
               onBlur={() => setFocused((f) => (f === 'buy' ? null : f))}
             />
           </div>

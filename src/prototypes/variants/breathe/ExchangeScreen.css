@@ -3,7 +3,17 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  background: #F5F3F3;
+  /* Wine at top (under the hero + 12px into the body's rounded-corner
+     cutout area), light everywhere else. This restores the wine
+     reveal through .exchange__body's top corners without bleeding
+     into the area below the transformed footer. */
+  background: linear-gradient(
+    to bottom,
+    #2a0d0e 0,
+    #2a0d0e 130px,
+    #F5F3F3 130px,
+    #F5F3F3 100%
+  );
   font-family: 'Proxima Nova', 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
@@ -75,7 +85,9 @@
   z-index: 2;
   flex: 1;
   min-height: 0;
-  padding: 16px 16px 24px;
+  /* Extend the bottom padding by the on-screen keyboard height so the
+     body remains scrollable past where the keyboard covers. */
+  padding: 16px 16px calc(24px + var(--kb-offset, 0px));
   background: #F5F3F3;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
@@ -86,6 +98,7 @@
   overflow-x: hidden;
   scrollbar-width: none;
   overscroll-behavior-y: contain;
+  transition: padding-bottom 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .exchange__body::-webkit-scrollbar { display: none; }
