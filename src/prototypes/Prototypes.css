@@ -3104,22 +3104,22 @@
    room, and shrink slim sub-screen heroes accordingly so the content
    shifts up. */
 @media (max-width: 500px) {
-  .transactions-hero,
-  .cards-hero,
-  .services-hero,
-  .transfer-hero,
-  .exchange-hero {
+  /* Specificity bumped with .home__hero so this wins against per-screen
+     hero rules that appear later in the file or in screen-specific CSS
+     (services / transfer / exchange). */
+  .home__hero.transactions-hero,
+  .home__hero.cards-hero,
+  .home__hero.services-hero,
+  .home__hero.transfer-hero,
+  .home__hero.exchange-hero {
     height: calc(env(safe-area-inset-top, 20px) + 64px);
   }
 
-  .transactions-hero__content,
-  .cards-hero__content,
-  .services-hero__content,
-  .transfer-hero__content,
-  .exchange-hero__content {
-    padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
-  }
-
+  .home__hero-content.transactions-hero__content,
+  .home__hero-content.cards-hero__content,
+  .home__hero-content.services-hero__content,
+  .home__hero-content.transfer-hero__content,
+  .home__hero-content.exchange-hero__content,
   .home__hero-content {
     padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
   }
