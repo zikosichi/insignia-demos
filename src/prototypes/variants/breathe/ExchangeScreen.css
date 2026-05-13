@@ -3,7 +3,7 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  background: #2a0d0e;
+  background: #F5F3F3;
   font-family: 'Proxima Nova', 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
@@ -234,17 +234,29 @@
 }
 
 .exchange-input {
+  width: 100%;
   height: 56px;
-  display: flex;
-  align-items: center;
   padding: 0 11px;
   background: #ede8e8;
   border: 1px solid #cdc1c1;
   border-radius: 10px;
+  font-family: inherit;
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
+  color: #403535;
+  outline: none;
+  transition: border-color 0.18s ease;
+}
+
+.exchange-input::placeholder {
   color: #8d7777;
+  opacity: 1;
+}
+
+.exchange-input:focus,
+.exchange-input:focus-visible {
+  border-color: #8d7777;
 }
 
 .exchange__rate-note {
@@ -325,11 +337,25 @@
   }
 }
 
-/* ── Footer (Continue button) ── pinned at bottom */
+/* ── Footer (Continue button) ── pinned at bottom; lifts above the
+   suggestion bar when an input is focused so neither obscures the
+   other. --kb-offset comes from the .exchange root and tracks the
+   on-screen keyboard via the visualViewport API. */
 .exchange__footer {
   flex-shrink: 0;
+  position: relative;
+  z-index: 70;
   padding: 16px 16px calc(24px + env(safe-area-inset-bottom, 0px));
   background: #F5F3F3;
+  transform: translateY(calc(var(--kb-offset, 0px) * -1));
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.exchange--focused .exchange__footer {
+  /* keyboard height + measured suggestion bar height */
+  transform: translateY(
+    calc((var(--kb-offset, 0px) + var(--chip-bar-h, 60px)) * -1)
+  );
 }
 
 .exchange__continue {
@@ -382,4 +408,61 @@
 
 .exchange__continue:active {
   scale: 0.99;
+}
+
+/* ── Keyboard-aware suggestion bar ───────────────────────────
+   Positions itself just above the on-screen keyboard using the
+   visualViewport API. On desktop (no soft keyboard) --kb-offset
+   resolves to 0 and the bar sits at the bottom of the phone frame
+   when an input is focused. */
+.exchange__suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--kb-offset, 0px);
+  z-index: 60;
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(245, 243, 243, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  overflow-x: auto;
+  scrollbar-width: none;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.18s ease;
+}
+
+.exchange__suggestions::-webkit-scrollbar {
+  display: none;
+}
+
+.exchange__suggestions--visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.exchange-chip {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: #fbfafa;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #403535;
+  cursor: pointer;
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.exchange-chip:active {
+  scale: 0.95;
 }

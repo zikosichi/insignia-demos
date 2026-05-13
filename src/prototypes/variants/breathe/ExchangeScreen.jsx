@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import './ExchangeScreen.css'
 import PhoneChrome from '../../PhoneChrome'
 import bgPatternSvg from '../../assets/breathe/bg-pattern.svg'
@@ -147,9 +148,92 @@ function PickerRow({ label, dotColor, accountName, flag, amount }) {
   )
 }
 
+const QUICK_AMOUNTS = ['100', '500', '1,000', '10,000', 'Max']
+const MAX_AMOUNT = '14000'
+const RATE = 1.17 // USD per EUR
+
+const parseAmount = (str) => {
+  const n = parseFloat(String(str).replace(/,/g, ''))
+  return Number.isFinite(n) ? n : null
+}
+
+const formatAmount = (n) =>
+  n.toLocaleString('en-US', { maximumFractionDigits: 2 })
+
 export default function ExchangeScreen({ onClose }) {
+  const sellRef = useRef(null)
+  const buyRef = useRef(null)
+  const barRef = useRef(null)
+  const [sellValue, setSellValue] = useState('')
+  const [buyValue, setBuyValue] = useState('')
+  const [focused, setFocused] = useState(null) // 'sell' | 'buy' | null
+  const [kbOffset, setKbOffset] = useState(0)
+  const [barHeight, setBarHeight] = useState(60)
+
+  useEffect(() => {
+    if (!barRef.current || typeof ResizeObserver === 'undefined') return
+    const el = barRef.current
+    const ro = new ResizeObserver(() => setBarHeight(el.offsetHeight))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const vv = typeof window !== 'undefined' ? window.visualViewport : null
+    if (!vv) return
+    const update = () => {
+      const offset = Math.max(
+        0,
+        window.innerHeight - vv.height - vv.offsetTop,
+      )
+      setKbOffset(offset)
+    }
+    vv.addEventListener('resize', update)
+    vv.addEventListener('scroll', update)
+    update()
+    return () => {
+      vv.removeEventListener('resize', update)
+      vv.removeEventListener('scroll', update)
+    }
+  }, [])
+
+  const setSellFromUser = (raw) => {
+    setSellValue(raw)
+    const n = parseAmount(raw)
+    setBuyValue(n === null ? '' : formatAmount(n * RATE))
+  }
+
+  const setBuyFromUser = (raw) => {
+    setBuyValue(raw)
+    const n = parseAmount(raw)
+    setSellValue(n === null ? '' : formatAmount(n / RATE))
+  }
+
+  const applyAmount = (chip) => {
+    const value = chip === 'Max' ? MAX_AMOUNT : chip.replace(/,/g, '')
+    const n = parseAmount(value)
+    if (focused === 'sell') {
+      setSellValue(n === null ? value : formatAmount(n))
+      setBuyValue(n === null ? '' : formatAmount(n * RATE))
+    } else if (focused === 'buy') {
+      setBuyValue(n === null ? value : formatAmount(n))
+      setSellValue(n === null ? '' : formatAmount(n / RATE))
+    }
+    // Keep focus on the input so the keyboard stays open.
+    const ref = focused === 'sell' ? sellRef : buyRef
+    ref.current?.focus()
+  }
+
+  const showSuggestions = focused !== null
+
   return (
-    <div className="exchange">
+    <div
+      className={`exchange${showSuggestions ? ' exchange--focused' : ''}`}
+      style={{
+        '--kb-offset': `${kbOffset}px`,
+        '--chip-bar-h': `${barHeight}px`,
+      }}
+    >
       <PhoneChrome tone="light" />
       <section
         className="home__hero exchange-hero"
@@ -223,8 +307,30 @@ export default function ExchangeScreen({ onClose }) {
         <section className="exchange__section">
           <h2 className="exchange__section-title">Rate and amount</h2>
           <div className="exchange__rate">
-            <span className="exchange-input">Sell</span>
-            <span className="exchange-input">Buy</span>
+            <input
+              ref={sellRef}
+              type="text"
+              inputMode="decimal"
+              className="exchange-input"
+              placeholder="Sell"
+              aria-label="Sell amount"
+              value={sellValue}
+              onChange={(e) => setSellFromUser(e.target.value)}
+              onFocus={() => setFocused('sell')}
+              onBlur={() => setFocused((f) => (f === 'sell' ? null : f))}
+            />
+            <input
+              ref={buyRef}
+              type="text"
+              inputMode="decimal"
+              className="exchange-input"
+              placeholder="Buy"
+              aria-label="Buy amount"
+              value={buyValue}
+              onChange={(e) => setBuyFromUser(e.target.value)}
+              onFocus={() => setFocused('buy')}
+              onBlur={() => setFocused((f) => (f === 'buy' ? null : f))}
+            />
           </div>
           <p className="exchange__rate-note">
             <InfoCircle size={24} stroke="#403535" strokeWidth={1.6} />
@@ -241,6 +347,24 @@ export default function ExchangeScreen({ onClose }) {
 
       <div className="exchange__footer">
         <button type="button" className="exchange__continue">Continue</button>
+      </div>
+
+      <div
+        ref={barRef}
+        className={`exchange__suggestions${showSuggestions ? ' exchange__suggestions--visible' : ''}`}
+        aria-hidden={!showSuggestions}
+      >
+        {QUICK_AMOUNTS.map((chip) => (
+          <button
+            key={chip}
+            type="button"
+            className="exchange-chip"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => applyAmount(chip)}
+          >
+            {chip}
+          </button>
+        ))}
       </div>
     </div>
   )
