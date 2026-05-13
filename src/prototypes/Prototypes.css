@@ -514,11 +514,11 @@
 .cards-body {
   position: relative;
   z-index: 2;
-  margin-top: -10px;
-  padding: 24px 16px 128px;
+  margin-top: -12px;
+  padding: 28px 16px 128px;
   background: #f5f3f3;
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .cards-card-showcase {
@@ -1193,9 +1193,6 @@
   height: 118px;
   aspect-ratio: auto;
   background: #2a0d0e;
-  position: sticky;
-  top: 0;
-  z-index: 3;
 }
 
 .transactions-hero .home__hero-bg,
@@ -4072,18 +4069,18 @@
 }
 
 .services-hero__content {
-  padding: 64px 16px 0;
+  padding: 74px 16px 0;
   animation: none;
 }
 
 .services-body {
   position: relative;
   z-index: 2;
-  margin-top: -10px;
-  padding: 24px 16px 128px;
+  margin-top: -12px;
+  padding: 28px 16px 128px;
   background: #f5f3f3;
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .services-stack {
