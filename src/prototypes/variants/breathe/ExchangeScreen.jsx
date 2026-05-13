@@ -113,7 +113,7 @@ function RollingNumber({ value, label }) {
       {chars.map((c, i) => {
         if (/\d/.test(c)) {
           const d = Number(c)
-          const delay = digitIdx * 80
+          const delay = 260 + digitIdx * 80
           digitIdx += 1
           return <RollingDigit key={`${i}-${c}`} digit={d} delay={delay} />
         }

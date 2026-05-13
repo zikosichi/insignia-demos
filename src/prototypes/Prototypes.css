@@ -191,6 +191,34 @@
   to   { transform: translateX(100%); }
 }
 
+/* Subscreen body sections fade-up after the slide settles. Skipped on close
+   so the slide-out reads as a single gesture. */
+.breathe__subscreen:not(.breathe__subscreen--closing) .transfer__body > *,
+.breathe__subscreen:not(.breathe__subscreen--closing) .exchange__body > * {
+  animation: subscreen-section-in 720ms cubic-bezier(0.22, 1, 0.36, 1)
+    calc(120ms + var(--section-index, 0) * 80ms) both;
+}
+.breathe__subscreen .transfer__body > *:nth-child(1) { --section-index: 0; }
+.breathe__subscreen .transfer__body > *:nth-child(2) { --section-index: 1; }
+.breathe__subscreen .transfer__body > *:nth-child(3) { --section-index: 2; }
+.breathe__subscreen .transfer__body > *:nth-child(4) { --section-index: 2; }
+.breathe__subscreen .transfer__body > *:nth-child(5) { --section-index: 3; }
+.breathe__subscreen .transfer__body > *:nth-child(6) { --section-index: 3; }
+.breathe__subscreen .exchange__body > *:nth-child(1) { --section-index: 0; }
+.breathe__subscreen .exchange__body > *:nth-child(2) { --section-index: 1; }
+
+@keyframes subscreen-section-in {
+  from { opacity: 0; translate: 0 10px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breathe__subscreen .transfer__body > *,
+  .breathe__subscreen .exchange__body > * {
+    animation: none;
+  }
+}
+
 .breathe__scroll {
   position: absolute;
   inset: 0;
