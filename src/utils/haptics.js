@@ -74,11 +74,43 @@ const intensityFor = (el) => {
   return 'medium'
 }
 
+/* iOS 17.4+ trick: toggling a <input type="checkbox" switch> while
+ * inside a user-gesture call stack causes iOS to deliver a real
+ * system haptic. We lazily build one hidden switch + label and click
+ * the label to fire the haptic. On Android we still use navigator.vibrate
+ * because it lets us pick intensity; iOS only has one fixed strength. */
+let iosSwitchLabel = null
+const ensureIOSSwitch = () => {
+  if (iosSwitchLabel || typeof document === 'undefined') return iosSwitchLabel
+  const label = document.createElement('label')
+  label.setAttribute('aria-hidden', 'true')
+  label.style.cssText =
+    'position:fixed;left:-9999px;top:-9999px;width:0;height:0;' +
+    'pointer-events:none;opacity:0;'
+  const input = document.createElement('input')
+  input.type = 'checkbox'
+  input.setAttribute('switch', '')
+  input.tabIndex = -1
+  input.style.cssText = 'all:initial;appearance:auto;position:absolute;'
+  label.appendChild(input)
+  document.body.appendChild(label)
+  iosSwitchLabel = label
+  return label
+}
+
 const tap = (level) => {
   if (typeof navigator === 'undefined') return
-  if (typeof navigator.vibrate !== 'function') return
-  const ms = HAPTIC_DURATIONS[level] ?? HAPTIC_DURATIONS.medium
-  try { navigator.vibrate(ms) } catch { /* noop */ }
+  if (typeof navigator.vibrate === 'function') {
+    const ms = HAPTIC_DURATIONS[level] ?? HAPTIC_DURATIONS.medium
+    try { navigator.vibrate(ms) } catch { /* noop */ }
+    return
+  }
+  // iOS fallback: toggle the hidden switch. Skip ultraLight on iOS
+  // because every tap fires the same fixed system intensity — a buzz
+  // on every nav action would be too much.
+  if (level === 'ultraLight') return
+  const label = ensureIOSSwitch()
+  try { label?.click() } catch { /* noop */ }
 }
 
 export function installHaptics() {
