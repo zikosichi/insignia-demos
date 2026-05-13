@@ -1,6 +1,8 @@
 .transfer {
-  position: relative;
-  min-height: 100%;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
   background: #F5F3F3;
   font-family: 'Proxima Nova', 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -16,6 +18,7 @@
   height: 118px;
   aspect-ratio: auto;
   background: #2a0d0e;
+  flex-shrink: 0;
 }
 
 .transfer-hero .home__hero-bg,
@@ -69,10 +72,12 @@
   color: #F5F0ED;
 }
 
-/* ── Body ──────────────────────────────────────────────────── */
+/* ── Body ── Only this element scrolls; hero + chrome stay fixed. */
 .transfer__body {
   position: relative;
   z-index: 2;
+  flex: 1;
+  min-height: 0;
   margin-top: -12px;
   padding: 24px 16px calc(40px + env(safe-area-inset-bottom, 0px));
   background: #F5F3F3;
@@ -81,6 +86,21 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
+}
+
+.transfer__body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prevent flex children from being shrunk to fit — let the body grow
+   and scroll instead, so the action card and contact lists keep their
+   natural heights and their shadows don't get clipped. */
+.transfer__body > * {
+  flex-shrink: 0;
 }
 
 /* Search — matches .services-search exactly for cross-screen consistency */

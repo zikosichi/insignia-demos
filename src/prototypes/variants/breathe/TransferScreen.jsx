@@ -45,10 +45,16 @@ const RECENTS = [
 ]
 
 const CONTACTS = [
-  { id: 'ig', initials: 'IG', from: '#fbf0f7', to: '#f8e2f1', inkColor: '#b6529f', name: 'Isabella Garcia', detail: 'FR89321045678901234' },
-  { id: 'gm', initials: 'GM', from: '#eef6e8', to: '#dfeed4', inkColor: '#3d6a26', name: 'Gwen Montoya',   detail: 'FR10293847561029384' },
-  { id: 'js', initials: 'JS', from: '#eef3fb', to: '#dde5f4', inkColor: '#2b4d86', name: 'Jordan Smith',   detail: 'FR10293847561029384' },
-  { id: 'tj', initials: 'TJ', from: '#fbf3e2', to: '#f4e3c1', inkColor: '#7a591b', name: 'Taylor Johnson', detail: 'FR10293847561029384' },
+  { id: 'ig', initials: 'IG', from: '#fbf0f7', to: '#f8e2f1', inkColor: '#b6529f', name: 'Isabella Garcia',  detail: 'FR89321045678901234' },
+  { id: 'gm', initials: 'GM', from: '#eef6e8', to: '#dfeed4', inkColor: '#3d6a26', name: 'Gwen Montoya',     detail: 'FR10293847561029384' },
+  { id: 'js', initials: 'JS', from: '#eef3fb', to: '#dde5f4', inkColor: '#2b4d86', name: 'Jordan Smith',     detail: 'FR60141022081234567' },
+  { id: 'tj', initials: 'TJ', from: '#fbf3e2', to: '#f4e3c1', inkColor: '#7a591b', name: 'Taylor Johnson',   detail: 'FR21540009876543210' },
+  { id: 'mh', initials: 'MH', from: '#fdeae8', to: '#f7d4d0', inkColor: '#a8442c', name: 'Marco Hernández',  detail: 'FR04201842965371108' },
+  { id: 'ak', initials: 'AK', from: '#f0eef6', to: '#dcd6ea', inkColor: '#574a8a', name: 'Amara Kowalski',   detail: 'FR97316874520913650' },
+  { id: 'rn', initials: 'RN', from: '#e8f4f1', to: '#cfe9e1', inkColor: '#1f6b58', name: 'Rohan Nair',       detail: 'FR12058624039571248' },
+  { id: 'ed', initials: 'ED', from: '#f3eee5', to: '#e5d8c1', inkColor: '#6b5230', name: 'Élodie Dubois',    detail: 'FR83692714085036214' },
+  { id: 'ko', initials: 'KO', from: '#eef0fa', to: '#d3d9f0', inkColor: '#3c4b94', name: 'Kenji Okafor',     detail: 'FR55027940186324709' },
+  { id: 'sp', initials: 'SP', from: '#fcefe4', to: '#f5d8b8', inkColor: '#9b5915', name: 'Sienna Petrov',    detail: 'FR70184350629140763' },
 ]
 
 function Icon({ children, size = 24, stroke = 'currentColor', strokeWidth = 1.6 }) {
