@@ -12,32 +12,38 @@
 const HAPTIC_TARGET_SELECTOR =
   'button, [role="button"], [data-tactile], a[href]'
 
-/* Three intensity levels mapped to vibrate-API durations (ms).
+/* Intensity levels mapped to vibrate-API durations (ms).
  * Android Chrome respects these; iOS Safari ignores all of them. */
 const HAPTIC_DURATIONS = {
-  light: 3,    // navigation, tabs, thumbs, chips — quiet "tick"
-  medium: 8,   // default action button — confirms a tap
-  strong: 14,  // CTA / primary commit — a noticeable thump
+  ultraLight: 1, // tab / back navigation — barely-there tick
+  light: 3,      // secondary nav, thumbs, chips — quiet "tick"
+  medium: 8,     // default action button — confirms a tap
+  strong: 14,    // CTA / primary commit — a noticeable thump
 }
 
-/* Elements that match one of these selectors get the lighter "tick"
- * instead of the default medium tap. */
-const LIGHT_SELECTOR = [
+/* Tab and back navigation feel best with the most minimal pulse — they
+ * fire often and shouldn't compete with the visual transition. */
+const ULTRA_LIGHT_SELECTOR = [
   '.bottom-nav__item',
-  '.cards-thumb',
-  '.cards-thumb--add',
   '.home-tabs__tab',
   '.cards-tabs__tab',
   '.services-tab',
   '.services-sub-tab',
   '[role="tab"]',
-  '.home__top-circle',
-  '.home__pill',
   '.transactions-hero__lead',
   '.cards-hero__lead',
   '.transfer-hero__lead',
   '.exchange-hero__lead',
   '.services-hero__lead',
+].join(',')
+
+/* Elements that match one of these selectors get the lighter "tick"
+ * instead of the default medium tap. */
+const LIGHT_SELECTOR = [
+  '.cards-thumb',
+  '.cards-thumb--add',
+  '.home__top-circle',
+  '.home__pill',
   '.exchange-chip',
   '.card-name-pill',
   '.card-name-pill__confirm',
@@ -57,6 +63,7 @@ const intensityFor = (el) => {
   const explicit = el.getAttribute('data-haptic')
   if (explicit && HAPTIC_DURATIONS[explicit] !== undefined) return explicit
   if (el.matches(STRONG_SELECTOR)) return 'strong'
+  if (el.matches(ULTRA_LIGHT_SELECTOR)) return 'ultraLight'
   if (el.matches(LIGHT_SELECTOR)) return 'light'
   return 'medium'
 }
