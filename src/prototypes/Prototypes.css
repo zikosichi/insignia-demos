@@ -187,6 +187,18 @@
   display: block;
 }
 
+/* After a screen has been visited once, snap reveal animations to their
+   end state on subsequent navigations. Using 0s duration + 0s delay (rather
+   than `animation: none`) preserves the final keyframe state for animations
+   that rely on `fill-mode: both` to stay visible (e.g. the analytics pie). */
+.breathe__screen--seen,
+.breathe__screen--seen *,
+.breathe__screen--seen *::before,
+.breathe__screen--seen *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
+
 .breathe__cover {
   position: relative;
   width: 100%;
@@ -1913,12 +1925,22 @@
   position: relative;
   height: 116px;
   overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   background: var(--account-bg);
   color: var(--account-text);
+  box-shadow:
+    0 0 0.5px rgba(0, 0, 0, 0.18),
+    0 3px 8px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.1);
   isolation: isolate;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-account-card:active {
+  scale: 0.99;
 }
 
 .home-account-card__texture {
@@ -2079,6 +2101,11 @@
   isolation: isolate;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-charge-card:active {
+  scale: 0.99;
 }
 
 .home-charge-card__texture {

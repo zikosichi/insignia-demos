@@ -66,14 +66,14 @@ const CHARGE_CARDS = [
 ]
 
 export const DEFAULT_TUNING = {
-  shineMult: 0.52,
-  edgeMult: 0.32,
-  glareMult: 1.29,
+  shineMult: 0.13,
+  edgeMult: 0,
+  glareMult: 0,
   facetPop: 1.45,
   darkness: 0,
   vignetteStrength: 0.22,
-  parallaxPx: 34,
-  patternSize: 470,
+  parallaxPx: 4,
+  patternSize: 450,
   lightCtas: false,
   balanceRevealEffect: 'blur',
 }
@@ -937,7 +937,6 @@ function AccountBox({ card, index }) {
           <img className="home-account-card__thumb" src={card.thumb} alt="" />
         </span>
       )}
-      <span className="home-account-card__stitch" aria-hidden />
     </article>
   )
 }
@@ -973,7 +972,6 @@ function ChargeCard({ card, index }) {
       <span className="home-charge-card__thumb-wrap" aria-hidden>
         <img className="home-charge-card__thumb" src={card.thumb} alt="" />
       </span>
-      <span className="home-charge-card__stitch" aria-hidden />
     </article>
   )
 }
