@@ -3797,7 +3797,9 @@
    Active tab gets a 1px pastel-gold (#f5d4a9) border + 12px radius.
    ───────────────────────────────────────────────────────── */
 .home-nav {
-  position: absolute;
+  /* Fixed (not absolute) so the nav anchors to the viewport itself —
+     parent height variations can't leave a gap below it. */
+  position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
