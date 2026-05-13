@@ -12,6 +12,17 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html, body {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
 body {
   min-height: 100vh;
   background: #242020;
