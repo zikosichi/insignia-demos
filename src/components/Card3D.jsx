@@ -32,8 +32,8 @@ export default function Card3D({
 
     const dist = Math.sqrt((mouseX - 0.5) ** 2 + (mouseY - 0.5) ** 2)
     const isMobile = window.innerWidth <= 500
-    const shineBase = isMobile ? 0.5 : 0.2
-    const shineMult = isMobile ? 3 : 2.5
+    const shineBase = isMobile ? 0.3 : 0.12
+    const shineMult = isMobile ? 1.8 : 1.5
     const glareMult = isMobile ? 1.2 : 0.5
 
     card.style.setProperty('--shine-opacity', Math.min(1, dist * shineMult + shineBase))

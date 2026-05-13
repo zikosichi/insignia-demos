@@ -35,7 +35,7 @@ export default function usePointer(targetRef) {
       const beta = e.beta || 0
       const gamma = e.gamma || 0
       target.current.x = Math.max(0, Math.min(1, 0.5 + gamma / 30))
-      target.current.y = Math.max(0, Math.min(1, 0.5 - (beta - 40) / 30))
+      target.current.y = Math.max(0, Math.min(1, 0.5 + (beta - 40) / 30))
     }
 
     const initGyro = () => {
