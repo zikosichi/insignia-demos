@@ -12,6 +12,14 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html {
+  height: 100%;
+  /* Match the bottom-nav surface so any iOS PWA area outside the
+     viewport (below the home indicator) blends with the page bottom
+     instead of showing a black gap. */
+  background: #ffffff;
+}
+
 html, body {
   user-select: none;
   -webkit-user-select: none;
@@ -52,11 +60,15 @@ body::after {
   mix-blend-mode: soft-light;
 }
 
-/* Mobile fullscreen */
+/* Mobile fullscreen — let body/#root fill the full screen (including
+   below the iPhone home indicator) so the bottom nav anchors to the
+   real screen bottom in PWA standalone mode. `position: fixed; inset: 0`
+   used to bound the body to the safe-area rect on iOS standalone,
+   leaving a tall dark strip below the nav. */
 @media (max-width: 500px) {
-  body {
+  html, body, #root {
+    height: 100%;
     overflow: hidden;
-    position: fixed;
-    inset: 0;
+    background: #ffffff;
   }
 }

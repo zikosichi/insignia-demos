@@ -20,7 +20,10 @@
     calc(var(--tilt-shadow-x, 0px) * 1) calc(var(--tilt-shadow-y, 0px) * 1) 60px rgba(0, 0, 0, 0.5),
     0 20px 60px rgba(0, 0, 0, 0.4);
   overflow: clip;
-  transition: transform 0.08s ease-out, box-shadow 0.15s ease-out;
+  /* Smoothing is done entirely in JS (usePointer's lerp). Don't add a
+     CSS transform transition here — it interferes with the per-frame
+     JS updates and causes a back-and-forth chase pattern. */
+  transition: box-shadow 0.15s ease-out;
   transform-style: preserve-3d;
   will-change: transform;
 }

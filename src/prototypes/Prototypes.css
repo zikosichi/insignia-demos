@@ -13,10 +13,16 @@
 
 /* Mobile: render Breathe full-bleed, no tilt phone chrome */
 .prototypes-page--mobile {
-  height: 100dvh;
-  min-height: 100dvh;
+  /* Use 100% so we inherit the full screen height set on html/body/#root
+     above. iOS PWA standalone with `inset: 0` on body used to bound to
+     the safe-area rect, leaving a tall dark strip below the nav — now
+     fixed there too. */
+  height: 100%;
+  min-height: 100%;
   overflow: hidden;
-  background: #0d0908;
+  /* White matches the bottom-nav so any uncovered area at the bottom
+     blends instead of showing a dark strip. */
+  background: #ffffff;
 }
 .prototypes-page--mobile > .prototypes-mobile-host {
   width: 100%;
@@ -561,7 +567,10 @@
       calc(var(--card-shadow-blur, 24px) * 0.65 * var(--card-shadow, 1))
       rgba(24, 6, 4, calc(var(--card-shadow-opacity, 0.34) * 0.78))
     );
-  transition: transform 0.08s linear, filter 0.08s linear;
+  /* Drift is driven per-frame by JS (usePointer lerp). Adding a CSS
+     transition on transform here fights that loop and produces visible
+     back-and-forth jitter while rotating the device / moving the mouse. */
+  transition: filter 0.08s linear;
   will-change: transform, filter;
 }
 
