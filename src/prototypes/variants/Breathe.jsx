@@ -29,7 +29,7 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
     window.setTimeout(() => {
       setSubScreen(null)
       setSubScreenClosing(false)
-    }, 320)
+    }, 520)
   }
 
   const visit = (next) => {

@@ -13,7 +13,7 @@ import iconMagnifyingGlass from '../../assets/breathe/IconMagnifyingGlass.svg'
 import iconBubbleAnnotation from '../../assets/breathe/IconBubbleAnnotation5.svg'
 import iconArrowLeftRight from '../../assets/breathe/IconArrowLeftRight.svg'
 import iconArrowUp from '../../assets/breathe/IconArrowUp.svg'
-import bodyTopCrest from '../../assets/breathe/body-top-crest.svg'
+import bodyTopCrest from '../../assets/breathe/body-top-crest.png'
 
 const ACCOUNT_CARDS = [
   {
