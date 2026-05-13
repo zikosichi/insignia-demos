@@ -12,7 +12,7 @@
 
 /* ── Hero ── matches transactions/transfer pattern */
 .exchange-hero {
-  height: 118px;
+  height: 128px;
   aspect-ratio: auto;
   background: #2a0d0e;
   flex-shrink: 0;

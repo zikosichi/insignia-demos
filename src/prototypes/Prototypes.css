@@ -487,7 +487,7 @@
 }
 
 .cards-hero {
-  height: 118px;
+  height: 128px;
   aspect-ratio: auto;
 }
 
@@ -1190,7 +1190,7 @@
 }
 
 .transactions-hero {
-  height: 118px;
+  height: 128px;
   aspect-ratio: auto;
   background: #2a0d0e;
 }
@@ -3109,7 +3109,7 @@
   .services-hero,
   .transfer-hero,
   .exchange-hero {
-    height: calc(env(safe-area-inset-top, 20px) + 54px);
+    height: calc(env(safe-area-inset-top, 20px) + 64px);
   }
 
   .transactions-hero__content,
@@ -4051,7 +4051,7 @@
 }
 
 .services-hero {
-  height: 118px;
+  height: 128px;
   aspect-ratio: auto;
   background: #2a0d0e;
 }

@@ -15,7 +15,7 @@
    transactions, cards, and services. Slim — same 118px height as the
    transactions hero. */
 .transfer-hero {
-  height: 118px;
+  height: 128px;
   aspect-ratio: auto;
   background: #2a0d0e;
   flex-shrink: 0;
