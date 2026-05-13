@@ -921,38 +921,76 @@
   flex-shrink: 0;
 }
 
-.card-name-pill--input {
-  outline: 0;
-  height: 26px;
-  padding: 0 12px;
-  background: rgba(20, 14, 14, 0.5);
-  border: 1px solid rgba(245, 240, 237, 0.35);
+/* Edit state shares the resting pill container so its text origin stays
+   pinned to the exact same pixel; only the pencil swaps for an input
+   + check confirm button. */
+.card-name-pill--edit {
+  cursor: text;
+  /* Negative margin + matching padding gives the pill a backdrop
+     without shifting the text origin a single pixel. Border is drawn
+     via inset box-shadow so it doesn't add to the box size either. */
+  padding: 5px 6px 5px 10px;
+  margin: -5px -6px -5px -10px;
+  width: 150px;
+  max-width: calc(100% - 16px);
+  background: rgba(20, 14, 14, 0.45);
   border-radius: 999px;
-  min-width: 90px;
-  max-width: calc(100% - 28px);
-  caret-color: rgba(245, 240, 237, 0.95);
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: rgba(245, 240, 237, 0.95);
-  text-shadow: none;
+  box-shadow: inset 0 0 0 1px rgba(245, 240, 237, 0.18);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  box-shadow:
-    0 0 0 3px rgba(245, 240, 237, 0.08),
-    0 1px 3px rgba(0, 0, 0, 0.3);
-  animation: card-name-pill-pop 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 0 6px rgba(245, 240, 237, 0.18));
+  animation: card-name-pill-glow 1.4s ease-in-out infinite alternate;
 }
 
-.card-name-pill--input::selection {
+.card-name-pill__input {
+  outline: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  /* Eat the remaining space inside the pill so the confirm chip is
+     pushed to the trailing edge instead of hugging the text. */
+  flex: 1 1 auto;
+  min-width: 60px;
+  width: 100%;
+  caret-color: rgba(245, 240, 237, 0.95);
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: 1;
+  color: inherit;
+  text-shadow: inherit;
+  vertical-align: baseline;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.card-name-pill__input::selection {
   background: rgba(245, 240, 237, 0.3);
 }
 
-@keyframes card-name-pill-pop {
-  from { transform: scale(0.94); opacity: 0; }
-  to   { transform: scale(1);    opacity: 1; }
+.card-name-pill__confirm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 2px;
+  border-radius: 999px;
+  background: rgba(245, 240, 237, 0.92);
+  color: #2a0d0e;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-name-pill__confirm:active {
+  scale: 0.92;
+}
+
+@keyframes card-name-pill-glow {
+  from { filter: drop-shadow(0 0 4px rgba(245, 240, 237, 0.1)); }
+  to   { filter: drop-shadow(0 0 9px rgba(245, 240, 237, 0.28)); }
 }
 
 .cards-thumbs {

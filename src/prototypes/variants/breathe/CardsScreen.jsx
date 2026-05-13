@@ -342,23 +342,53 @@ export default function CardsScreen({
                         />
                         {focused && (
                           renamingId === card.id ? (
-                            <input
-                              ref={nameInputRef}
-                              className="card-name-pill card-name-pill--input"
-                              value={names[card.id] ?? ''}
-                              onChange={(e) => setNames((m) => ({ ...m, [card.id]: e.target.value }))}
-                              onClick={(e) => e.stopPropagation()}
-                              onMouseDown={(e) => e.stopPropagation()}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === 'Escape') {
+                            <span className="card-name-pill card-name-pill--edit">
+                              <input
+                                ref={nameInputRef}
+                                className="card-name-pill__input"
+                                value={names[card.id] ?? ''}
+                                onChange={(e) => setNames((m) => ({ ...m, [card.id]: e.target.value }))}
+                                onClick={(e) => e.stopPropagation()}
+                                onMouseDown={(e) => e.stopPropagation()}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === 'Escape') {
+                                    e.preventDefault()
+                                    setRenamingId(null)
+                                  }
+                                }}
+                                onBlur={() => setRenamingId(null)}
+                                maxLength={28}
+                                aria-label="Rename card"
+                              />
+                              <span
+                                role="button"
+                                tabIndex={-1}
+                                className="card-name-pill__confirm"
+                                aria-label="Confirm name"
+                                onMouseDown={(e) => {
                                   e.preventDefault()
+                                  e.stopPropagation()
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation()
                                   setRenamingId(null)
-                                }
-                              }}
-                              onBlur={() => setRenamingId(null)}
-                              maxLength={28}
-                              aria-label="Rename card"
-                            />
+                                }}
+                              >
+                                <svg
+                                  width="14"
+                                  height="14"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2.2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  aria-hidden
+                                >
+                                  <path d="M5 12l5 5 9-11" />
+                                </svg>
+                              </span>
+                            </span>
                           ) : (
                             <span
                               role="button"
