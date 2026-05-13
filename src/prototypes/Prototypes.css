@@ -2929,11 +2929,11 @@
    Placed after .home__cta base rules so it actually wins the cascade. */
 @media (min-width: 400px) and (max-width: 700px) {
   .home__cta {
-    height: 76px;
+    height: 72px;
   }
   .home__cta-row {
-    margin-top: 36px;
-    gap: 18px;
+    margin-top: 34px;
+    gap: 17px;
   }
 }
 
@@ -4505,12 +4505,15 @@
 
 .services-carousel > .services-offer {
   scroll-snap-align: start;
-  flex: 0 0 360px;
-  max-width: 360px;
+  /* Card spans the full available width of the carousel viewport so
+     on wider phones (Pixel 8 Pro etc) the active offer doesn't sit
+     with a wasted gutter to its right. */
+  flex: 0 0 100%;
+  max-width: 100%;
 }
 
 .services-offer {
-  width: 360px;
+  width: 100%;
   height: 284px;
   border-radius: 16px;
   overflow: hidden;

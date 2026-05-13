@@ -21,20 +21,26 @@ const HAPTIC_DURATIONS = {
   strong: 14,    // CTA / primary commit — a noticeable thump
 }
 
-/* Tab and back navigation feel best with the most minimal pulse — they
- * fire often and shouldn't compete with the visual transition. */
-const ULTRA_LIGHT_SELECTOR = [
+/* Pure navigation surfaces (bottom nav, hero back-leads, segmented
+ * tabs) get no haptic at all — they fire often and the transition
+ * already gives plenty of feedback. */
+const OFF_SELECTOR = [
   '.bottom-nav__item',
   '.home-tabs__tab',
   '.cards-tabs__tab',
-  '.services-tab',
-  '.services-sub-tab',
   '[role="tab"]',
   '.transactions-hero__lead',
   '.cards-hero__lead',
   '.transfer-hero__lead',
   '.exchange-hero__lead',
   '.services-hero__lead',
+].join(',')
+
+/* Other secondary nav surfaces — sub-tabs, top-row pills etc — keep
+ * the barely-there ultraLight tick. */
+const ULTRA_LIGHT_SELECTOR = [
+  '.services-tab',
+  '.services-sub-tab',
 ].join(',')
 
 /* Elements that match one of these selectors get the lighter "tick"
@@ -62,6 +68,7 @@ const STRONG_SELECTOR = [
 const intensityFor = (el) => {
   const explicit = el.getAttribute('data-haptic')
   if (explicit && HAPTIC_DURATIONS[explicit] !== undefined) return explicit
+  if (el.matches(OFF_SELECTOR)) return 'off'
   if (el.matches(STRONG_SELECTOR)) return 'strong'
   if (el.matches(ULTRA_LIGHT_SELECTOR)) return 'ultraLight'
   if (el.matches(LIGHT_SELECTOR)) return 'light'
@@ -87,7 +94,9 @@ export function installHaptics() {
       if (!target) return
       if (target.hasAttribute('disabled') || target.getAttribute('aria-disabled') === 'true') return
       if (target.getAttribute('data-haptic') === 'off') return
-      tap(intensityFor(target))
+      const level = intensityFor(target)
+      if (level === 'off') return
+      tap(level)
     },
     { passive: true, capture: true },
   )
