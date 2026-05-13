@@ -2528,6 +2528,12 @@
   padding: 64px 16px 56px;
   display: flex;
   flex-direction: column;
+  /* Distribute the three groups (top row, balance, CTAs) across the
+     full hero frame so the content stays balanced on phones of any
+     height (the frame is aspect-ratio 392/400, so it grows on wider
+     viewports). Top row stays anchored at the top, CTAs at the
+     bottom, balance vertically centered in the middle. */
+  justify-content: space-between;
   gap: 10px;
 }
 
