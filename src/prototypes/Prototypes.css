@@ -879,6 +879,61 @@
   color: #fffaf4;
 }
 
+/* Editable card-name pill — overlays the top-left of the focused
+   card so users can see and rename it (since multiple cards now
+   share the same art). */
+/* Minimal: no chip background, just white text + a small pencil. */
+.card-name-pill {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: rgba(245, 240, 237, 0.92);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition: opacity 0.18s ease;
+  max-width: calc(100% - 28px);
+}
+
+.card-name-pill:hover {
+  opacity: 0.85;
+}
+
+.card-name-pill__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-name-pill__icon {
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.card-name-pill--input {
+  outline: 0;
+  border-bottom: 1px solid rgba(245, 240, 237, 0.55);
+  padding-bottom: 1px;
+  min-width: 80px;
+  max-width: calc(100% - 28px);
+  caret-color: rgba(245, 240, 237, 0.92);
+}
+
+.card-name-pill--input::selection {
+  background: rgba(245, 240, 237, 0.3);
+}
+
 .cards-thumbs {
   position: relative;
   z-index: 2;

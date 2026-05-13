@@ -60,13 +60,13 @@ const CARD_TABS = [
 
 const CARD_GROUPS = [
   [
-    { id: 'debit-personal-mc-1', label: 'Personal Mastercard', tier: 'Personal', number: '5319 1184 7630 5805', expires: '12/30', holder: 'Z. Sichinava', cvv: '298', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
-    { id: 'debit-personal-mc-2', label: 'Personal Mastercard', tier: 'Personal', number: '5319 2746 1093 8821', expires: '04/31', holder: 'Z. Sichinava', cvv: '412', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
-    { id: 'debit-personal-mc-3', label: 'Personal Mastercard', tier: 'Personal', number: '5319 8054 3327 6190', expires: '09/31', holder: 'Z. Sichinava', cvv: '857', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
+    { id: 'debit-personal-mc-1', label: 'Personal Mastercard', name: 'Daily spending', tier: 'Personal', number: '5319 1184 7630 5805', expires: '12/30', holder: 'Z. Sichinava', cvv: '298', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
+    { id: 'debit-personal-mc-2', label: 'Personal Mastercard', name: 'Travel', tier: 'Personal', number: '5319 2746 1093 8821', expires: '04/31', holder: 'Z. Sichinava', cvv: '412', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
+    { id: 'debit-personal-mc-3', label: 'Personal Mastercard', name: 'Online shopping', tier: 'Personal', number: '5319 8054 3327 6190', expires: '09/31', holder: 'Z. Sichinava', cvv: '857', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
   ],
   [
-    { id: 'charge-personal-visa-1', label: 'Personal Visa charge', tier: 'Personal Charge', number: '4929 1108 8402 7316', expires: '08/30', holder: 'Z. Sichinava', cvv: '734', card: personalVisaFront, foil: personalVisaFoil, back: personalVisaBack, backFoil: personalVisaBackFoil },
-    { id: 'charge-personal-visa-2', label: 'Personal Visa charge', tier: 'Personal Charge', number: '4929 5572 0918 4463', expires: '02/31', holder: 'Z. Sichinava', cvv: '519', card: personalVisaFront, foil: personalVisaFoil, back: personalVisaBack, backFoil: personalVisaBackFoil },
+    { id: 'charge-personal-visa-1', label: 'Personal Visa charge', name: 'Business', tier: 'Personal Charge', number: '4929 1108 8402 7316', expires: '08/30', holder: 'Z. Sichinava', cvv: '734', card: personalVisaFront, foil: personalVisaFoil, back: personalVisaBack, backFoil: personalVisaBackFoil },
+    { id: 'charge-personal-visa-2', label: 'Personal Visa charge', name: 'Family', tier: 'Personal Charge', number: '4929 5572 0918 4463', expires: '02/31', holder: 'Z. Sichinava', cvv: '519', card: personalVisaFront, foil: personalVisaFoil, back: personalVisaBack, backFoil: personalVisaBackFoil },
   ],
 ]
 
@@ -192,6 +192,13 @@ export default function CardsScreen({
   const [activeCardIndex, setActiveCardIndex] = useState(0)
   const [flippedCardId, setFlippedCardId] = useState(null)
   const [tuning, setTuning] = useState(CARDS_DEFAULT_TUNING)
+  const [names, setNames] = useState(() => {
+    const seed = {}
+    CARD_GROUPS.flat().forEach((c) => { seed[c.id] = c.name || c.label })
+    return seed
+  })
+  const [renamingId, setRenamingId] = useState(null)
+  const nameInputRef = useRef(null)
   const showcaseRef = useRef(null)
   const cards = CARD_GROUPS[tabIndex]
   const borderAngle = (Math.atan2(mouseY - 0.5, mouseX - 0.5) * 180) / Math.PI + 90
@@ -333,6 +340,60 @@ export default function CardsScreen({
                           mouseY={mouseY}
                           borderWidth={2}
                         />
+                        {focused && (
+                          renamingId === card.id ? (
+                            <input
+                              ref={nameInputRef}
+                              className="card-name-pill card-name-pill--input"
+                              value={names[card.id] ?? ''}
+                              onChange={(e) => setNames((m) => ({ ...m, [card.id]: e.target.value }))}
+                              onClick={(e) => e.stopPropagation()}
+                              onMouseDown={(e) => e.stopPropagation()}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === 'Escape') {
+                                  e.preventDefault()
+                                  setRenamingId(null)
+                                }
+                              }}
+                              onBlur={() => setRenamingId(null)}
+                              maxLength={28}
+                              aria-label="Rename card"
+                            />
+                          ) : (
+                            <span
+                              role="button"
+                              tabIndex={-1}
+                              className="card-name-pill"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setRenamingId(card.id)
+                                window.setTimeout(() => {
+                                  nameInputRef.current?.focus()
+                                  nameInputRef.current?.select()
+                                }, 0)
+                              }}
+                              onMouseDown={(e) => e.stopPropagation()}
+                              aria-label={`Rename card: ${names[card.id]}`}
+                            >
+                              <span className="card-name-pill__text">{names[card.id]}</span>
+                              <svg
+                                className="card-name-pill__icon"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden
+                              >
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4z" />
+                              </svg>
+                            </span>
+                          )
+                        )}
                       </div>
                       <div className="cards-flip-card__face cards-flip-card__face--back">
                         {card.back && card.backFoil ? (
