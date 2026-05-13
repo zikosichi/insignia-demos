@@ -923,15 +923,36 @@
 
 .card-name-pill--input {
   outline: 0;
-  border-bottom: 1px solid rgba(245, 240, 237, 0.55);
-  padding-bottom: 1px;
-  min-width: 80px;
+  height: 26px;
+  padding: 0 12px;
+  background: rgba(20, 14, 14, 0.5);
+  border: 1px solid rgba(245, 240, 237, 0.35);
+  border-radius: 999px;
+  min-width: 90px;
   max-width: calc(100% - 28px);
-  caret-color: rgba(245, 240, 237, 0.92);
+  caret-color: rgba(245, 240, 237, 0.95);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: rgba(245, 240, 237, 0.95);
+  text-shadow: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    0 0 0 3px rgba(245, 240, 237, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+  animation: card-name-pill-pop 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .card-name-pill--input::selection {
   background: rgba(245, 240, 237, 0.3);
+}
+
+@keyframes card-name-pill-pop {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }
 
 .cards-thumbs {

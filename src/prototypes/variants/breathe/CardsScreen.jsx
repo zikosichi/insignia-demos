@@ -60,13 +60,13 @@ const CARD_TABS = [
 
 const CARD_GROUPS = [
   [
-    { id: 'debit-personal-mc-1', label: 'Personal Mastercard', name: 'Daily spending', tier: 'Personal', number: '5319 1184 7630 5805', expires: '12/30', holder: 'Z. Sichinava', cvv: '298', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
-    { id: 'debit-personal-mc-2', label: 'Personal Mastercard', name: 'Travel', tier: 'Personal', number: '5319 2746 1093 8821', expires: '04/31', holder: 'Z. Sichinava', cvv: '412', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
-    { id: 'debit-personal-mc-3', label: 'Personal Mastercard', name: 'Online shopping', tier: 'Personal', number: '5319 8054 3327 6190', expires: '09/31', holder: 'Z. Sichinava', cvv: '857', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
+    { id: 'debit-personal-mc-1', label: 'Personal Mastercard', name: 'Card 1', tier: 'Personal', number: '5319 1184 7630 5805', expires: '12/30', holder: 'Z. Sichinava', cvv: '298', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
+    { id: 'debit-personal-mc-2', label: 'Personal Mastercard', name: 'Card 2', tier: 'Personal', number: '5319 2746 1093 8821', expires: '04/31', holder: 'Z. Sichinava', cvv: '412', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
+    { id: 'debit-personal-mc-3', label: 'Personal Mastercard', name: 'Card 3', tier: 'Personal', number: '5319 8054 3327 6190', expires: '09/31', holder: 'Z. Sichinava', cvv: '857', card: personalMcFront, foil: personalMcFoil, back: personalMcBack, backFoil: personalMcBackFoil },
   ],
   [
-    { id: 'charge-personal-visa-1', label: 'Personal Visa charge', name: 'Business', tier: 'Personal Charge', number: '4929 1108 8402 7316', expires: '08/30', holder: 'Z. Sichinava', cvv: '734', card: personalVisaFront, foil: personalVisaFoil, back: personalVisaBack, backFoil: personalVisaBackFoil },
-    { id: 'charge-personal-visa-2', label: 'Personal Visa charge', name: 'Family', tier: 'Personal Charge', number: '4929 5572 0918 4463', expires: '02/31', holder: 'Z. Sichinava', cvv: '519', card: personalVisaFront, foil: personalVisaFoil, back: personalVisaBack, backFoil: personalVisaBackFoil },
+    { id: 'charge-personal-visa-1', label: 'Personal Visa charge', name: 'Card 1', tier: 'Personal Charge', number: '4929 1108 8402 7316', expires: '08/30', holder: 'Z. Sichinava', cvv: '734', card: personalVisaFront, foil: personalVisaFoil, back: personalVisaBack, backFoil: personalVisaBackFoil },
+    { id: 'charge-personal-visa-2', label: 'Personal Visa charge', name: 'Card 2', tier: 'Personal Charge', number: '4929 5572 0918 4463', expires: '02/31', holder: 'Z. Sichinava', cvv: '519', card: personalVisaFront, foil: personalVisaFoil, back: personalVisaBack, backFoil: personalVisaBackFoil },
   ],
 ]
 
