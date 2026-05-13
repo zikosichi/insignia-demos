@@ -3101,6 +3101,33 @@
   .hero-tuner { display: none !important; }
 }
 
+/* On real mobile the simulated PhoneChrome is hidden (TiltPhone.css),
+   so the 74px top padding reserved for the fake notch becomes empty
+   space. Replace it with the OS safe-area inset + 10px breathing
+   room, and shrink slim sub-screen heroes accordingly so the content
+   shifts up. */
+@media (max-width: 500px) {
+  .transactions-hero,
+  .cards-hero,
+  .services-hero,
+  .transfer-hero,
+  .exchange-hero {
+    height: calc(env(safe-area-inset-top, 20px) + 54px);
+  }
+
+  .transactions-hero__content,
+  .cards-hero__content,
+  .services-hero__content,
+  .transfer-hero__content,
+  .exchange-hero__content {
+    padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
+  }
+
+  .home__hero-content {
+    padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
+  }
+}
+
 .hero-tuner {
   position: fixed;
   top: 24px;

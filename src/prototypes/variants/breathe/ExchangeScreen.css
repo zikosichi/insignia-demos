@@ -10,8 +10,8 @@
   background: linear-gradient(
     to bottom,
     #2a0d0e 0,
-    #2a0d0e 130px,
-    #F5F3F3 130px,
+    #2a0d0e var(--exchange-wine-stop, 130px),
+    #F5F3F3 var(--exchange-wine-stop, 130px),
     #F5F3F3 100%
   );
   font-family: 'Proxima Nova', 'Inter', system-ui, -apple-system, sans-serif;
@@ -362,6 +362,15 @@
   background: #F5F3F3;
   transform: translateY(calc(var(--kb-offset, 0px) * -1));
   transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* On real mobile the hero is shorter (env safe-area + 54px), so the
+   wine band needs to shrink so the body's rounded corners still
+   land in the wine area but the bottom stays light. */
+@media (max-width: 500px) {
+  .exchange {
+    --exchange-wine-stop: calc(env(safe-area-inset-top, 20px) + 66px);
+  }
 }
 
 .exchange--focused .exchange__footer {
