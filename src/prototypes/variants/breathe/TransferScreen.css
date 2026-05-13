@@ -1,0 +1,328 @@
+.transfer {
+  position: relative;
+  min-height: 100%;
+  background: #F5F3F3;
+  font-family: 'Proxima Nova', 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  color: #1A1414;
+}
+
+/* ── Hero ──────────────────────────────────────────────────── */
+/* Reuses .home__hero / .home__top-row from Prototypes.css to match
+   transactions, cards, and services. Slim — same 118px height as the
+   transactions hero. */
+.transfer-hero {
+  height: 118px;
+  aspect-ratio: auto;
+  background: #2a0d0e;
+}
+
+.transfer-hero .home__hero-bg,
+.transfer-hero .home__top-row > .home__top-circle,
+.transfer-hero .home__top-actions > .home__top-circle,
+.transfer-hero .home__top-actions > .home__pill,
+.transfer-hero .transfer-hero__title {
+  animation: none;
+  opacity: 1;
+  translate: 0 0;
+  filter: none;
+}
+
+.transfer-hero__content {
+  padding: 74px 16px 0;
+  animation: none;
+}
+
+.transfer-hero__content .home__top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.transfer-hero__lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.transfer-hero__lead:active {
+  scale: 0.97;
+}
+
+.transfer-hero__title {
+  margin: 0;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  color: #F5F0ED;
+}
+
+/* ── Body ──────────────────────────────────────────────────── */
+.transfer__body {
+  position: relative;
+  z-index: 2;
+  margin-top: -12px;
+  padding: 24px 16px calc(40px + env(safe-area-inset-bottom, 0px));
+  background: #F5F3F3;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Search — matches .services-search exactly for cross-screen consistency */
+.transfer__search {
+  height: 48px;
+  border-radius: 10px;
+  background: #e3dada;
+  border: 1px solid #cdc1c1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+}
+
+.transfer__search img {
+  width: 24px;
+  height: 24px;
+}
+
+.transfer__search input {
+  flex: 1;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  color: #403535;
+  outline: 0;
+}
+
+.transfer__search input::placeholder {
+  color: #8d7777;
+}
+
+.transfer__search input::-webkit-search-decoration,
+.transfer__search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* Action card — shadow + colors from Figma node 371:1885 */
+.transfer__actions {
+  background: #fbfafa;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0.5px 0 rgba(0, 0, 0, 0.3),
+    0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  padding: 6px 12px;
+  overflow: hidden;
+}
+
+.transfer-action {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #e5dddd;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.transfer-action--last {
+  border-bottom: 0;
+}
+
+.transfer-action:active {
+  scale: 0.99;
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.transfer-action__icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.22),
+    0 0 0.5px 0 rgba(0, 0, 0, 0.3),
+    0 1px 3px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Reflective gold stroke — same recipe as .breathe-cta::before. The
+   --border-angle CSS var comes from the TiltPhone/MobilePointerHost
+   parent, so this border catches the light as the phone tilts. */
+.transfer-action__icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    var(--border-angle, 45deg),
+    #baa14f 0%,
+    #d4af37 15%,
+    #f0d875 30%,
+    #efd69d 45%,
+    #f0d875 55%,
+    #d4af37 70%,
+    #baa14f 85%,
+    #d4af37 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.transfer-action__copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.transfer-action__title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #403535;
+}
+
+.transfer-action__sub {
+  font-size: 14px;
+  line-height: 20px;
+  color: #7f6868;
+}
+
+.transfer-action__chevron {
+  display: inline-flex;
+  align-items: center;
+  margin-right: -4px;
+}
+
+/* Section headers — Figma node 371:1798/371:1801 */
+.transfer__section {
+  margin: 4px 0 -4px;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #403535;
+  letter-spacing: 0;
+}
+
+/* List card (Recents / My contacts) — Figma node 371:1803 */
+.transfer__list {
+  background: #fbfafa;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0.5px 0 rgba(0, 0, 0, 0.3),
+    0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  padding: 4px 12px 0;
+  overflow: hidden;
+}
+
+.transfer-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 24px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 64px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #e5dddd;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.transfer-row--last {
+  border-bottom: 0;
+}
+
+.transfer-row:active {
+  scale: 0.99;
+  transition: scale 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.transfer-row__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.transfer-row__avatar--account {
+  border: 0;
+}
+
+.transfer-row__copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.transfer-row__name {
+  font-family: "Proxima Nova", "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #403535;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transfer-row__detail {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #7f6868;
+  font-variant-numeric: tabular-nums;
+}
+
+.transfer-row__more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}

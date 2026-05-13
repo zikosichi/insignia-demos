@@ -567,14 +567,14 @@ export default function ServicesScreen() {
         style={{
           '--hero-foil': `url(${bgPatternFoilSvg})`,
           '--hero-edges': `url(${bgPatternFoilSvg})`,
-          '--pattern-size': '470%',
-          '--shine-mult': 0,
+          '--pattern-size': '450%',
+          '--shine-mult': 0.13,
           '--edge-mult': 0,
           '--glare-mult': 0,
-          '--facet-pop': 2.2,
-          '--darkness': 0.12,
-          '--vignette-strength': 0,
-          '--parallax-px': '34px',
+          '--facet-pop': 1.45,
+          '--darkness': 0,
+          '--vignette-strength': 0.22,
+          '--parallax-px': '4px',
         }}
       >
         <div className="home__hero-parallax">

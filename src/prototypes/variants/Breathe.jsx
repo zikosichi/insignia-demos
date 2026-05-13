@@ -5,6 +5,7 @@ import HomeScreen, { BottomNav } from './breathe/HomeScreen'
 import CardsScreen from './breathe/CardsScreen'
 import TransactionsScreen, { TransactionsSearchBar } from './breathe/TransactionsScreen'
 import ServicesScreen from './breathe/ServicesScreen'
+import TransferScreen from './breathe/TransferScreen'
 import bgPatternSvg from '../assets/breathe/bg-pattern.svg'
 import bgPatternFoilSvg from '../assets/breathe/bg-pattern-foil.svg'
 
@@ -13,7 +14,22 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
   const scrollRef = useRef(null)
   const [activeScreen, setActiveScreen] = useState(screen)
   const [seen, setSeen] = useState(() => new Set())
+  const [subScreen, setSubScreen] = useState(null)
+  const [subScreenClosing, setSubScreenClosing] = useState(false)
   const { x: mouseX, y: mouseY } = usePointer(breatheRef)
+
+  const openSubScreen = (id) => {
+    setSubScreenClosing(false)
+    setSubScreen(id)
+  }
+  const closeSubScreen = () => {
+    if (!subScreen) return
+    setSubScreenClosing(true)
+    window.setTimeout(() => {
+      setSubScreen(null)
+      setSubScreenClosing(false)
+    }, 320)
+  }
 
   const visit = (next) => {
     setActiveScreen((prev) => {
@@ -61,6 +77,7 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
               edgesSrc={bgPatternFoilSvg}
               isActive={activeScreen === 'home'}
               showControls={controlsEnabled && activeScreen === 'home'}
+              onTransfer={() => openSubScreen('transfer')}
             />
           </div>
           <div className={screenClass('cards')}>
@@ -79,6 +96,13 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
         </div>
         {activeScreen === 'transactions' && <TransactionsSearchBar />}
         <BottomNav activeId={activeScreen} onChange={handleNavigate} />
+        {subScreen && (
+          <div
+            className={`breathe__subscreen${subScreenClosing ? ' breathe__subscreen--closing' : ''}`}
+          >
+            {subScreen === 'transfer' && <TransferScreen onClose={closeSubScreen} />}
+          </div>
+        )}
       </div>
     </>
   )
