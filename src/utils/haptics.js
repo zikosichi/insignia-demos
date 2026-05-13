@@ -21,24 +21,23 @@ const HAPTIC_DURATIONS = {
   strong: 14,    // CTA / primary commit — a noticeable thump
 }
 
-/* Pure navigation surfaces (bottom nav, hero back-leads, segmented
- * tabs) get no haptic at all — they fire often and the transition
- * already gives plenty of feedback. */
+/* Segmented tabs (charge/debit, home tabs) stay silent — they fire
+ * often and the indicator slide already gives feedback. */
 const OFF_SELECTOR = [
-  '.bottom-nav__item',
   '.home-tabs__tab',
   '.cards-tabs__tab',
   '[role="tab"]',
+].join(',')
+
+/* Bottom nav, hero back-leads and other secondary nav get the most
+ * minimal possible tick (1ms — anything less the browser may ignore). */
+const ULTRA_LIGHT_SELECTOR = [
+  '.bottom-nav__item',
   '.transactions-hero__lead',
   '.cards-hero__lead',
   '.transfer-hero__lead',
   '.exchange-hero__lead',
   '.services-hero__lead',
-].join(',')
-
-/* Other secondary nav surfaces — sub-tabs, top-row pills etc — keep
- * the barely-there ultraLight tick. */
-const ULTRA_LIGHT_SELECTOR = [
   '.services-tab',
   '.services-sub-tab',
 ].join(',')
