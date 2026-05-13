@@ -13,15 +13,13 @@
 
 /* Mobile: render Breathe full-bleed, no tilt phone chrome */
 .prototypes-page--mobile {
-  /* Inherit 100% from #root (which fills body — see global.css mobile
-     rule). This is more reliable than 100dvh which can lag the actual
-     viewport during iOS Safari's URL-bar transitions and leave the
-     bottom nav floating above empty white space. */
+  /* #root fills body via absolute inset:0 (see global.css mobile rule),
+     so 100% here resolves to the viewport. 100dvh fallback for when
+     the chain isn't established (eg desktop or unusual contexts). */
   height: 100%;
+  min-height: 100dvh;
   width: 100%;
   overflow: hidden;
-  /* White matches the bottom-nav so any uncovered area at the bottom
-     blends instead of showing a dark strip. */
   background: #ffffff;
 }
 .prototypes-page--mobile > .prototypes-mobile-host {

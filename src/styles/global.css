@@ -76,11 +76,11 @@ body::after {
     background-image: none;
   }
   /* #root must explicitly fill body so .prototypes-page--mobile's 100%
-     height resolves to the full body height. Without this, #root has
-     its natural intrinsic height (often shorter than the screen) and
-     the bottom-nav floats mid-page with white space below. */
+     height resolves to the full body height. Use absolute positioning
+     instead of height:100% — percentages can be brittle when body is
+     position:fixed. */
   #root {
-    height: 100%;
-    width: 100%;
+    position: absolute;
+    inset: 0;
   }
 }
