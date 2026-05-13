@@ -44,6 +44,15 @@
   z-index: 50;
 }
 
+/* Hide the simulated iPhone notch + status bar on actual mobile
+   viewports — the device already renders the real system status bar,
+   so the fake one would be redundant. */
+@media (max-width: 500px) {
+  .phone-chrome {
+    display: none;
+  }
+}
+
 .phone-chrome__island {
   position: absolute;
   top: 10px;
