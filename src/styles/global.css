@@ -60,15 +60,19 @@ body::after {
   mix-blend-mode: soft-light;
 }
 
-/* Mobile fullscreen — let body/#root fill the full screen (including
-   below the iPhone home indicator) so the bottom nav anchors to the
-   real screen bottom in PWA standalone mode. `position: fixed; inset: 0`
-   used to bound the body to the safe-area rect on iOS standalone,
-   leaving a tall dark strip below the nav. */
+/* Mobile fullscreen */
 @media (max-width: 500px) {
-  html, body, #root {
-    height: 100%;
-    overflow: hidden;
+  html {
     background: #ffffff;
+  }
+  body {
+    overflow: hidden;
+    position: fixed;
+    inset: 0;
+    /* Paint the body white on mobile so the iOS PWA standalone safe-
+       area-bottom zone (behind body's fixed rect) doesn't show as a
+       dark strip below the bottom nav. */
+    background: #ffffff;
+    background-image: none;
   }
 }
