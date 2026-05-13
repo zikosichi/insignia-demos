@@ -22,15 +22,28 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
   const openSubScreen = (id) => {
     setSubScreenClosing(false)
     setSubScreen(id)
+    window.history.pushState({ breatheSubScreen: id }, '')
   }
-  const closeSubScreen = () => {
-    if (!subScreen) return
+  const animateCloseSubScreen = () => {
     setSubScreenClosing(true)
     window.setTimeout(() => {
       setSubScreen(null)
       setSubScreenClosing(false)
     }, 520)
   }
+  const closeSubScreen = () => {
+    if (!subScreen) return
+    // Pop the history entry pushed on open; popstate handler animates the close.
+    window.history.back()
+  }
+
+  useEffect(() => {
+    const onPop = () => {
+      if (subScreen) animateCloseSubScreen()
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [subScreen])
 
   const visit = (next) => {
     setActiveScreen((prev) => {
@@ -57,6 +70,7 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
   const screenClass = (id) =>
     [
       'breathe__screen',
+      id !== 'home' ? 'breathe__screen--fixed-hero' : '',
       activeScreen === id ? 'breathe__screen--active' : '',
       seen.has(id) ? 'breathe__screen--seen' : '',
     ]

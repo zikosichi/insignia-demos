@@ -18,6 +18,7 @@
   overflow: hidden;
   background: #ffffff;
 }
+
 .prototypes-page--mobile > .prototypes-mobile-host {
   width: 100%;
   min-width: 0;
@@ -246,6 +247,46 @@
 
 .breathe__screen--active {
   display: block;
+}
+
+.breathe__screen--fixed-hero.breathe__screen--active {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.breathe__screen--fixed-hero .cards-page,
+.breathe__screen--fixed-hero .transactions-page,
+.breathe__screen--fixed-hero .services-page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.breathe__screen--fixed-hero .cards-hero,
+.breathe__screen--fixed-hero .transactions-hero,
+.breathe__screen--fixed-hero .services-hero {
+  flex-shrink: 0;
+}
+
+.breathe__screen--fixed-hero .cards-body,
+.breathe__screen--fixed-hero .transactions-body,
+.breathe__screen--fixed-hero .services-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.breathe__screen--fixed-hero .cards-body::-webkit-scrollbar,
+.breathe__screen--fixed-hero .transactions-body::-webkit-scrollbar,
+.breathe__screen--fixed-hero .services-body::-webkit-scrollbar {
+  display: none;
 }
 
 /* After a screen has been visited once, snap reveal animations to their
@@ -3907,6 +3948,16 @@
 /* Last (Services) tab mirrors the phone's rounded bottom-right corner. */
 .home-nav__btn:last-child {
   border-bottom-right-radius: 18px;
+}
+
+/* On mobile the nav is full-bleed to the device edge — no rounded phone
+   chassis to follow, so keep all tabs uniformly rounded. */
+@media (max-width: 700px) {
+  .home-nav__btn:first-child,
+  .home-nav__btn:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
 }
 
 .home-nav__btn:active {
