@@ -572,8 +572,8 @@ function Amount({ value }) {
 /* ── Conditional: "Awaiting your approval" (Figma node 371:4657) ── */
 
 const APPROVALS = [
-  { id: 'a1', name: 'Château de l’Étoile', sub: 'Scheduled payment', amount: '−€15,600.67' },
-  { id: 'a2', name: 'Château de l’Étoile', sub: 'Confirm payment',  amount: '−€15,600.67' },
+  { id: 'a1', name: 'Vodafone Business',  sub: 'Direct debit pending', amount: '−€1,240.00' },
+  { id: 'a2', name: 'Four Seasons Paris', sub: 'Confirm payment',      amount: '−€4,860.00' },
 ]
 
 function ApprovalSection({ items }) {
@@ -591,8 +591,18 @@ function ApprovalSection({ items }) {
               <span className="home-approval__name">{item.name}</span>
               <span className="home-approval__sub">{item.sub}</span>
             </span>
-            <span className="home-approval__amount">
-              <Amount value={item.amount} />
+            <span className="home-approval__right">
+              <span className="home-approval__amount">
+                <Amount value={item.amount} />
+              </span>
+              <span className="home-approval__cta" aria-hidden>
+                <span>Review</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" strokeWidth="1.8"
+                     strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m9 6 6 6-6 6" />
+                </svg>
+              </span>
             </span>
           </button>
         ))}
@@ -1030,6 +1040,22 @@ export default function HomeScreen({
   const [tabIndex, setTabIndex] = useState(0)
   const [direction, setDirection] = useState(1)
   const [hasChangedCardsTab, setHasChangedCardsTab] = useState(false)
+  // Demo trigger: press "n" to cycle through approval-count states —
+  // 0 (hidden) → 1 notification → 2 notifications → 0. Lets us reveal,
+  // escalate, and dismiss the section on cue during a live walkthrough.
+  const [approvalCount, setApprovalCount] = useState(0)
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'n' && e.key !== 'N') return
+      const t = e.target
+      const tag = t?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || t?.isContentEditable) return
+      setApprovalCount((c) => (c + 1) % 3)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+  const approvalItems = APPROVALS.slice(0, approvalCount)
   const handleTabChange = (next) => {
     setDirection(next > tabIndex ? 1 : -1)
     setHasChangedCardsTab(true)
@@ -1077,7 +1103,7 @@ export default function HomeScreen({
       />
       <div className="home__body">
         <img className="home__body-crest" src={bodyTopCrest} alt="" aria-hidden />
-        <ApprovalSection items={APPROVALS} />
+        <ApprovalSection items={approvalItems} />
         <SegmentedTabs
           tabs={[
             { count: ACCOUNT_CARDS.length, label: 'Accounts' },

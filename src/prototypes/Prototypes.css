@@ -4330,6 +4330,13 @@
   color: #7F6868;                       /* neutral/10 */
 }
 
+.home-approval__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
 .home-approval__amount {
   font-size: 16px;
   line-height: 24px;
@@ -4340,6 +4347,16 @@
   font-variant-numeric: tabular-nums;
   align-self: start;
   margin-top: 0;
+}
+
+.home-approval__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8B6914;                       /* warning/9-ish */
+  line-height: 1;
 }
 
 .home-tx__more {
