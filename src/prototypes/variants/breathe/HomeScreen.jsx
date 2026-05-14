@@ -14,6 +14,7 @@ import iconBubbleAnnotation from '../../assets/breathe/IconBubbleAnnotation5.svg
 import iconArrowLeftRight from '../../assets/breathe/IconArrowLeftRight.svg'
 import iconArrowUp from '../../assets/breathe/IconArrowUp.svg'
 import bodyTopCrest from '../../assets/breathe/body-top-crest.png'
+import iconNotification from '../../assets/breathe/IconNotification.png'
 
 const ACCOUNT_CARDS = [
   {
@@ -568,6 +569,38 @@ function Amount({ value }) {
   )
 }
 
+/* ── Conditional: "Awaiting your approval" (Figma node 371:4657) ── */
+
+const APPROVALS = [
+  { id: 'a1', name: 'Château de l’Étoile', sub: 'Scheduled payment', amount: '−€15,600.67' },
+  { id: 'a2', name: 'Château de l’Étoile', sub: 'Confirm payment',  amount: '−€15,600.67' },
+]
+
+function ApprovalSection({ items }) {
+  if (!items || items.length === 0) return null
+  return (
+    <section className="home-section home-section--approvals">
+      <header className="home-section__header">
+        <h3 className="home-section__title">Awaiting your approval</h3>
+      </header>
+      <div className="home-approvals">
+        {items.map((item) => (
+          <button type="button" key={item.id} className="home-approval">
+            <img className="home-approval__icon" src={iconNotification} alt="" aria-hidden />
+            <span className="home-approval__copy">
+              <span className="home-approval__name">{item.name}</span>
+              <span className="home-approval__sub">{item.sub}</span>
+            </span>
+            <span className="home-approval__amount">
+              <Amount value={item.amount} />
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function RecentTransactions({ items }) {
   return (
     <section className="home-section home-section--tx">
@@ -1044,6 +1077,7 @@ export default function HomeScreen({
       />
       <div className="home__body">
         <img className="home__body-crest" src={bodyTopCrest} alt="" aria-hidden />
+        <ApprovalSection items={APPROVALS} />
         <SegmentedTabs
           tabs={[
             { count: ACCOUNT_CARDS.length, label: 'Accounts' },

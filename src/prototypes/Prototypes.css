@@ -3827,7 +3827,7 @@
   animation: home-content-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 390ms both;
 }
 
-.home__body > .home-section:not(.home-section--tx) {
+.home__body > .home-section:not(.home-section--tx):not(.home-section--approvals) {
   animation: home-content-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 540ms both;
 }
 
@@ -4244,6 +4244,102 @@
 .home-tx__cents {
   font-size: 10.32px;
   vertical-align: baseline;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Awaiting your approval — conditional notices (Figma 371:4657)
+   ───────────────────────────────────────────────────────── */
+
+.home-section--approvals {
+  gap: 12px;
+  /* When approvals is the first section (right after the crest), the body's
+     32px top padding already supplies the breathing room — don't add more.
+     Bottom margin matches the inter-section rhythm so tabs sit 32px below. */
+  margin-top: 0;
+  margin-bottom: 32px;
+  animation: home-content-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 340ms both;
+}
+
+.home-section--approvals .home-section__title {
+  text-align: left;
+}
+
+.home-approvals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.home-approval {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+  width: 100%;
+  height: 80px;
+  padding: 16px 16px;
+  background: #FBFAFA;                 /* neutral/1 */
+  border: 0;
+  border-bottom: 1px solid #BF8A39;    /* warning/8 */
+  border-radius: 10px;
+  box-shadow:
+    0 0 0.5px 0 rgba(0, 0, 0, 0.30),
+    0 1px 3px 0 rgba(0, 0, 0, 0.15);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: #403535;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-approval:active {
+  transform: scale(0.985);
+}
+
+.home-approval__icon {
+  width: 32px;
+  height: 32px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.home-approval__copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.home-approval__name {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #403535;                       /* neutral/12 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-approval__sub {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #7F6868;                       /* neutral/10 */
+}
+
+.home-approval__amount {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #403535;                       /* neutral/12 */
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  align-self: start;
+  margin-top: 0;
 }
 
 .home-tx__more {
