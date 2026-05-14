@@ -7,6 +7,7 @@ import TransactionsScreen, { TransactionsSearchBar } from './breathe/Transaction
 import ServicesScreen from './breathe/ServicesScreen'
 import TransferScreen from './breathe/TransferScreen'
 import ExchangeScreen from './breathe/ExchangeScreen'
+import PreferencesScreen from './breathe/PreferencesScreen'
 import bgPatternSvg from '../assets/breathe/bg-pattern.svg'
 import bgPatternFoilSvg from '../assets/breathe/bg-pattern-foil.svg'
 
@@ -17,6 +18,7 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
   const [seen, setSeen] = useState(() => new Set())
   const [subScreen, setSubScreen] = useState(null)
   const [subScreenClosing, setSubScreenClosing] = useState(false)
+  const [prefsCardDismissed, setPrefsCardDismissed] = useState(false)
   const { x: mouseX, y: mouseY } = usePointer(breatheRef)
 
   const openSubScreen = (id) => {
@@ -107,7 +109,11 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
             <TransactionsScreen />
           </div>
           <div className={screenClass('services')}>
-            <ServicesScreen />
+            <ServicesScreen
+              showPreferencesCard={!prefsCardDismissed}
+              onSharePreferences={() => openSubScreen('preferences')}
+              onDismissPreferences={() => setPrefsCardDismissed(true)}
+            />
           </div>
         </div>
         {activeScreen === 'transactions' && <TransactionsSearchBar />}
@@ -118,6 +124,15 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
           >
             {subScreen === 'transfer' && <TransferScreen onClose={closeSubScreen} />}
             {subScreen === 'exchange' && <ExchangeScreen onClose={closeSubScreen} />}
+            {subScreen === 'preferences' && (
+              <PreferencesScreen
+                onClose={closeSubScreen}
+                onComplete={() => {
+                  setPrefsCardDismissed(true)
+                  closeSubScreen()
+                }}
+              />
+            )}
           </div>
         )}
       </div>

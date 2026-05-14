@@ -16,6 +16,9 @@ import uchikoImg from '../../assets/breathe/services/uchiko.png'
 import netjetsImg from '../../assets/breathe/services/netjets.png'
 import iroriImg from '../../assets/breathe/services/irori.png'
 import georgeLaurent from '../../assets/breathe/services/george-laurent.png'
+import prefsThumbTennis from '../../assets/breathe/preferences/thumb-tennis.png'
+import prefsThumbFood from '../../assets/breathe/preferences/thumb-food.png'
+import prefsThumbBoat from '../../assets/breathe/preferences/thumb-boat.png'
 import iconGrid from '../../assets/breathe/services/IconSquareGridCircle.svg'
 import iconBed from '../../assets/breathe/services/IconBed.svg'
 import iconForkKnife from '../../assets/breathe/services/IconForkKnife.svg'
@@ -559,7 +562,56 @@ function OtherOffers({ sectionIndex }) {
   )
 }
 
-export default function ServicesScreen() {
+function promptHaptic(ms = 8) {
+  try {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(ms)
+  } catch (_) {}
+}
+
+function PreferencesPrompt({ onShare, onDismiss }) {
+  return (
+    <section className="services-prefs-prompt" role="region" aria-label="Share your preferences">
+      <button
+        type="button"
+        className="services-prefs-prompt__close"
+        onClick={() => { promptHaptic(6); onDismiss?.() }}
+        aria-label="Dismiss"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path d="M6 6l12 12M18 6 6 18" stroke="#403535" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </button>
+      <div className="services-prefs-prompt__thumbs" aria-hidden>
+        <span className="services-prefs-prompt__thumb services-prefs-prompt__thumb--left">
+          <img src={prefsThumbTennis} alt="" />
+        </span>
+        <span className="services-prefs-prompt__thumb services-prefs-prompt__thumb--center">
+          <img src={prefsThumbFood} alt="" />
+        </span>
+        <span className="services-prefs-prompt__thumb services-prefs-prompt__thumb--right">
+          <img src={prefsThumbBoat} alt="" />
+        </span>
+      </div>
+      <p className="services-prefs-prompt__title">Shape what we show you</p>
+      <p className="services-prefs-prompt__sub">
+        Answer a few questions and we'll curate what you actually care about.
+      </p>
+      <button
+        type="button"
+        className="services-prefs-prompt__cta"
+        onClick={() => { promptHaptic(10); onShare?.() }}
+      >
+        Share Your Preferences
+      </button>
+    </section>
+  )
+}
+
+export default function ServicesScreen({
+  showPreferencesCard = true,
+  onSharePreferences,
+  onDismissPreferences,
+}) {
   return (
     <div className="services-page">
       <section
@@ -591,6 +643,11 @@ export default function ServicesScreen() {
 
       <main className="services-body">
         <div className="services-stack">
+          {showPreferencesCard && (
+            <div className="services-reveal" style={{ '--section-index': 0 }}>
+              <PreferencesPrompt onShare={onSharePreferences} onDismiss={onDismissPreferences} />
+            </div>
+          )}
           <div className="services-reveal" style={{ '--section-index': 0 }}>
             <FeaturedOffer slides={FEATURED_OFFERS} />
           </div>
