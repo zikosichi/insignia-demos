@@ -28,6 +28,54 @@
   height: 100%;
 }
 
+/* ──────── 3D-rotation toggle — bottom-left, persisted to localStorage ──────── */
+.tilt-toggle {
+  position: fixed;
+  bottom: 24px;
+  left: 28px;
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: rgba(245, 239, 232, 0.7);
+  user-select: none;
+  cursor: pointer;
+}
+.tilt-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.tilt-toggle__track {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  background: rgba(245, 239, 232, 0.15);
+  border-radius: 999px;
+  transition: background 0.18s ease;
+}
+.tilt-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #f5efe8;
+  border-radius: 999px;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tilt-toggle input:checked + .tilt-toggle__track {
+  background: rgba(201, 161, 74, 0.7);   /* foil gold @70% */
+}
+.tilt-toggle input:checked + .tilt-toggle__track .tilt-toggle__thumb {
+  transform: translateX(14px);
+}
+.tilt-toggle input:focus-visible + .tilt-toggle__track {
+  outline: 2px solid rgba(245, 239, 232, 0.6);
+  outline-offset: 2px;
+}
+
 /* ──────── Variant switcher — bottom-right, text-only ──────── */
 .prototypes-switcher {
   position: fixed;

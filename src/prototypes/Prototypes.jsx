@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import TiltPhone from './TiltPhone'
 import Breathe from './variants/Breathe'
 import Skeuomorphism from './variants/Skeuomorphism'
@@ -44,8 +44,24 @@ function MobilePointerHost({ children }) {
   )
 }
 
+const TILT_STORAGE_KEY = 'insignia.tiltEnabled'
+
+function readTiltPref() {
+  if (typeof window === 'undefined') return true
+  const raw = window.localStorage.getItem(TILT_STORAGE_KEY)
+  if (raw === null) return true
+  return raw === 'true'
+}
+
 export default function Prototypes({ screen = 'cards', controlsEnabled = true }) {
   const [variant, setVariant] = useState('breathe')
+  const [tiltEnabled, setTiltEnabled] = useState(readTiltPref)
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(TILT_STORAGE_KEY, String(tiltEnabled))
+    } catch {}
+  }, [tiltEnabled])
 
   const Active = variants.find((v) => v.key === variant)?.Component ?? Breathe
 
@@ -61,9 +77,20 @@ export default function Prototypes({ screen = 'cards', controlsEnabled = true })
 
   return (
     <div className="prototypes-page">
-      <TiltPhone tiltEnabled={true}>
+      <TiltPhone tiltEnabled={tiltEnabled}>
         <Active screen={screen} controlsEnabled={controlsEnabled} />
       </TiltPhone>
+      <label className="tilt-toggle" title="Toggle 3D phone rotation">
+        <input
+          type="checkbox"
+          checked={tiltEnabled}
+          onChange={(e) => setTiltEnabled(e.target.checked)}
+        />
+        <span className="tilt-toggle__track" aria-hidden>
+          <span className="tilt-toggle__thumb" />
+        </span>
+        <span className="tilt-toggle__label">3D rotation</span>
+      </label>
     </div>
   )
 }
