@@ -28,6 +28,13 @@
   height: 100%;
 }
 
+/* When the demo is embedded in an iframe, lift bottom-anchored controls
+   above the host's chrome (e.g. presentation nav bar). */
+body.is-embedded .tilt-toggle,
+body.is-embedded .prototypes-switcher {
+  bottom: calc(24px + var(--embed-offset, 64px));
+}
+
 /* ──────── 3D-rotation toggle — bottom-left, persisted to localStorage ──────── */
 .tilt-toggle {
   position: fixed;

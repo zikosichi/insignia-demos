@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import CardView from './components/CardView'
 import BlankPhone from './components/BlankPhone'
+import ExpertTips from './components/ExpertTips'
 import Prototypes from './prototypes/Prototypes'
 import './App.css'
 
@@ -53,6 +54,12 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
+  useEffect(() => {
+    let inIframe = false
+    try { inIframe = window.self !== window.top } catch { inIframe = true }
+    if (inIframe) document.body.classList.add('is-embedded')
+  }, [])
+
   const activeId = cards[activeCardIndex]?.id || 'default'
   const prototypeScreen =
     page === '#cards' ? 'cards' : page === '#transactions' ? 'transactions' : page === '#services' ? 'services' : 'home'
@@ -102,6 +109,7 @@ export default function App() {
         screen={prototypeScreen}
         controlsEnabled={prototypeScreen === 'home' || prototypeScreen === 'cards'}
       />
+      <ExpertTips />
     </div>
   )
 }

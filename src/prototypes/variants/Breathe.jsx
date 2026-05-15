@@ -47,6 +47,10 @@ export default function Breathe({ screen = 'cards', controlsEnabled = true }) {
     return () => window.removeEventListener('popstate', onPop)
   }, [subScreen])
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('subscreen-change', { detail: { subScreen } }))
+  }, [subScreen])
+
   const visit = (next) => {
     setActiveScreen((prev) => {
       if (prev && prev !== next) {
