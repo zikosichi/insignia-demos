@@ -7,6 +7,7 @@ import iconMagnifyingGlass from '../../assets/breathe/IconMagnifyingGlass.svg'
 import iconBubbleAnnotation from '../../assets/breathe/IconBubbleAnnotation5.svg'
 import searchBarIcon from '../../assets/breathe/transactions/IconMagnifyingGlass.svg'
 import offerAubergeVideo from '../../assets/breathe/offers/auberge-du-vent.mp4'
+import offerSkydivingVideo from '../../assets/breathe/offers/skydiving.webm'
 import wine1 from '../../assets/breathe/services/wine-1.png'
 import wine2 from '../../assets/breathe/services/wine-2.png'
 import rolandGarros from '../../assets/breathe/services/roland-garros.png'
@@ -137,8 +138,17 @@ const FEATURED_OFFERS = [
     description:
       "Private chef's table with a bespoke Michelin menu in Biarritz. Reserved on request.",
     loop: true,
+    duration: 8000,
   },
-  { id: 'offer-2', title: 'Slide 2', description: 'Description coming soon.' },
+  {
+    id: 'skydiving',
+    video: offerSkydivingVideo,
+    title: 'Tandem skydive over the Alps',
+    description:
+      'Sunrise jump above Mont Blanc with a private guide and chase film. Booked through your concierge.',
+    loop: true,
+    duration: 14900,
+  },
   { id: 'offer-3', title: 'Slide 3', description: 'Description coming soon.' },
   { id: 'offer-4', title: 'Slide 4', description: 'Description coming soon.' },
   { id: 'offer-5', title: 'Slide 5', description: 'Description coming soon.' },

@@ -120,9 +120,9 @@ function CardsSegmentedTabs({ activeIndex, onChange }) {
   )
 }
 
-function CardAction({ action }) {
+function CardAction({ action, onClick }) {
   return (
-    <button className="cards-action" type="button">
+    <button className="cards-action" type="button" onClick={onClick}>
       <img className="cards-action__icon" src={action.icon} alt="" aria-hidden />
       <span>{action.label}</span>
     </button>
@@ -200,6 +200,7 @@ export default function CardsScreen({
   const [renamingId, setRenamingId] = useState(null)
   const nameInputRef = useRef(null)
   const showcaseRef = useRef(null)
+  const swipeRef = useRef({ id: null, x: 0, y: 0, swiped: false })
   const cards = CARD_GROUPS[tabIndex]
   const borderAngle = (Math.atan2(mouseY - 0.5, mouseX - 0.5) * 180) / Math.PI + 90
   const cardOffsetX = (mouseX - 0.5) * tuning.cardDriftX
@@ -294,6 +295,33 @@ export default function CardsScreen({
             if (event.key === 'ArrowLeft') goToCard(activeCardIndex - 1)
             if (event.key === 'ArrowRight') goToCard(activeCardIndex + 1)
           }}
+          onPointerDown={(e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return
+            swipeRef.current = { id: e.pointerId, x: e.clientX, y: e.clientY, swiped: false }
+          }}
+          onPointerMove={(e) => {
+            const s = swipeRef.current
+            if (s.id !== e.pointerId || s.swiped) return
+            const dx = e.clientX - s.x
+            const dy = e.clientY - s.y
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+              s.swiped = true
+              goToCard(activeCardIndex + (dx < 0 ? 1 : -1))
+            }
+          }}
+          onPointerUp={(e) => {
+            if (swipeRef.current.id === e.pointerId) swipeRef.current.id = null
+          }}
+          onPointerCancel={(e) => {
+            if (swipeRef.current.id === e.pointerId) swipeRef.current.id = null
+          }}
+          onClickCapture={(e) => {
+            if (swipeRef.current.swiped) {
+              e.preventDefault()
+              e.stopPropagation()
+              swipeRef.current.swiped = false
+            }
+          }}
         >
           <div
             className="cards-card-showcase__lift"
@@ -351,11 +379,13 @@ export default function CardsScreen({
                                 onClick={(e) => e.stopPropagation()}
                                 onMouseDown={(e) => e.stopPropagation()}
                                 onKeyDown={(e) => {
+                                  e.stopPropagation()
                                   if (e.key === 'Enter' || e.key === 'Escape') {
                                     e.preventDefault()
                                     setRenamingId(null)
                                   }
                                 }}
+                                onKeyUp={(e) => e.stopPropagation()}
                                 onBlur={() => setRenamingId(null)}
                                 maxLength={28}
                                 aria-label="Rename card"
@@ -471,7 +501,12 @@ export default function CardsScreen({
         <div className="cards-actions">
           {CARD_ACTIONS.map((action, index) => (
             <div className="cards-action-reveal" key={action.label} style={{ '--item-index': index }}>
-              <CardAction action={action} />
+              <CardAction
+                action={action}
+                onClick={action.label === 'Card details' && cards[activeCardIndex]
+                  ? () => toggleActiveCard(cards[activeCardIndex].id)
+                  : undefined}
+              />
             </div>
           ))}
         </div>

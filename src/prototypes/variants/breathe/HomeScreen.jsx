@@ -8,6 +8,7 @@ import chargeCardTexture from '../../assets/breathe/accounts/charge-card-texture
 import chargeCardThumb from '../../assets/breathe/accounts/charge-card-thumb.png'
 
 import offerAubergeVideo from '../../assets/breathe/offers/auberge-du-vent.mp4'
+import offerSkydivingVideo from '../../assets/breathe/offers/skydiving.webm'
 import iconPeopleCircle from '../../assets/breathe/IconPeopleCircle.svg'
 import iconMagnifyingGlass from '../../assets/breathe/IconMagnifyingGlass.svg'
 import iconBubbleAnnotation from '../../assets/breathe/IconBubbleAnnotation5.svg'
@@ -56,9 +57,9 @@ const CHARGE_CARDS = [
     id: 'charge-2',
     title: 'Charge card 2',
     status: 'Available',
-    amount: '€31,580',
-    usage: '€18,420 of €50,000 used',
-    progress: 64 / 328,
+    amount: '€42,150',
+    usage: '€32,850 of €75,000 used',
+    progress: 32850 / 75000,
     background: '#D8ABB6',
     texture: chargeCardTexture,
     glow: chargeCardGlow,
@@ -628,7 +629,7 @@ function RecentTransactions({ items }) {
               />
               <div className="home-tx__text">
                 <p className="home-tx__name">{item.name}</p>
-                <p className="home-tx__sub">Account {item.account}</p>
+                <p className="home-tx__sub">Account {item.account} · {item.when}</p>
               </div>
               <p className="home-tx__amount">
                 <Amount value={item.amount} />
@@ -658,10 +659,10 @@ function RecentTransactions({ items }) {
 }
 
 const RECENT_TRANSACTIONS = [
-  { name: 'Palais de Lumière', account: 2, amount: '−€23,750.49' },
-  { name: 'Apple Store', account: 1, amount: '−€450.00' },
-  { name: 'Château de l’Étoile', account: 2, amount: '−€15,600.67' },
-  { name: 'Auberge du Vent', account: 1, amount: '−€2,300.00' },
+  { name: 'Palais de Lumière', account: 2, amount: '−€23,750.49', when: 'Today, 14:32' },
+  { name: 'Apple Store', account: 1, amount: '−€450.00', when: 'Today, 11:08' },
+  { name: 'Château de l’Étoile', account: 2, amount: '−€15,600.67', when: 'Yesterday, 21:47' },
+  { name: 'Auberge du Vent', account: 1, amount: '−€2,300.00', when: '13 May, 19:15' },
 ]
 
 /* ── Stories: "Special offers for you" (Figma node 344:2784) ──
@@ -828,8 +829,16 @@ const SPECIAL_OFFERS = [
     description:
       "Private chef's table with a bespoke Michelin menu in Biarritz. Reserved on request.",
     loop: true,
+    duration: 8000,
   },
-  { title: 'Slide 2', description: 'Description coming soon.' },
+  {
+    video: offerSkydivingVideo,
+    title: 'Tandem skydive over the Alps',
+    description:
+      'Sunrise jump above Mont Blanc with a private guide and chase film. Booked through your concierge.',
+    loop: true,
+    duration: 14900,
+  },
   { title: 'Slide 3', description: 'Description coming soon.' },
   { title: 'Slide 4', description: 'Description coming soon.' },
   { title: 'Slide 5', description: 'Description coming soon.' },
