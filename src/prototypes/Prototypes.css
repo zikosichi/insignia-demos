@@ -3362,12 +3362,8 @@ body.is-embedded .prototypes-switcher {
    Hero controls — floating inspector panel for live-tweaking the
    reflection / parallax knobs.
    ───────────────────────────────────────────────────────── */
-@media (max-width: 700px) {
-  .hero-tuner { display: none !important; }
-}
-
-/* Hide hero-tuner when the demo is embedded (e.g. inside the slides iframe). */
-body.is-embedded .hero-tuner { display: none !important; }
+/* Hero-tuner panel is dev-only — hidden everywhere now. */
+.hero-tuner { display: none !important; }
 
 /* On real mobile the simulated PhoneChrome is hidden (TiltPhone.css),
    so the 74px top padding reserved for the fake notch becomes empty
