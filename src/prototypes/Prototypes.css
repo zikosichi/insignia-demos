@@ -3366,6 +3366,9 @@ body.is-embedded .prototypes-switcher {
   .hero-tuner { display: none !important; }
 }
 
+/* Hide hero-tuner when the demo is embedded (e.g. inside the slides iframe). */
+body.is-embedded .hero-tuner { display: none !important; }
+
 /* On real mobile the simulated PhoneChrome is hidden (TiltPhone.css),
    so the 74px top padding reserved for the fake notch becomes empty
    space. Replace it with the OS safe-area inset + 10px breathing
